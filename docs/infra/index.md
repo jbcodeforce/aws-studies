@@ -1,8 +1,10 @@
 # Major infrastructure services
 
-## EC2 components
+## Amazon Elastic Compute Cloud - EC2 components
 
 * EC2 is a renting machine
+* Amazon EC2 instances are a combination of virtual processors (vCPUs), memory, network, and, in some cases, instance storage and graphics processing units (GPUs).
+* Only for what you used
 * Storing data on virtual drives: [EBS](#EBS)
 * Distribute load across machines using ELB
 * Auto scale the service via group: ASG
@@ -19,6 +21,16 @@ Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pe
 The `.pem` file need to be restricted with `chmod 0400`
 
 Can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port open.
+
+### EC2 life cycle
+
+![](https://explore.skillbuilder.aws/files/a/w/aws_prod1_docebosaas_com/1664424000/W1-B7tRILgL6sJPSvaUMAw/tincan/d03722b85f9d2b3a05e4c74bd586ea9b1f52f81a/assets/vlDWmZklEYI0O5VQ_ZLtBm3DALNZxcsgO.png)
+
+1. When you launch an instance, it enters the pending state. Billing is not started
+1. During rebooting, instance remains on the same host computer, and maintains its public and private IP address, in addition to any data on its instance store.
+1. When you terminate an instance, the instance stores are erased, and you lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged
+
+### EC2 types
 
 EC2 has a section to add `User data`, which could be used to define a bash script to install dependent software
  and to start some services at boot time.
@@ -135,7 +147,7 @@ As seen in "Full VPC diagram", the `VPC peering` helps to connect between VPCs i
 
 ## Security group
 
-Define inbound and outbound security rules.  They regulate access to ports, authorized IP ranges IPv4 and IPv6, 
+Define inbound and outbound security rules.  it is like a virtual firewall inside an EC2 instance. They regulate access to ports, authorized IP ranges IPv4 and IPv6, 
 control inbound and outbound network. By default all inbound traffic is denied and outbound authorized.
 
 * They contain `allow rules` only.
@@ -184,7 +196,7 @@ EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-
 echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
 ```
 
-This script can be added as User Data (Under Advanced Details while configuring new instance) so when the instance starts it executes this code.
+This script can be added as `User Data` (Under Advanced Details while configuring new instance) so when the instance starts it executes this code.
 
 ### Elastic Network Insterfaces
 
@@ -272,6 +284,7 @@ Example of listener rule for an ALB:
  ![3](./images/ALB-listener-rules.png)
 
 ALB and Classic can use [HTTP connection multiplexing](https://www.haproxy.com/blog/http-keep-alive-pipelining-multiplexing-and-connection-pooling/) to keep one connection with the backend application. Connection multiplexing improves latency and reduces the load on your applications.
+
 ### Load balancer stickiness
 
 Used when the same client needs to interact with the same backend instance. A cookie, with expiration date, is used to identify the client. The classical gateway or ALB manages the routing. This could lead to unbalance traffic so overloading one instance. 
@@ -312,9 +325,66 @@ Automatically Register new instances to a load balancer.
 * Load Balancer Information, with target groups to be used as a grouping of the newly created instances
 * Scaling Policies help to define rules to manage instance life cycle, based for example on CPU usage or network bandwidth used. 
 
- ![4](images/ASG-1.png)
+ ![4](./images/ASG-1.png)
 
 * when creating scaling policies, **CloudWatch** alarms are created. Ex: "Create an alarm if: CPUUtilization < 36 for 15 data points within 15 minutes".
 * ASG tries the balance the number of instances across AZ by default, and then delete based on the age of the launch configuration
 * The capacity of our ASG cannot go over the maximum capacity we have allocated during scale out events
 * when an ALB validates an health check issue it terminates the EC2 instance.
+
+
+## EBS Volume
+
+Elastic Block Store Volume is a network drive attached to the instance. It is locked to an AZ, and uses provisioned capacity in GBs and IOPS.
+
+* Create a EBS while creating the EC2 instance and keep it not deleted on shutdown
+* Once logged, add a filesystem, mount to a folder and modify boot so the volume is mounted at start time. Which looks like:
+
+```shell
+# List existing block storage, verify our created storage is present
+lsblk
+# Verify file system type
+sudo file -s /dev/xdvf
+# Create a ext4 file system on the device 
+sudo mkfs -t ext4 /dev/xvdb
+# make a mount point
+sudo mkdir /data
+sudo mount  /dev/xvdb /data
+# Add entry in /etc/fstab with line like:
+/dev/xvdb /data ext4 default,nofail 0 2
+```
+
+* EBS is already a redundant storage, replicated within an AZ.
+* EC2 instance has a logical volume that can be attached to two or more EBS RAID 0 volumes, where write operations are distributed among them. It is used to increate IOPS without any fault tolerance. If one fails, we lost data. It could be used for database with built-in replication or Kafka.
+* RAID 1 is for better fault tolerance: a write operation is going to all attached volumes.
+
+### Volume types
+
+* **GP2**: used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000)
+* **io 1**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T
+* **st 1**: Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing, Apache Kafka
+* **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data.
+
+Encryption has a minimum impact on latency. It encrypts data at rest and during snapshots.
+
+Instance store is a volume attached to the instance, used for root folder. It is a ephemeral storage but has millions read per s and 700k write IOPS. It provides the best disk performance and can be used to have high performance cache for our applications.
+
+![5](./images/ephemeral.png)
+
+If we need to run a high-performance database that requires an IOPS of 210,000 for its underlying filesystem, we need instance store and DB replication in place.
+
+### Snapshots
+
+Used to backup disk and stored on S3.
+Snapshot Lifecycle policies helps to create snapshot with scheduling it by defining policies.
+To move a volume to another AZ or data center we can create a volume from a snapshot.
+
+### Elastic File System
+
+Managed Network FS for multi AZs. (3x gp2 cost), controlled by using security group. This security group needs to add in bound rule of type NFS connected / linked to the SG of the EC2.
+Only Linux based AMI. Encryption is supported using KMS.
+1000 concurrent clients
+10GB+/s throughput, bursting or provisioned.
+Support different performance mode, like max I/O or general purpose
+Support storage tiers to move files after n days, infrequent EFS-IA for files rarely accessed.
+Use amazon EFS util tool in each EC2 instance to mount the EFS to a target mount point.

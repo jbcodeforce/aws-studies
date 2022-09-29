@@ -1,4 +1,4 @@
-# Amazon Web Service studies
+# Amazon Web Service Studies
 
 * Created in 2002, and launched as AWS in 2004 with SQS as first service offering. 
 * 2003 amazon.com was $5.2B retail businesses. 7800 employees
@@ -146,64 +146,6 @@ aws iam list-users
 With Cloudshell we can use aws cli and then have file that will be kept in the filesystems of the cloud shell.
 
 [aws-shell] is also available to facilitate the user experience.
-
-
-
-## EBS Volume
-
-Elastic Block Store Volume is a network drive attached to the instance. It is locked to an AZ, and uses provisioned capacity in GBs and IOPS.
-
-* Create a EBS while creating the EC2 instance and keep it not deleted on shutdown
-* Once logged, add a filesystem, mount to a folder and modify boot so the volume is mounted at start time. Which looks like:
-
-```shell
-# List existing block storage, verify our created storage is present
-lsblk
-# Verify file system type
-sudo file -s /dev/xdvf
-# Create a ext4 file system on the device 
-sudo mkfs -t ext4 /dev/xvdb
-# make a mount point
-sudo mkdir /data
-sudo mount  /dev/xvdb /data
-# Add entry in /etc/fstab with line like:
-/dev/xvdb /data ext4 default,nofail 0 2
-```
-
-* EBS is already a redundant storage, replicated within an AZ.
-* EC2 instance has a logical volume that can be attached to two or more EBS RAID 0 volumes, where write operations are distributed among them. It is used to increate IOPS without any fault tolerance. If one fails, we lost data. It could be used for database with built-in replication or Kafka.
-* RAID 1 is for better fault tolerance: a write operation is going to all attached volumes.
-
-### Volume types
-
-* **GP2**: used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000)
-* **io 1**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T
-* **st 1**: Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing, Apache Kafka
-* **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data.
-
-Encryption has a minimum impact on latency. It encrypts data at rest and during snapshots.
-
-Instance store is a volume attached to the instance, used for root folder. It is a ephemeral storage but has millions read per s and 700k write IOPS. It provides the best disk performance and can be used to have high performance cache for our applications.
-
-![5](./images/ephemeral.png)
-
-If we need to run a high-performance database that requires an IOPS of 210,000 for its underlying filesystem, we need instance store and DB replication in place.
-
-### Snapshots
-
-Used to backup disk and stored on S3.
-Snapshot Lifecycle policies helps to create snapshot with scheduling it by defining policies.
-To move a volume to another AZ or data center we can create a volume from a snapshot.
-
-### Elastic File System
-
-Managed Network FS for multi AZs. (3x gp2 cost), controlled by using security group. This security group needs to add in bound rule of type NFS connected / linked to the SG of the EC2.
-Only Linux based AMI. Encryption is supported using KMS.
-1000 concurrent clients
-10GB+/s throughput, bursting or provisioned.
-Support different performance mode, like max I/O or general purpose
-Support storage tiers to move files after n days, infrequent EFS-IA for files rarely accessed.
-Use amazon EFS util tool in each EC2 instance to mount the EFS to a target mount point.
 
 ## Relational Database Service - RDS
 

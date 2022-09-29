@@ -2,12 +2,15 @@ site_name: AWS Studies
 repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
-  - VPC- EC2: infra/index.md
+  - Infrastructure: infra/index.md
   - Playground: gettingstarted.md
-  - Well Architectured: well-architectured.md
-  - Solution design: sol-design.md
-  - Kubernetes services: k8s.md
-  - SA: psa-role.md
+  - Solution architecture:
+      - Well Architectured: sa/well-architectured.md
+      - Solution design: sa/sol-design.md
+      - SA: sa/psa-role.md
+  - Serverless:
+      - Introduction: serverless/index.md
+      - Kubernetes services: serverless/k8s.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material
@@ -18,13 +21,13 @@ theme:
   features:
       - content.code.annotate
       - content.tooltips
-      - navigation.tabs
+      # - navigation.tabs
       - navigation.instant
       #- navigation.tracking
       - navigation.sections
       - navigation.expand
       - navigation.tabs.sticky
-      - navigation.top
+      # - navigation.top
   social:
     - type: 'github'
       link: 'https://github.com/jbcodeforce'
