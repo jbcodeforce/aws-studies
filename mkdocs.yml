@@ -10,7 +10,7 @@ nav:
       - SA: sa/psa-role.md
   - Serverless:
       - Introduction: serverless/index.md
-      - Kubernetes services: serverless/k8s.md
+      - Lambda: serverless/lambda.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material

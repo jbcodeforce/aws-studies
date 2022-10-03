@@ -6,23 +6,23 @@ A container is a standardized unit that packages your code and its dependencies.
 
 The difference between containers and virtual machines (VMs) can be illustrated by the following figure:
 
-![](https://explore.skillbuilder.aws/files/a/w/aws_prod1_docebosaas_com/1664424000/W1-B7tRILgL6sJPSvaUMAw/tincan/d03722b85f9d2b3a05e4c74bd586ea9b1f52f81a/assets/XkRO9PIy-4njgJWl_dCQbrVwmpaNKxmTs.jpg)
+![](./diagrams/vm-container.drawio.png){ width=700 }
 
 In AWS, containers run on EC2 instances. For example, you might have a large instance and run a few containers on that instance. While running one instance is easy to manage, it lacks high availability and scalability. Most companies and organizations run many containers on many EC2 instances across several Availability Zones
 
 ## Amazon Elastic Container Service (Amazon ECS)
 
-[Amazon ECS](https://aws.amazon.com/ecs/) is an end-to-end container orchestration service that helps you spin up new containers and manage them across a cluster of EC2 instances.
+[Amazon ECS](https://aws.amazon.com/ecs/) is an end-to-end container orchestration service that helps you spin up new containers and manages them across a cluster of EC2 instances.
 
 To run and manage your containers, you need to install the Amazon ECS container agent on your EC2 instances.
 
-![](https://explore.skillbuilder.aws/files/a/w/aws_prod1_docebosaas_com/1664424000/W1-B7tRILgL6sJPSvaUMAw/tincan/d03722b85f9d2b3a05e4c74bd586ea9b1f52f81a/assets/6ahbH2Kz0xMwwHgD_YiX8p1udFI_1rzlu.jpg)
+![](./diagrams/ecs.drawio.png){ width=600 }
 
 To prepare your application to run on Amazon ECS, you create a task definition. The task definition is a text file, in JSON format, that describes one or more containers. 
 
 Apply docker compose to Amazon ECS and Fargate
 
-[ecs anywhere](https://press.aboutamazon.com/news-releases/news-release-details/aws-announces-general-availability-amazon-ecs-anywhere)
+See also [ecs anywhere](https://press.aboutamazon.com/news-releases/news-release-details/aws-announces-general-availability-amazon-ecs-anywhere)
 
 ## EKS
 
@@ -40,20 +40,20 @@ AWS Fargate is a purpose-built serverless compute engine for containers. Fargate
 
 It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC)
 
-## Lambda
+## Step function
 
-AWS Lambda, you can run code without provisioning or managing servers or containers.
+AWS Step Functions is a fully managed service that you can use to coordinate the components of distributed applications and microservices using visual workflows. You build small applications that each perform a discrete function (or step) in your workflow, which means that you can scale and change your applications quickly.
 
-Upload your source code, and Lambda takes care of everything required to run and scale your code with high availability.
+## AWS Elastic Beanstalk
 
-A  Lambda function has three primary components – trigger, code, and configuration.
+With Elastic Beanstalk, developers upload their application. Then, Elastic Beanstalk automatically handles the deployment details of capacity provisioning, load balancing, auto-scaling, and application health monitoring.
 
-![]()
+## Amazon Lightsail
 
-Triggers describe when a Lambda function should run. A trigger integrates your Lambda function with other AWS services, enabling you to run your Lambda function in response to certain API calls that occur in your AWS account.
+Lightsail is a VPS provider and is a useful way to get started with AWS for users who need a solution to build and host their applications on AWS Cloud.
+Lightsail provides developers with compute, storage, and networking capacity and capabilities to deploy and manage websites and web applications in the cloud. Lightsail includes VMs, containers, databases, content delivery network (CDN), load balancers, Domain Name System (DNS) management,
 
-you pay only for what you use it. 
-
-[Tutorial: Resize Images on the Fly with Amazon S3, AWS Lambda, and Amazon API Gateway](https://aws.amazon.com/blogs/compute/resize-images-on-the-fly-with-amazon-s3-aws-lambda-and-amazon-api-gateway/)
+## Read more
 
 [10 Things Serverless Architects Should Know](https://aws.amazon.com/blogs/architecture/ten-things-serverless-architects-should-know/)
+

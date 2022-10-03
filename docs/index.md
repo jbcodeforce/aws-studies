@@ -1,22 +1,75 @@
 # Amazon Web Service Studies
 
-* Created in 2002, and launched as AWS in 2004 with SQS as first service offering. 
+* Created in 2002, and launched as AWS in 2004 with SQS as first service offering, 2006 to businesses.
 * 2003 amazon.com was $5.2B retail businesses. 7800 employees
 
 ## Why cloud
 
-* moving from capex to variable expense
-* economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud
+* Moving from capex to variable expense
+* Economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud
 * Elactic capacity: pay for what you use. Scale up and down so no need to guessed capacity.
 * Speed and agility to define infrastructure in minutes not weeks
 * Focus on business apps, not IT infrastructure and data centers.
 * Global reach in a minutes
+
+!!! note
+    * The cloud transition has happened much faster because it yields great value and has fewer blockers, and bigger customer gains drive higher volume reinvestments into the platform.
+    * In 2014, every day, AWS adds enough new server capacity to support Amazon's global infrastructure when it was at $7B annual
 
 ## Use cases
 
 * Enable to build scalable apps, adaptable to business demand
 * Extend Enterprise IT
 * Support flexible big data analytics
+
+## Cloud Value Frameworks
+
+Four business value pilars:
+
+* Cost savings: Total Cost Ownership. -50% is classical 
+* Staff productivity:  62% improvement 
+* Operational resilience: -32% downtime
+* Business Agility: 47% improvement 
+
+([IDC numbers](https://aws.amazon.com/resources/analyst-reports/?audit=2019q1&analyst-reports-main.sort-by=item.additionalFields.datePublished&analyst-reports-main.sort-order=desc&awsf.analyst-reports-flag=*all&awsf.tech-category=*all&awsf.analyst-reports-use-case=*all&awsf.analyst-reports-industry=*all&awsf.analyst-reports-firm=*all&awsf.analyst-reports-region=*all&awsf.analyst-reports-year=*all))
+
+### Cost saving
+
+* Understand the true cost of existing IT capabilities
+* ROI = Cost saving / (sunk cost + migration cost)
+
+    * For sunk cost: assess the hardware depreciation and the potential recovery value by reselling data center or hardware.
+    * Migration costs: more difficult to assess, but we can use the break event migration cost per server by defining a target ROI. Now only one unknown in the previous equation: migration cost = Cost Savings / ROI - sunk cost. 
+
+* OPEX
+
+For actual cost, we need to consider:
+
+* server cost with HW and SW license
+* storage cost with HW and SW license
+* network cost with HW and SW license
+* Facilities cost for each of those machines: power, cooling, space
+* SRE cost
+* Extras: like project management, training, legal, advisors, contractors, cost of capital
+* Think about standard depreciation of 3 or 5 years. Match to 3 year reserved instances
+* Use Reserved instance volume to assess discount
+* User realistic metrics and ratios like VM density,  servers, racks...)
+* Explore current CPU and memory usage
+* Apply cost saving by using automation and configuration as code.
+* Cost assessment can take from 3 weeks to multi months.
+* [Migration Evaluator](https://aws.amazon.com/migration-evaluator/) to do on-premise server analysis to optimize cloud migration planning.
+
+### Cloud readiness
+
+* human skills and experience required to transition to the cloud
+* application readiness to migrate: dependencies, integrations, translation.
+* each stakeholders (devOps, operations, CFO, procurement) have their point of view
+
+### Additional impacts
+
+* cost of delays - risk premium
+* competition - competitve ability
+* governance and compliance
 
 ## Infrastructure
 
@@ -68,10 +121,16 @@ Concepts:
 
 ## IAM Identity and Access Management
 
+* Help to control access to AWS services
+
+![](./images/iam-authentication.png)
+
 * This is global services so defined at the account level and cross regions
-* Define user (physical person), group and roles, and permissions
+* Define user (physical person), group and roles, and permissions (policies)
+
 * Do not use root user, but create user and always use them when login. `jerome` and `mathieu` are users
 * get user as administrator, meaning it will be part of an admin group with admin priviledges, like `AdmintratorAccess`
+
 * Assign users to groups (`admin` and `developers`) and assign policies to groups and not to individual user.
 * Groups can only contain users, not other groups
 * Users can belong to multiple groups
@@ -79,10 +138,8 @@ Concepts:
 * Users are defined as global service encompasses all regions
 * AWS Account has a unique ID but can be set with an alias (e.g.`jbcodeforce`) so to sign in to the console the URL becomes
 [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console)
+
 * Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles
-* Policy applies to Principal: account/user/role, list the actions (what is allowed or denied) on the given resources
-* Least privilege permission: Give users the minimal amount of permissions they need to do their job
-* Policy is a json doc:
 
 ```json
 {
@@ -99,15 +156,16 @@ Concepts:
 }
 ```
 
+* Policy applies to Principal: account/user/role, list the actions (what is allowed or denied) on the given resources
+* Least privilege permission: Give users the minimal amount of permissions they need to do their job
 * Policy can define the password type `> Account settings > Password policy`, and when users are allowed to change the password.
+
 * Multi Factor Authentication -  always protect root account. MFA = password + device we own. The device could be a universal 2nd factor security key. (ubikey) 
 * Authy is a multi-device service. We can have multiple users on the same device
 * IAM is not used for website authentication and authorization
 * For identity federation, SAML standard is used
 
 ### IAM Roles
-
-
 
 * To get AWS services doing work on other service, we use IAM Role. Roles are assigned per application, or EC2 or lambda function...
 

@@ -10,9 +10,13 @@ The credentials and API key are in `~/.aws/credentials`
 * Select a region to create your resources: N California
 * Look at the services.
 
-## aws CLI
+## AWS CLI common commands
 
 Installation: [aws cli](https://aws.amazon.com/cli/)
+
+```sh
+
+```
 
 ## Defined users and groups with IAM
 

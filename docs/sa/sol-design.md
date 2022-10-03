@@ -45,6 +45,6 @@ So use this pattern only if you cannot do the two previous patterns.
 
 ### AWS Services supporting HA and DR multi-regions
 
-* [S3](/aws/#s3)
-* [EBS](/aws/#ebs-volume)
-* [dynamoDB](/aws/#dynamodb)
+* [S3](../../#s3)
+* [EBS](../../infra/#ebs-volume)
+* [dynamoDB](../../#dynamodb)
