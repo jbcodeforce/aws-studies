@@ -3,7 +3,7 @@ repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
   - Infrastructure: infra/index.md
-  - Playground: gettingstarted.md
+  - Playground: playground/gettingstarted.md
   - Solution architecture:
       - Well Architectured: sa/well-architectured.md
       - Solution design: sa/sol-design.md
@@ -11,6 +11,8 @@ nav:
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
+  - Coding:
+      - CDK: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material

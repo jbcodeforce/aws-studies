@@ -32,6 +32,38 @@ Installation: [aws cli](https://aws.amazon.com/cli/)
 Attached to the group level.
 
 
+## A High availability WebApp deployment summary
+
+Based on the AWS essential training, here is a quick summary of the things to do for a classical HA webapp deployment.
+
+
+1. Create a VPC with private and public subnets, using at least 2 AZs. This is simplified with the new console which creates all those elements in one click:
+
+    ![](./images/vpc-create.png)
+
+    The results, with all the networking objects created, look like below:
+
+    ![](./images/vpc-result.png)
+
+1. Verify routing table for public subnet and private subnets. 
+1. Add security group to the VPC using HTTP and HTTPS to the internet gateway
+1. Start EC2 to one of the public subnet and define user data to start your app. Here is an example
+
+```sh
+#!/bin/bash -ex
+yum -y update
+curl -sL https://rpm.nodesource.com/setup_15.x | bash -
+yum -y install nodejs
+mkdir -p /var/app
+wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-100-TECESS-5/app/app.zip
+unzip app.zip -d /var/app/
+cd /var/app
+npm install
+npm start
+```
+
+1. Get the security key with .pem file for the public certificate
+
 ## Create a EC2 instance with Terraform
 
 * Build a main.tf (/Code/Studies/terraform/learn-terraform-aws-instance/main.tf) like below, which uses the aws provider

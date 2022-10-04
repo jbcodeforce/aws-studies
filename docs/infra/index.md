@@ -127,18 +127,16 @@ The following diagram illustrates some fault tolerance principles offered by the
 * NLB is for TCP, UDP, TLS routing and load balancing.  
 
 
-
 ## Security group
 
-Define inbound and outbound security rules.  it is like a virtual firewall inside an EC2 instance. They regulate access to ports, authorized IP ranges IPv4 and IPv6, 
-control inbound and outbound network. By default all inbound traffic is denied and outbound authorized.
+Define inbound and outbound security rules.  It is like a virtual firewall inside an EC2 instance. SGs regulate access to ports, authorized IP ranges IPv4 and IPv6, control inbound and outbound network. By default all inbound traffic is denied and outbound authorized.
 
 * They contain `allow rules` only.
 * Can be attached to multiple EC2 instances and to load balancers
 * Locked down to a region / VPC combination
 * Live outside of the EC2
 * Define one separate security group for SSH access where you can authorize only one IP@
-* Connect refused is an application error or the app is not launched
+* Connect refused is an application error or the app is not launched - Spinning is an access rules error.
 * Instances with the same security group can access each other
 * Security group can reference other security groups, IP address, CIDR but no DNS server
 
@@ -163,13 +161,14 @@ Elastic IP is a public IPv4 that you own as long as you want and you can attach 
 
 A virtual private cloud (VPC) is a virtual network dedicated to your AWS account. 
 It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances,
- within your VPC. You can specify an IP address range for the VPC, add subnets, associate security groups, and configure route tables.
+ within your VPC. You can specify an IP address range for the VPC, add subnets, associate security groups, ACL, and configure route tables.
 
 VPC Helps to:
 
 * Assign static IP addresses, potentially multiple addresses for the same instance
 * Change security group membership for your instances while they're running
 * Control the outbound traffic from your instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering)
+* Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets with which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
 * Default VPC includes an internet gateway 
 
 The following diagram illustrates classical VPC, as defined years ago, with one vpc, 2 availability zones, 2 subnets with EC2 instances within those subnets and AZs. Subnets are defined within a VPC and an availability zone. It defines an IP CIDR range.
@@ -178,16 +177,20 @@ The following diagram illustrates classical VPC, as defined years ago, with one 
 
 
 * non-default subnet has a private IPv4 address, but no public IPv4 
+* By default, AWS create a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
 * AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.
+* You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC. 
+* You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the internet gateway
 
-You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC. 
+Route tables defines `172.31` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
 
-Route tables defines `172.3` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
+![](./diagrams/default-vpc.drawio.svg)
+
 Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](../architecture/tcpip.md))
 
-Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevent unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
+Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
 
-A NAT device has an Elastic IP address and is connected to the internet through an internet gateway. 
+A NAT device has an Elastic IP address and is connected to the internet through an internet gateway. An internet gateway performs network address translation (NAT) for instances that have been assigned public IPv4 addresses.
 
 ![](./images/vpc-anim.gif)
 
