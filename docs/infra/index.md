@@ -186,7 +186,7 @@ Route tables defines `172.31` as local with `/20` CIDR address range, internal t
 
 ![](./diagrams/default-vpc.drawio.svg)
 
-Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](../architecture/tcpip.md))
+Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](https://jbcodeforce.github.io/architecture/tcpip))
 
 Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
 

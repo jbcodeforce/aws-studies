@@ -31,6 +31,8 @@ Four business value pilars:
 * Operational resilience: -32% downtime
 * Business Agility: 47% improvement 
 
+![](./images/cvf-4pillars.png)
+
 ([IDC numbers](https://aws.amazon.com/resources/analyst-reports/?audit=2019q1&analyst-reports-main.sort-by=item.additionalFields.datePublished&analyst-reports-main.sort-order=desc&awsf.analyst-reports-flag=*all&awsf.tech-category=*all&awsf.analyst-reports-use-case=*all&awsf.analyst-reports-industry=*all&awsf.analyst-reports-firm=*all&awsf.analyst-reports-region=*all&awsf.analyst-reports-year=*all))
 
 ### Cost saving
@@ -70,6 +72,11 @@ For actual cost, we need to consider:
 * cost of delays - risk premium
 * competition - competitve ability
 * governance and compliance
+
+### Operational resilience
+
+It really means security and up time.
+Impact for downtime is direct cost on business revenue, but also cost get back up: which include 3nd party fee, equipment replacement, recovery activities, investigation cost.... Customer churns, company's reputation...
 
 ## Infrastructure
 

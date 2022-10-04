@@ -12,11 +12,8 @@ The credentials and API key are in `~/.aws/credentials`
 
 ## AWS CLI common commands
 
-Installation: [aws cli](https://aws.amazon.com/cli/)
-
-```sh
-
-```
+* Installation: [aws cli](https://aws.amazon.com/cli/)
+* [Tutorial](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenarios-cli.html)
 
 ## Defined users and groups with IAM
 
@@ -49,18 +46,18 @@ Based on the AWS essential training, here is a quick summary of the things to do
 1. Add security group to the VPC using HTTP and HTTPS to the internet gateway
 1. Start EC2 to one of the public subnet and define user data to start your app. Here is an example
 
-```sh
-#!/bin/bash -ex
-yum -y update
-curl -sL https://rpm.nodesource.com/setup_15.x | bash -
-yum -y install nodejs
-mkdir -p /var/app
-wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-100-TECESS-5/app/app.zip
-unzip app.zip -d /var/app/
-cd /var/app
-npm install
-npm start
-```
+    ```sh
+    #!/bin/bash -ex
+    yum -y update
+    curl -sL https://rpm.nodesource.com/setup_15.x | bash -
+    yum -y install nodejs
+    mkdir -p /var/app
+    wget https://aws-tc-largeobjects.s3-us-west-2.amazonaws.com/ILT-TF-100-TECESS-5/app/app.zip
+    unzip app.zip -d /var/app/
+    cd /var/app
+    npm install
+    npm start
+    ```
 
 1. Get the security key with .pem file for the public certificate
 
