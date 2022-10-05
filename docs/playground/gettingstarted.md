@@ -12,8 +12,24 @@ The credentials and API key are in `~/.aws/credentials`
 
 ## AWS CLI common commands
 
+We can access AWS using the CLI or the SDK which both use access keys generated from the console (> Users > jerome > Security credentials > Access Keys).
+
+The keys are saved in `~/.aws/credentials`
+
+
 * Installation: [aws cli](https://aws.amazon.com/cli/)
+* The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key.
 * [Tutorial](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenarios-cli.html)
+* [aws-shell] is also available to facilitate the user experience in your laptop terminal console.
+
+```sh
+aws --version
+# get your users
+aws iam list-users
+```
+
+When using CLI in a EC2 instance always use an IAM role to control security credentials. This role can come with a policy authorizing exactly what the EC2 instances should be able to do. Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
+
 
 ## Defined users and groups with IAM
 
@@ -60,6 +76,7 @@ Based on the AWS essential training, here is a quick summary of the things to do
     ```
 
 1. Get the security key with .pem file for the public certificate
+1. Be sure the inbound rules include HTTP and HTTPS on all IPv4 addresses defined in the security group.  
 
 ## Create a EC2 instance with Terraform
 
@@ -105,8 +122,9 @@ terraform show
 
 ## Install nginx inside a EC2 t2.micro.
 
-Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.0/0
-In the user data add web server:
+Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.0/0.
+
+In the `user data` field add web server:
 
 ```sh
 #!/bin/bash

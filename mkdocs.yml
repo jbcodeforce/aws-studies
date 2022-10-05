@@ -2,7 +2,9 @@ site_name: AWS Studies
 repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
-  - Infrastructure: infra/index.md
+  - Infrastructure: 
+      - Introduction: infra/index.md
+      - Storage: infra/storage.md
   - Playground: playground/gettingstarted.md
   - Solution architecture:
       - Well Architectured: sa/well-architectured.md
@@ -11,6 +13,8 @@ nav:
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
+  - Data:
+      - Data services: data/index.md
   - Coding:
       - CDK: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io

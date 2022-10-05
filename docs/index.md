@@ -105,7 +105,7 @@ Choose an AWS region, depending of your requirements like:
 ## Interact with AWS
 
 * Management console: services are placed in categories: compute, serverless, database, analytics...
-* [CLI](https://aws.amazon.com/cli/)
+* [AWS CLI](https://aws.amazon.com/cli/)
 * [SDK](https://aws.amazon.com/developer/tools/) for C++, Go, Java, JavaScript, .NET, Node.js, PHP, Python, and Ruby
 
 ## Organization
@@ -194,94 +194,6 @@ This role is then defined in the EC2 / Security  > attach IAM role.
 * In IAM, use `> Users > select one user (jerome) and then Access Advisor`: 
 Access Advisor shows the services that this user can access and when those services were last accessed
 
-## AWS CLI
-
-We can access AWS using the CLI or the SDK which both use access keys generated from the console (> Users > jerome > Security credentials > Access Keys).
-
-The keys are saved in `~/.aws/credentials`
-
-[aws-cli version 2](https://github.com/aws/aws-cli/tree/v2)
-
-```sh
-aws --version
-# get your users
-aws iam list-users
-```
-
-With Cloudshell we can use aws cli and then have file that will be kept in the filesystems of the cloud shell.
-
-[aws-shell] is also available to facilitate the user experience.
-
-## Relational Database Service - RDS
-
-Managed service for SQL based database (mySQL, Postgresql, SQL server, Oracle). Must provision EC2 instance and EBS volume.  Support multi AZs for DR with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. It uses gp2 or io1 EBS. Transaction logs are backed-up every 5 minutes.
-Support user triggered snapshot.
-
-* Read replicas: helps to scale the read operations. Can create up to 5 replicas within AZ, cross AZ and cross region. Replication is asynch. Use cases include, reporting, analytics, ML model
-* AWS charge for network when for example data goes from one AZ to another.
-* Support at rest Encryption. Master needs to be encrypted to get encrypted replicas. 
-* We can create a snapshot from unencrypted DB and then copy it by enabling the encryption for this snapshot. From there we can create an Encrypted DB
-
-Our responsibility:
-
-* Check the ports / IP / security group inbound rules in DB’s SG
-* In-database user creation and permissions or manage through IAM
-* Creating a database with or without public access
-* Ensure parameter groups or DB is configured to only allow SSL connections
-
-From a solution architecture point of view:
-
-* **Operations**:  small downtime when failover happens. For maintenance, scaling in read replicas, updating underlying ec2 instance, or restore EBS, there will be manual intervention.
-* **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
-* **Reliability**: Multi AZ feature helps to address it, with failover mechanism in case of failures
-* **Performance**: depends on EC2 instance type, EBS volume type, ability to add Read Replicas. Doesn’t auto-scale, adapt to workload manually. 
-
-## Aurora
-
-Proprietary SQL database, work using postgresql and mysql driver. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for postgresql. 
-
-Can grow up to 64 TB. Sub 10ms replica lag, up to 15 replicas.
-
-Failover in Aurora is instantaneous. It’s HA (High Availability) native. Use 1 master - 5 readers to create 6 copies over 3 AZs. 3 copies of 6 need for reads. Peer to peer replication. Use 100s volumes. Autoscaling on the read operation. 
-
- ![6](./images/aws-aurora.png)
-
-It is CQRS at DB level, and read can be global. Use writer end point and reader endpoint.
-
-It also supports one write with multiple reader and parallel query, multiple writes and serverless to automate scaling down to zero (No capacity planning needed and pay per second).
-
-With Aurora global database one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
-
-* **Operations**:  less operation, auto scaling storage.
-* **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
-* **Reliability**: Multi AZ, HA
-* **Performance**: 5x performance, up to 15 read replicas.
-
-## ElastiCache
-
-Get a managed Redis or Memcached cluster. Applications queries ElastiCache, if not available, get from RDS and store in ElastiCache. Key-Value store.
-It can be used for user session store so user interaction can go to different application instances.
-
-**Redis** is a multi AZ with Auto-Failover, supports read replicas to scale and for high availability. It can persist data using AOF persistence, and has backup and restore features.
-
-**Memcached** is a multi-node for partitioning of data (sharding), and no persistence, no backup and restore. It is based on a multi-threaded architecture.
-
-Some patterns for ElastiCache:
-
-* **Lazy Loading**: all the read data is cached, data can become stale in cache
-* **Write Through**: Adds or update data in the cache when written to a DB (no stale data)
-* **Session Store**: store temporary session data in a cache (using TTL features)
-
-Sub millisecond performance, in memory read replicas for sharding. 
-
-## DynamoDB
-
-AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Highly Available, Multi AZ by default, Read and Writes are decoupled, and DAX can be used for read cache. 
-
-The read operations can be eventually consistent or strongly consistent.
-
-DynamoDB Streams to integrate with AWS Lambda.
-
 ## Route 53
 
 It is a managed Domain Name System. DNS is a collection of rules and records which helps clients understand
@@ -347,77 +259,6 @@ The easiest solution is to create AMI containing OS, dependencies and app binary
 
 [Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) is a developer centric view of the app, hiding the complexity of the IaaS. From one git repository it can automatically handle the deployment details of capacity provisioning, load balancing, auto-scaling, and application health monitoring. 
 
-## S3
-
-[Amazon S3](https://s3.console.aws.amazon.com/s3/get-started?region=us-west-1) allows people to store objects (files) in **buckets** (directories), which must have a globally unique name (cross users!). They are defined at the region level. **Object** in a bucket, is referenced as a **key** which can be seen as a file path in a file system. The max size for an object is 5 TB but big file needs to be uploaded in multipart using 5GB max size.
-
-S3 supports versioning at the bucket level. So file can be restored from previous version, and even deleted file can be retrieved from a previous version.
-
-### Use cases
-
-* Backup and restore
-* DR
-* Archive
-* [Data lakes](https://aws.amazon.com/big-data/datalakes-and-analytics/)
-* Hybrid cloud storage: seamless connection between on-premises applications and S3 with AWS Storage Gateway.
-* Cloud-native application data
-
-
-[GETTIG started](https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html)
-### Security control
-
-Objects can also be encrypted, and different mechanisms are available:
-
-* **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
-* **SSE-KMS**: leverage AWS Key Management Service to manage encryption keys. `x-amz-server-side-encryption: "aws:kms"` header. Server side encrypted. It gives user control of the key rotation policy and audit trail.
-* **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTP headers, for every HTTP request made. HTTPS is mandatory
-* **Client Side Encryption**: encrypt before sending object.
-
-
-Explicit DENY in an IAM policy will take precedence over a bucket policy permission.
-
-### S3 Website
-
-We can have static web site on S3. Once html pages are uploaded, setting the properties as static web site from the bucket. The bucket needs to be public, and have a security policy to allow any user to `GetObject` action. The URL may look like: `<bucket-name>.s3-website.<AWS-region>.amazonaws.com`
-
-* **Cross Origin resource sharing CORS**: The web browser requests won’t be fulfilled unless the other origin allows for the requests, using CORS Headers `Access-Control-Allow-Origin`. If a client does a cross-origin request on our S3 bucket, we need to enable the correct CORS headers: this is done by adding a security policy with CORS configuration like:
-
-```xml
-<CORSConfiguration>
-    <CORSRule>
-        <AllowedOrigin>enter-bucket-url-here</AllowedOrigin>
-        <AllowedMethod>GET</AllowedMethod>
-        <MaxAgeSeconds>3000</MaxAgeSeconds>
-        <AllowedHeader>Authorization</AllowedHeader>
-    </CORSRule>
-</CORSConfiguration>
-```
-
-Finally S3 is eventually consistent.
-
-#### S3 replication
-
-Once versioning enabled, a bucket can be replicated in the same region or cross regions. S3 replication is done on at least 3 AZs. Each AZ can be up to 8 data centers. One DC down does not impact S3 availability. The replication is done asynchronously. SRR is for log aggregation for example, while CRR is used for compliance and DR or replication across accounts. Delete operations are not replicated.
-
-### S3 Storage classes
-
-When uploading a document into an existing bucket we can specify the storage class for keep data over time. Different levels are offered with different cost and SLA.
-
- ![A](./images/storage-class.png)
-
-To prevent accidental file deletes, we can setup MFA Delete to use MFA tokens before deleting objects.
-
-Amazon **Glacier** is for archiving, like writing to tapes. 
-
-We can transition objects between storage classes. For infrequently accessed object, move them to STANDARD_IA. For archive objects, that we don’t need in real-time, use GLACIER or DEEP_ARCHIVE. Moving objects can be automated using a lifecycle configuration
-
-At the bucket level, a user can define lifecycle rules for when to transition an object to another storage class.
-
- ![B](./images/storage-rule.png)
-
-To improve performance, a big file can be split and then uploaded with local connection to the closed edge access and then use AWS private network to copy between buckets in different region.
-
-[S3 to Kafka lab](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-s3/)
 
 ## AWS Athena
 
@@ -426,12 +267,6 @@ To improve performance, a big file can be split and then uploaded with local con
 No need for complex ETL jobs to prepare your data for analytics.
 
 Integrated with AWS **Glue Data Catalog**, allowing you to create a unified metadata repository across various services, crawl data sources to discover schemas and populate your Catalog with new and modified table and partition definitions, and maintain schema versioning.
-
-## AWS CLI
-
-The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key.
-
-When using CLI in a EC2 instance always use an IAM role to control security credentials. This role can come with a policy authorizing exactly what the EC2 instances should be able to do. Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
 
 ## CloudFront
 
@@ -454,34 +289,7 @@ It also supports the concept of signed URL. When you want to distribute content 
 * Signed URL = access to individual files (one signed URL per file)
 * Signed Cookies = access to multiple files (one signed cookie for many files)
 
-## Storage
 
-### Snowball
-
-Move TB of data in and out AWS using physical device to ship data. The edge has 100TB and compute power to do some local processing on data. Snow mobile is a truck with 100 PB capacity. Once on site, it is transferred to S3.
-
-Snowball Edge brings computing capabilities to allow data pre-processing while it's being moved in Snowball, so we save time on the pre-processing side as well.
-
-## Hybrid cloud storage
-
-Storage gateway expose an API in front of S3. Three gateway types:
-
-* **file**: S3 bucket accessible using NFS or SMB protocols. Controlled access via IAM roles. File gateway is installed on-premise and communicate with AWS.
-* **volume**: this is a block storage using iSCSI protocol. On-premise and visible as a local volume backed by S3.
-* **tape**: same approach but with virtual tape library. Can go to S3 and Glacier.
-
-### Storage comparison
-
-* S3: Object Storage
-* Glacier: Object Archival
-* EFS: Network File System for Linux instances, POSIX filesystem
-* FSx for Windows: Network File System for Windows servers
-* FSx for Lustre: High Performance Computing Linux file system
-* EBS volumes: Network storage for one EC2 instance at a time
-* Instance Storage: Physical storage for your EC2 instance (high IOPS)
-* Storage Gateway: File Gateway, Volume Gateway (cache & stored), Tape Gateway
-* Snowball / Snowmobile: to move large amount of data to the cloud, physically
-* Database: for specific workloads, usually with indexing and querying
 
 ## Integration and middleware: SQS, Kinesis Active MQ
 
