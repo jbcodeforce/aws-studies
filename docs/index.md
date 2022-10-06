@@ -143,10 +143,12 @@ Concepts:
 * Users can belong to multiple groups
 
 * Users are defined as global service encompasses all regions
-* AWS Account has a unique ID but can be set with an alias (e.g.`jbcodeforce`) so to sign in to the console the URL becomes
+* AWS Account has a unique ID but can be set with an alias (e.g.`jbcodeforce` or `boyerje`) so to sign in to the console the URL becomes
 [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console)
+or [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.amazon.com/console) use `aws-jb`.
 
-* Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles
+* Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
+* It must define an ID, a version and statement(s):
 
 ```json
 {
@@ -163,14 +165,21 @@ Concepts:
 }
 ```
 
-* Policy applies to Principal: account/user/role, list the actions (what is allowed or denied) on the given resources
+Another example:
+
+![](./images/aws-policy.png)
+
+* Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**
 * Least privilege permission: Give users the minimal amount of permissions they need to do their job
 * Policy can define the password type `> Account settings > Password policy`, and when users are allowed to change the password.
-
-* Multi Factor Authentication -  always protect root account. MFA = password + device we own. The device could be a universal 2nd factor security key. (ubikey) 
-* Authy is a multi-device service. We can have multiple users on the same device
+* Inline policy can be defined at the user level, but it is recommended to use Group and Group level policies. As user can be part of multi groups, he will heritate to the different policies of those groups.
 * IAM is not used for website authentication and authorization
 * For identity federation, SAML standard is used
+
+### MFA
+
+* Multi Factor Authentication -  always protect root account. MFA = password + device we own. The device could be a universal 2nd factor security key. (ubikey) 
+* [Authy](https://authy.com/) is a multi-device service with free mobile app. We can have multiple users on the same device
 
 ### IAM Roles
 
@@ -180,9 +189,9 @@ Concepts:
 
 * Maintaining roles is more efficient than maintaining users.  When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes and 36 hours.
 
-* When connected to an EC2 machine via ssh or using EC2 instance connect, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role it attached.
+* When connected to an EC2 machine via ssh or using EC2 instance connect, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached.
 
-To authorize access to a EC2 instance, we use IAM Roles. The DemoEC2Role, for example, is defined to access EC2 in read only:
+To authorize access to a EC2 instance, we use IAM Roles. The `DemoEC2Role`, for example, is defined to access EC2 in read only:
 
 ![](./images/aws-iam-role.png)
 
@@ -191,8 +200,8 @@ This role is then defined in the EC2 / Security  > attach IAM role.
 ### Security tools
 
 * In IAM, use `> Credentials report` to download account based report.
-* In IAM, use `> Users > select one user (jerome) and then Access Advisor`: 
-Access Advisor shows the services that this user can access and when those services were last accessed
+* In IAM, use `> Users > select one user (aws-jb) and then Access Advisor tab`: 
+Access Advisor shows the services that the selected user can access and when those services were last accessed
 
 ## Route 53
 

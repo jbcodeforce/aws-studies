@@ -45,6 +45,18 @@ So use this pattern only if you cannot do the two previous patterns.
 
 ### AWS Services supporting HA and DR multi-regions
 
-* [S3](../../#s3)
-* [EBS](../../infra/#ebs-volume)
-* [dynamoDB](../../#dynamodb)
+* [S3](../../infra/storage/#s3)
+* [EBS](../../infra/storage/#amazon-elastic-block-storage-ebs)
+* [dynamoDB](../../data/#dynamodb)
+
+## SaaS deployment for an ISV
+
+The ISV provides a data platform to manage data with performance and feature set compare to data warehouse but at the scale and low cost of data lake. 
+On top of the data their platform helps to develop ML model, visualize data and build integrate view of distributed, structured and unstructured data.
+
+![](./images/datalake-isv.png)
+
+They developed a multi-tenancy SaaS platform to manage their customer deployments. Customers will create instance of this managed service in their own VPC and integrate with their own data source and data pipeline, to organize this data processing into data ingestion, data engineering, serving layer and analytics. Part of their platform is also to provide easy integration into AWS data services like Kinesis, S3, RDS, Redshift…
+This ISV is gathering data from the customer usage of their platform, get real time metrics, and manage all this in the AWS cloud using existing managed services as S3, Glacier for long persistence, streaming, redshift,…
+
+* [Kinesis]() 

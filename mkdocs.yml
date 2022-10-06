@@ -22,7 +22,6 @@ theme:
   name: material
   palette:
     scheme: default
-    primary: blue
   language: en
   features:
       - content.code.annotate

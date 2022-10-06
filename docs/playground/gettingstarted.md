@@ -1,14 +1,9 @@
 # Getting started
 
-General [AWS console](https://us-west-1.console.aws.amazon.com/) from which we can login as root user or as an IAM user.
-
-Or the one for my account alias `jbcodeforce`: [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console)
-and user jerome
+Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: my account alias `boyerje`: [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.amazon.com/console)
+and user: `aws-jb`.
 
 The credentials and API key are in `~/.aws/credentials`
-
-* Select a region to create your resources: N California
-* Look at the services.
 
 ## AWS CLI common commands
 
@@ -19,8 +14,8 @@ The keys are saved in `~/.aws/credentials`
 
 * Installation: [aws cli](https://aws.amazon.com/cli/)
 * The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key.
-* [Tutorial](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenarios-cli.html)
-* [aws-shell] is also available to facilitate the user experience in your laptop terminal console.
+
+Test with some commands:
 
 ```sh
 aws --version
@@ -28,12 +23,17 @@ aws --version
 aws iam list-users
 ```
 
+* [VPC scenario with CLI - Tutorial](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenarios-cli.html)
+* [Use CloudShell in west-2 region for using aws cli](https://us-west-2.console.aws.amazon.com/cloudshell)
+* [aws-shell] is also available to facilitate the user experience in your laptop terminal console.
+
+
 When using CLI in a EC2 instance always use an IAM role to control security credentials. This role can come with a policy authorizing exactly what the EC2 instances should be able to do. Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
 
 
 ## Defined users and groups with IAM
 
-[my summary on IAM](/aws/#iam-identity-and-access-management)
+See [summary on IAM](../../#iam-identity-and-access-management)
 
 * Search for IAM and then...
 * login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
