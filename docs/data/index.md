@@ -2,9 +2,10 @@
 
 ## Relational Database Service - RDS
 
-Managed service for SQL based database (mySQL, Postgresql, SQL server, Oracle). Must provision EC2 instance and EBS volume.  Support multi AZs for DR with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. It uses gp2 or io1 EBS. Transaction logs are backed-up every 5 minutes.
+Managed service for SQL based database (mySQL, Postgresql, SQL server, Oracle).  Support multi AZs for DR with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. It uses gp2 or io1 EBS. Transaction logs are backed-up every 5 minutes.
 Support user triggered snapshot.
 
+* Installed in private subnet in a VPC. No public IP address. 
 * Read replicas: helps to scale the read operations. Can create up to 5 replicas within AZ, cross AZ and cross region. Replication is asynch. Use cases include, reporting, analytics, ML model
 * AWS charge for network when for example data goes from one AZ to another.
 * Support at rest Encryption. Master needs to be encrypted to get encrypted replicas. 
@@ -26,7 +27,7 @@ From a solution architecture point of view:
 
 ## Aurora
 
-Proprietary SQL database, work using postgresql and mysql driver. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for postgresql. 
+Proprietary SQL database, work using postgresql and mysql drivers. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for postgresql. 
 
 Can grow up to 64 TB. Sub 10ms replica lag, up to 15 replicas.
 
@@ -64,8 +65,16 @@ Sub millisecond performance, in memory read replicas for sharding.
 
 ## DynamoDB
 
-AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Highly Available, Multi AZ by default, Read and Writes are decoupled, and DAX can be used for read cache. 
+AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Highly Available, Multi AZ  in an AWS Region by default, Read and Writes are decoupled, and DAX can be used for read cache. Data is stored on solid-state disks (SSDs).
+
+A table is a collection of items, and each item is a collection of attributes. DynamoDB uses primary keys to uniquely identify each item in a table and secondary indexes to provide more querying flexibility
 
 The read operations can be eventually consistent or strongly consistent.
 
 DynamoDB Streams to integrate with AWS Lambda.
+
+## DocumentDB
+
+## Neptune - GraphDB
+
+## Amazon QLDB

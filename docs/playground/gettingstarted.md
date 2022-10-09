@@ -44,6 +44,52 @@ See [summary on IAM](../../#iam-identity-and-access-management)
 
 Attached to the group level.
 
+## Playing with Apache HTTP
+
+Create a EC2 t2.micro and add the following script in the `User Data` field (Under Advanced Details while configuring new EC2 instance) so when the instance starts it executes this code.
+
+```shell
+#!/bin/bash
+# update OS
+yum update -y
+# Get Apache HTTPd
+yum install -y httpd
+# Start the service
+systemctl start httpd
+# Enable it cross restart
+systemctl enable httpd
+> Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service
+# Get the availability zone
+EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+# Change the home page by changing /var/www/html/index.html
+echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
+# or use the following
+echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
+```
+
+## SSH to EC2
+
+* Get public IP address of the EC2 instanceh/
+* Get pem certificate for the CA
+* Issue the command where the certificate is:
+
+```sh
+ssh -i EC2key.pem ec2-user@35.91.239.193
+```
+
+### Troubleshooting
+
+* Connection timeout: Any timeout (not just for SSH) is related to security groups or a firewall. This may also means a corporate firewall or a personal firewall is blocking the connection.
+* `Permission denied (publickey,gssapi-keyex,gssapi-with-mic)`: You are using the wrong security key or not using a security key. 
+* able to connect yesterday, but not today: When you restart a EC2 instance, the public IP of your EC2 instance will change. 
+
+### EC2 Instance Connect
+
+Access the EC2 terminal inside the web browser using SSH. Select the instance and then `Connect` button at the top. 
+It comes with aws cli. Never enter any account id inside `aws configure` inside an EC2 instance, use IAM role instead.
+
+Go to the EC2 instance, Action > Security > Modify IAM Roles. For example adding  the DemoEC2Role which as iam read only access, so we do `aws iam list-users` command.
+
 
 ## A High availability WebApp deployment summary
 
@@ -123,17 +169,6 @@ terraform show
 ## Install nginx inside a EC2 t2.micro.
 
 Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.0/0.
-
-In the `user data` field add web server:
-
-```sh
-#!/bin/bash
-yum update -y
-yum install -y httpd
-systemctl start httpd
-systemctl enable httpd
-echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
-```
 
 ## Define load balancer
 

@@ -20,21 +20,71 @@ Amazon EC2 instance store provides temporary block-level storage for an instance
 
 Instance store is ideal if you host applications that replicate data to other EC2 instances such as Kafka or Hadoop.
 
-
-
 ## Object Storage
 
 Objects are stored in a flat structure instead of a hierarchy. We can store almost any type of data, and there is no limit to the number of objects stored, which makes it readily scalable.
 
 ## Amazon Elastic Block Storage EBS
 
-Amazon EBS is attached to EC2 instance, is HA, and can be backed up. EVS volume can be attached to a new EC2 instance, normally there is a 1 to 1 relation between volume and EC2 instance. Except for multi-attach EBS.
+Elastic Block Store Volume is a network drive attached to the EC2 instance. It is locked to an AZ, and uses provisioned capacity in GBs and IOPS. It is HA, and can be backed up.
 
-the maximum amount of storage you can have is 16 TB.
+![](./images/ebs-volume.png)
+
+* Create a EBS while creating the EC2 instance and keep it not deleted on shutdown
+* EBS volume can be attached to a new EC2 instance, normally there is a 1 to 1 relation between volume and EC2 instance. Except for multi-attach EBS.
+* The maximum amount of storage you can have is 16 TB.
+* Once logged, add a filesystem, mount to a folder and modify boot so the volume is mounted at start time. Which looks like:
+
+```shell
+# List existing block storage, verify our created storage is present
+lsblk
+# Verify file system type
+sudo file -s /dev/xdvf
+# Create a ext4 file system on the device 
+sudo mkfs -t ext4 /dev/xvdb
+# make a mount point
+sudo mkdir /data
+sudo mount  /dev/xvdb /data
+# Add entry in /etc/fstab with line like:
+/dev/xvdb /data ext4 default,nofail 0 2
+```
+
+* EBS is already a redundant storage, replicated within an AZ.
+* EC2 instance has a logical volume that can be attached to two or more EBS RAID 0 volumes, where write operations are distributed among them. It is used to increate IOPS without any fault tolerance. If one fails, we lost data. It could be used for database with built-in replication or Kafka.
+* RAID 1 is for better fault tolerance: a write operation is going to all attached volumes.
+
+### Volume types
+
+When creating EC2 instances, you can only use the following EBS volume types as boot volumes: gp2, gp3, io1, io2, and Magnetic (Standard)
+
+* **gp2 or gp3**: SSD, used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000)
+* **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T
+* **st 1**: HDD. Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing. Up to 16 TiB.
+* **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data.
+
+Encryption has a minimum impact on latency. It encrypts data at rest and during snapshots.
+* Provisioned IOPS (PIOPS) SSD: used for critical apps with sustained IOPS performance, even more than 16k IOPS. 
+
+Instance store is a volume attached to the instance, used for root folder. It is a ephemeral storage but has millions read per s and 700k write IOPS. It provides the best disk performance and can be used to have high performance cache for our applications.
+
+![5](./images/ephemeral.png)
+
+If we need to run a high-performance database that requires an IOPS of 210,000 for its underlying filesystem, we need instance store and DB replication in place.
+
+### Snapshots
+
 
 EBS snapshots are incremental backups that only save the blocks on the volume that have changed after your most recent snapshot.
+Used to backup disk at any point of time of a volume and store it on S3.
+Snapshot Lifecycle policies helps to create snapshot with scheduling it by defining policies.
+To move a volume to another AZ or data center we can create a volume from a snapshot.
 
 EBS snapshots can be used to create multiple new volumes, whether they’re in the same Availability Zone or a different one
+
+### EBS Multi-attach
+
+Only for io1 or io2 EBS type, a volume can be attached to multiple EC2 instances (up to 16) running in the same AZ. Each instance has full R/W permission. 
+The file system must be cluster aware.
 
 ## S3
 
@@ -112,7 +162,20 @@ To improve performance, a big file can be split and then uploaded with local con
 
 ## Elastic File System (EFS)
 
-Fully managed NFS file system. [FAQ](https://aws.amazon.com/efs/faq/)
+Fully managed NFS file system. [FAQ](https://aws.amazon.com/efs/faq/) for multi AZs. (3x gp2 cost), controlled by using security group. This security group needs to add in bound rule of type NFS connected / linked to the SG of the EC2.
+
+* Only Linux based AMI. POSIX filesystem. Encryption is supported using KMS.
+* 1000 concurrent clients
+* 10GB+/s throughput, bursting or provisioned, grow to petabyte.
+
+![](./images/efs.png)
+
+* Support different performance mode, like max I/O or general purpose
+* Select regional (standard or default) or one zone availabiltiy and durability. 
+* Billed for what you use.
+* Support storage tiers to move files after n days. Used on infrequent access, so lifecycle management move file to EFS-IA.
+* Use amazon EFS util tool in each EC2 instance to mount the EFS to a target mount point.
+* Is defined in a subnet, so the EC2 needs to specify in which subnet it runs.
 
 
 ## Snowball

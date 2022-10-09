@@ -78,6 +78,47 @@ For actual cost, we need to consider:
 It really means security and up time.
 Impact for downtime is direct cost on business revenue, but also cost get back up: which include 3nd party fee, equipment replacement, recovery activities, investigation cost.... Customer churns, company's reputation...
 
+### Business agility
+
+Look at responding faster, experimenting more, and delivering results in the same or less amount of
+time. Business agility is about delivering more,respond faster to customer’srequests or problems, develop new product, add features more quickly, expend to new market. Business agility allows customers to innovate by increasing "failfast" while reducing risks and costs. Being able to easily shut down failed initiatives without the pain and wasted resources associated with an inflexible on-premises environment.
+
+The KPIs to consider includes at least:
+
+* New app launched per year
+* time to market for new app. (Observerved 20% gain)
+* time to provision new environments (days)
+* deployment frequency
+* time to deploy to production, to test...
+* Features per release (observerved 26% more)
+* Total # of defects
+* % defects found in test
+* MTTR: mean time to resolution
+* response time to defect
+* customer retention in %
+* new festure adoption in %
+* value per release in $ (+34% more revenue per user)
+
+### Cloud financial management
+
+Includes four key areas:
+
+1. **Measurement and accountability**: establishing cost transparency to ensure visibility
+1. **Cost Optimization**: identify waste, scale based on demand, improve cost efficiency
+
+    * Right sizing: select the lowest cost instance that meets performance requirements. Look at CPU, RAM, storage and network usage to identify downsizing opportunity. See [AWS CloudWatch](https://aws.amazon.com/cloudwatch/)
+    * increase elasticity: shutdown test and dev instances. Automatic scaling. 
+    * Choose the right pricing model: on-demand, reserved instances (predictable workload), convertible RIs, spot instance....
+    * Use the right storage: automate aging from different S3 services
+
+1. Planning and forecasting: based on actual and future costs and needs
+
+    * [AWS pricing calculator](https://calculator.aws/#/) to estimate the cost of your architecture solution.
+    * AWS price list API
+    * [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
+
+1. Cloud financial operations: invest in tools, people, and automation
+
 ## Infrastructure
 
 AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 availability zones per region. Ex: us-west-1-2a. 
