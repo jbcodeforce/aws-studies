@@ -174,6 +174,23 @@ Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.
 
 ![](./images/aws-lb-1.png)
 
+
+## AWS Cloud9
+
+AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser
+
+1. Go to the AWS Management Console, select Services then select Cloud9 under Developer Tools.
+1. Select Create environment.
+1. Enter Development into Name and optionally provide a Description.
+1. You may leave Environment settings at their defaults of launching a new t2.micro EC2 instance which will be paused after 30 minutes of inactivity.
+1. Once ready, your IDE will open to a welcome screen.
+1. Verify the environment with `aws  sts get-caller-identity`
+
+
+us-west-2:7927a56d-cccc-46e6-9fc2-66a5eb463dc6
+
+arn:aws:dynamodb:us-west-2:403993201276:table/UnicornSensorData
+
 ## Deploy a Web App on AWS Elastic Beanstalk
 
 Elastic Beanstalk is an easy-to-use service for deploying and scaling web applications and services developed with Java, .NET, PHP, Node.js, Python, Ruby, Go, and Docker on familiar servers such as Apache, Nginx, Passenger, and IIS
