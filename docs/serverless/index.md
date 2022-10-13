@@ -40,6 +40,13 @@ AWS Fargate is a purpose-built serverless compute engine for containers. Fargate
 
 It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC)
 
+It uses the following constructs:
+
+* **Task Definition**: to define application containers, image URL, CPU and memory needed... It is immutable, so any update creates new version. 
+* **Task**: A running instance of a Task Definition. A task can have multiple containers running in parallel
+* **Cluster**: infrastructure isolation boundary
+* **Service**: Endpoint to support ELB integration and do mapping to tasks
+
 ## Step function
 
 AWS Step Functions is a fully managed service that you can use to coordinate the components of distributed applications and microservices using visual workflows. You build small applications that each perform a discrete function (or step) in your workflow, which means that you can scale and change your applications quickly.

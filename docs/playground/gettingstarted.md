@@ -186,10 +186,14 @@ AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets y
 1. Once ready, your IDE will open to a welcome screen.
 1. Verify the environment with `aws  sts get-caller-identity`
 
+## ECR for Container Registry
 
-us-west-2:7927a56d-cccc-46e6-9fc2-66a5eb463dc6
+Amazon Elastic Container Registry (Amazon ECR) is an AWS managed container image registry service that is secure, scalable, and reliable.
 
-arn:aws:dynamodb:us-west-2:403993201276:table/UnicornSensorData
+See [Getting started guide](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) which can be summarized as
+
+* Your client must authenticate to Amazon ECR registries as an AWS user before it can push and pull images. 
+* You can control access to your repositories and the images within them with repository policies.
 
 ## Deploy a Web App on AWS Elastic Beanstalk
 
