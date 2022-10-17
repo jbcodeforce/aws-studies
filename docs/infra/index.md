@@ -331,7 +331,7 @@ This is a setting to control connection timeout and reconnect when an instance i
 
 It is called `Deregistration Delay` in NLB & ALB.
 
-### Auto Scaling Group (ASG)
+## Auto Scaling Group (ASG)
 
 The goal of an ASG is to scale out (add EC2 instances) to match an increased load, or scale in (remove EC2 instances) to match a decreased load. It helps to provision and balance capacity across Availability Zones to optimize availability.
 It can also ensure we have a minimum and a maximum number of machines running. It detects when an instance is unhealthy. 

@@ -121,9 +121,9 @@ Includes four key areas:
 
 ## Infrastructure
 
-AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 availability zones per region. Ex: us-west-1-2a. 
+AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
 
-AZ is one or more DC with redundant power, networking and connectivity. Isolated from disasters. Interconnected with low latency network. 
+AZ is one or more DC with redundant power, networking and connectivity. Isolated from disasters. Interconnected with low latency network.
 
 
 AWS services are local or global:
@@ -341,54 +341,7 @@ It also supports the concept of signed URL. When you want to distribute content 
 
 
 
-## Integration and middleware: SQS, Kinesis Active MQ
 
-### SQS: Standard queue
-
-Oldest queueing service on AWS. The default retention is 4 days up to 14 days. low latency < 10ms. Duplicate messages is possible and out of order too. Consumer deletes the message. It is auto scaling.
-
-Specific SDK to integrate to SendMessage...
-
-Consumers receive, process and then delete. Parallelism is possible on the different messages. The consumers can be in an auto scaling group so with CloudWatch, it is possible to monitor the queue size / # of instances and on the CloudWatch alarm action, trigger scaling. Max mesage size is 256KB. 
-
-Message has metadata out of the box. After a message is polled by a consumer, it becomes invisible to other consumers. By default, the “message visibility timeout” is 30 seconds, which means the message has 30 seconds to be processed (Amazon SQS prevents other consumers from receiving and processing the message). After the message visibility timeout is over, the message is “visible” in SQS, so it may be processed twice. But a consumer could call the ChangeMessageVisibility API to get more time. When the visibility timeout is high (hours), and the consumer crashes then the re-processing of all the message will take time. If it is set too low (seconds), we may get duplicates
-
- ![SQS](./images/sqs-msg.png)
-
-Encryption in fight via HTTPS, at rest encryption with KMS keys. Comes with monitoring.
-
-If a consumer fails to process a message within the Visibility Timeout, the message goes back to the queue. But if we can set a threshold of how many times a message can go back to the queue. After the MaximumReceives threshold is exceeded, the message goes into a dead letter queue (DLQ) (which has a limit of 14 days to process).
-
- ![DLQ](./images/sqs-dlq.png)
-
-Delay queues let you postpone the delivery of new messages to a queue for a number of seconds. If you create a delay queue, any messages that you send to the queue remain invisible to consumers for the duration of the delay period. The default (minimum) delay for a queue is 0 seconds. The maximum is 15 minutes
-
-Queue can be set as FIFO to guaranty the order: limited to throughput at 300 msg/s without batching or 3000 msg/s with batching. I can also support exactly once. It can be set to remove duplicate by looking at the content.
-
-### Simple Notification Service is for topic pub/sub
-
-SNS supports up to 10,000,000 subscriptions per topic, 100,000 topics limit. The subscribers can publish to topic via SDK and can use different protocols like: HTTP / HTTPS (with delivery retries – how many times), SMTP,  SMS, ... The subscribers can be a SQS, a Lambda, Emails...
-Many AWS services can send data directly to SNS for notifications: CloudWatch (for alarms), Auto Scaling Groups notifications, Amazon S3 (on bucket events), CloudFormation.
-
-SNS can be combined with SQS: Producers push once in SNS, receive in all SQS queues that they subscribed to. It is fully decoupled without any data loss. SQS allows for data persistence, delayed processing and retries. SNS cannot send messages to SQS FIFO queues.
-
-### Kinesis
-
-It is like a managed alternative to Kafka. It uses the same principle and feature set.
-
- ![kin](./images/kinesis.png)
-
-Data can be kept up to 7 days. hability to replay data, multiple apps consume the same stream. Only one consumer per shard
-
-* **Kinesis Streams**: low latency streaming ingest at scale. They offer patterns for data stream processing.
-* **Kinesis Analytics**: perform real-time analytics on streams using SQL
-* **Kinesis Firehose**: load streams into S3, Redshift, ElasticSearch. No administration, auto scaling, serverless.
-
-One stream is made of many different shards (like Kafka partition). Capacity of 1MB/s or 1000 messages/s at write PER SHARD, and 2MB/s at read PER SHARD. Billing is per shard provisioned, can have as many shards as we want. Batching available or per message calls.
-
-captured Metrics are: # of incoming/outgoing bytes, # incoming/outgoing records, Write / read provisioned throughput exceeded, and iterator age ms.
-
-It offer a CLI to get stream, list streams, list shard...
 
 ### EventBridge
 
