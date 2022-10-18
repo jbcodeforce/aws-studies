@@ -1,6 +1,9 @@
 # AWS Well Architectured
 
-The [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) helps you understand the pros and cons of decisions you make while building systems on AWS.
+The [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) helps you understand the pros and cons of decisions you make while building systems on AWS. 
+
+By using the Framework, customers will learn architectural best practices for designing and operating reliable, secure, efficient, and cost-effective systems in the cloud.
+
 
 Those are the questions to ask for designing a cloud native solution by understanding the potential impact . All hardware are becoming software.
 

@@ -3,7 +3,7 @@ repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
   - Infrastructure: 
-      - EC2-network-ASG: infra/index.md
+      - EC2-Network-ASG: infra/index.md
       - Storage: infra/storage.md
       - Messaging: infra/messaging.md
   - Playground: 
@@ -19,8 +19,9 @@ nav:
   - Kinesis: kinesis/index.md
   - Data:
       - Data services: data/index.md
+      - RedShift: data/redshift.md
   - Coding:
-      - CDK: coding/cdk.md
+      - Practices: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material

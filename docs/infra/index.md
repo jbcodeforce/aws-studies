@@ -331,6 +331,41 @@ This is a setting to control connection timeout and reconnect when an instance i
 
 It is called `Deregistration Delay` in NLB & ALB.
 
+## Route 53
+
+It is a managed Domain Name System. DNS is a collection of rules and records which helps clients understand
+how to reach a server through URLs. Here is a quick figure to summary the process
+
+ ![7](./images/dns.png)
+
+DNS records Time to Live (TTL), is set to get the web browser to keep the DNS resolution in cache. High TTL is around 24 hours, low TTL at 60s will make more DNS calls. TTL should be set to strike a balance between how long the value should be cached vs how much pressure should go on the DNS. Need to define the TTL for the app depending on the expected deployment model.
+
+A hosted zone is a container that holds information about how we want to route traffic for a domain. Two types are supported: public or private within a VPC.
+
+Route 53 is a registrar. We can buy domain name.
+
+Use `dig <hostname>` to get the DNS resolution record.
+
+### CNAME vs Alias
+
+[CNAME](https://en.wikipedia.org/wiki/CNAME_record) is a DNS record to maps one domain name to another. CNAME should point to a ALB. **Alias** is used to point a hostname of an AWS resource and can work on root domain (domainname.com).
+
+### Routing
+
+A simple routing policy to get an IP @ from a hostname could not have health check defined. 
+
+The **weighted** routing policy controls the % of the requests that go to specific endpoint. Can do blue-green traffic management. It can also help to split traffic between two regions. It can be associated with Health Checks
+
+The **latency** routing Policy redirects to the server that has the least latency close to the client. Latency is evaluated in terms of user to designated AWS Region.
+
+**Health check** monitors the health and performance of the app servers or endpoints and assess DNS failure. We can have HTTP, TCP or HTTPS health checks. We can define from which region to run the health check. They are charged per HC / month. It is recommended to have one HC per app deployment. It can also monitor latency.
+
+The **failover** routing policy helps us to specify a record set to point to a primary and then a secondary instance for DR. 
+
+The **Geo Location** routing policy is based on user's location, and we may specify how the traffic from a given country should go to this specific IP. Need to define a “default” policy in case there’s no match on location.
+
+The **Multi Value** routing policy is used to access multiple resources. The record set, associates a Route 53 health checks with records. The client on DNS request gets up to 8 healthy records returned for each Multi Value query. If one fails then the client can try one other IIP @ from the list.
+
 ## Auto Scaling Group (ASG)
 
 The goal of an ASG is to scale out (add EC2 instances) to match an increased load, or scale in (remove EC2 instances) to match a decreased load. It helps to provision and balance capacity across Availability Zones to optimize availability.

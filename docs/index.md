@@ -5,16 +5,19 @@
 
 ## Why cloud
 
-* Moving from capex to variable expense
-* Economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud
-* Elactic capacity: pay for what you use. Scale up and down so no need to guessed capacity.
-* Speed and agility to define infrastructure in minutes not weeks
-* Focus on business apps, not IT infrastructure and data centers.
-* Global reach in a minutes
+There are 5 main advantages to AWS:
 
-!!! note
+* **Cost Savings**: Only pay for what you use, leveraging economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud. Moving from capex to variable expense
+* **Agility**: Teams can experiment and innovate quickly and frequently at minimum cost. Define infrastructure in minutes, as code, not weeks or event months.
+* **Elacticity**: Scale up and down so no need to guessed capacity.
+* **Innovation**: Focus on business apps, not IT infrastructure and data centers.
+* **Global Footprint**: Extensible, reliable, and secure global cloud infrastructure. Reach in a minutes
+
+???- "Notes"
     * The cloud transition has happened much faster because it yields great value and has fewer blockers, and bigger customer gains drive higher volume reinvestments into the platform.
     * In 2014, every day, AWS adds enough new server capacity to support Amazon's global infrastructure when it was at $7B annual
+    * **Scalability** is the ability of an application to accommodate growth without changing design. Scalability ensures that systems remain highly available into the future as the business expands. 
+    * **Elasticity** is the power to instantly scale computing resources up or down easily. _Elastic Load Balancing_ and _Auto Scaling_ can automatically scale your AWS cloud-based resources up to meet unexpected demand.
 
 ## Use cases
 
@@ -40,22 +43,22 @@ Four business value pilars:
 * Understand the true cost of existing IT capabilities
 * ROI = Cost saving / (sunk cost + migration cost)
 
-    * For sunk cost: assess the hardware depreciation and the potential recovery value by reselling data center or hardware.
-    * Migration costs: more difficult to assess, but we can use the break event migration cost per server by defining a target ROI. Now only one unknown in the previous equation: migration cost = Cost Savings / ROI - sunk cost. 
+    * For **sunk cost**: assess the hardware depreciation and the potential recovery value by reselling data center or hardware.
+    * **Migration costs**: more difficult to assess, but we can use the break even migration cost per server by defining a target ROI. Now only one unknown in the previous equation: migration cost = Cost Savings / ROI - sunk cost. 
 
 * OPEX
 
 For actual cost, we need to consider:
 
-* server cost with HW and SW license
-* storage cost with HW and SW license
-* network cost with HW and SW license
+* Server cost with HW and SW license
+* Storage cost with HW and SW license
+* Network cost with HW and SW license
 * Facilities cost for each of those machines: power, cooling, space
 * SRE cost
 * Extras: like project management, training, legal, advisors, contractors, cost of capital
 * Think about standard depreciation of 3 or 5 years. Match to 3 year reserved instances
-* Use Reserved instance volume to assess discount
-* User realistic metrics and ratios like VM density,  servers, racks...)
+* Use Reserved Instance volume to assess discount
+* Use realistic metrics and ratios like VM density,  servers, racks...)
 * Explore current CPU and memory usage
 * Apply cost saving by using automation and configuration as code.
 * Cost assessment can take from 3 weeks to multi months.
@@ -63,41 +66,44 @@ For actual cost, we need to consider:
 
 ### Cloud readiness
 
-* human skills and experience required to transition to the cloud
-* application readiness to migrate: dependencies, integrations, translation.
-* each stakeholders (devOps, operations, CFO, procurement) have their point of view
+* Human skills and experience required to transition to the cloud
+* Application readiness to migrate: dependencies, integrations, translation
+* Each stakeholders (devOps, operations, CFO, procurement) have their point of view
 
 ### Additional impacts
 
-* cost of delays - risk premium
-* competition - competitve ability
-* governance and compliance
+* Cost of delays - risk premium
+* Competition - competitve ability
+* Governance and compliance
 
 ### Operational resilience
 
 It really means security and up time.
-Impact for downtime is direct cost on business revenue, but also cost get back up: which include 3nd party fee, equipment replacement, recovery activities, investigation cost.... Customer churns, company's reputation...
+Impact for downtime is a direct cost on business revenue, but also cost get back up: which include 3nd party fee, equipment replacement, recovery activities, investigation cost.... Customer churns, company's reputation...
 
 ### Business agility
 
-Look at responding faster, experimenting more, and delivering results in the same or less amount of
-time. Business agility is about delivering more,respond faster to customer’srequests or problems, develop new product, add features more quickly, expend to new market. Business agility allows customers to innovate by increasing "failfast" while reducing risks and costs. Being able to easily shut down failed initiatives without the pain and wasted resources associated with an inflexible on-premises environment.
+Look at responding faster, experimenting more, and delivering results in the same or less amount of time. Business agility is about delivering more,respond faster to customer’s requests or problems, develop new product, add features more quickly, expend to new market. 
+
+Business agility allows customers to innovate by increasing "failfast" while reducing risks and costs. Being able to easily shut down failed initiatives without the pain and wasted resources associated with an inflexible on-premises environment.
 
 The KPIs to consider includes at least:
 
 * New app launched per year
-* time to market for new app. (Observerved 20% gain)
-* time to provision new environments (days)
-* deployment frequency
-* time to deploy to production, to test...
+* Time to market for new app. (Observerved 20% gain)
+* Time to provision new environments (days)
+* Deployment frequency
+* Time to deploy to production, to test...
 * Features per release (observerved 26% more)
 * Total # of defects
 * % defects found in test
 * MTTR: mean time to resolution
-* response time to defect
-* customer retention in %
-* new festure adoption in %
-* value per release in $ (+34% more revenue per user)
+* Response time to defect
+* Customer retention in %
+* New festure adoption in %
+* Value per release in $ (+34% more revenue per user)
+
+**Moving to the cloud does not have to be a binary proposition**. You can move as much or as little of your infrastructure to the cloud as suits your business.
 
 ### Cloud financial management
 
@@ -106,42 +112,51 @@ Includes four key areas:
 1. **Measurement and accountability**: establishing cost transparency to ensure visibility
 1. **Cost Optimization**: identify waste, scale based on demand, improve cost efficiency
 
-    * Right sizing: select the lowest cost instance that meets performance requirements. Look at CPU, RAM, storage and network usage to identify downsizing opportunity. See [AWS CloudWatch](https://aws.amazon.com/cloudwatch/)
-    * increase elasticity: shutdown test and dev instances. Automatic scaling. 
-    * Choose the right pricing model: on-demand, reserved instances (predictable workload), convertible RIs, spot instance....
-    * Use the right storage: automate aging from different S3 services
+    * _Right sizing_: select the lowest cost instance that meets performance requirements. Look at CPU, RAM, storage and network usage to identify downsizing opportunity. See [AWS CloudWatch](https://aws.amazon.com/cloudwatch/)
+    * _Increase elasticity_: shutdown test and dev instances. Automatic scaling. 
+    * _Choose the right pricing model_: on-demand, reserved instances (predictable workload), convertible RIs, spot instance....
+    * _Use the right storage_: automate aging from different S3 services
 
-1. Planning and forecasting: based on actual and future costs and needs
+1. **Planning and forecasting**: based on actual and future costs and needs
 
     * [AWS pricing calculator](https://calculator.aws/#/) to estimate the cost of your architecture solution.
     * AWS price list API
     * [AWS Cost Explorer](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/)
 
-1. Cloud financial operations: invest in tools, people, and automation
+1. **Cloud financial operations**: invest in tools, people, and automation
 
 ## Infrastructure
 
 AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
 
-AZ is one or more DC with redundant power, networking and connectivity. Isolated from disasters. Interconnected with low latency network.
+AZ is one or more DC with redundant power, networking and connectivity. Isolated from disasters using different facilities. Interconnected with low latency network.
 
-
-AWS services are local or global:
+AWS services are local or very few are global:
 
 * EC2 is a regional service. Region-scoped services come with availabiltiy and resiliency. 
 * IAM is a global service.
 
-**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive application in geography close to end-users.
+**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive applications in geography close to end-users.
 
 **AWS Wavelength** enables developers to build applications that deliver single-digit millisecond latencies to mobile devices and end-users. 
 AWS infrastructure deployments that embed AWS compute and storage services within the telecommunications providers’ datacenters at the edge of the 5G networks, and seamlessly access the breadth of AWS services in the region.
 
 Choose an AWS region, depending of your requirements like:
 
-* compliance with data governance and legal requirements
-* close to users to reduce latency
-* [availability of service within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) 
-* pricing
+* Compliance with data governance and legal requirements
+* Close to users to reduce latency
+* [Availability of service within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) 
+* Pricing
+
+### Availability and reliability
+
+Be sure to get clear agreement on following definitions:
+
+* **Fault Tolerant**: characteristic for a system to stay operational even if some of its component fails 
+* **High Availability**: Ensures that systems are always functioning and accessible and that downtime is minimized as much as possible without the need for human intervention.
+* **Durability**: A byproduct of storage redundancy, durability ensures that a customer’s data will be saved regardless of what happens 
+* **Reliability**: The ability of a system to recover from infrastructure or service failures and the ability to dynamically acquire computing resources to meet demand and mitigate disruptions.
+* **Disaster Recovery**: preparing for and recovering from a disaster
 
 ## Interact with AWS
 
@@ -149,25 +164,33 @@ Choose an AWS region, depending of your requirements like:
 * [AWS CLI](https://aws.amazon.com/cli/)
 * [SDK](https://aws.amazon.com/developer/tools/) for C++, Go, Java, JavaScript, .NET, Node.js, PHP, Python, and Ruby
 
-## Organization
+## Security
+
+AWS runs highly secured data centers. Multiple geographic regions and Availability Zones allow customers to remain resilient in the face of most failure modes, including natural disasters or system failure. 
+
+Customers' security policy can be formalized and embedded with the design of their infrastructure.
 
 When you work with the AWS Cloud, managing security and compliance is a [shared responsibility](https://aws.amazon.com/compliance/shared-responsibility-model/) between AWS and you:
 
-* aws is the security **of** the cloud
-* you are responsible for the security **in** the cloud: secure workloads and applications that you deploy onto the cloud.
+* AWS is the security **of** the cloud
+* You are responsible for the security **in** the cloud: secure workloads and applications that you deploy onto the cloud.
 
-Helps to group accounts, and simplify account creation. Consolidate billing.
+[AWS Compliance Center is a central location to research cloud-related regulatory requirements](https://aws.amazon.com/financial-services/security-compliance/compliance-center/)
 
-Concepts:
+### Organization
 
-* root user: a single sign-in identity that has complete access to all AWS services and resources in the account
+Organization helps to group accounts, and simplify account creation. Consolidate billing.
+
+**Concepts:**
+
+* `root` user: a single sign-in identity that has complete access to all AWS services and resources in the account
 * Organization unit (OU)
-* account be part of 1 OU
+* Account is part of 1 OU
 * Define service control policies
 
 [Organization console](https://us-east-1.console.aws.amazon.com/organizations/v2/home?region=us-east-1#)
 
-## IAM Identity and Access Management
+### IAM Identity and Access Management
 
 * Help to control access to AWS services
 
@@ -217,12 +240,12 @@ Another example:
 * IAM is not used for website authentication and authorization
 * For identity federation, SAML standard is used
 
-### MFA
+#### MFA
 
 * Multi Factor Authentication -  always protect root account. MFA = password + device we own. The device could be a universal 2nd factor security key. (ubikey) 
 * [Authy](https://authy.com/) is a multi-device service with free mobile app. We can have multiple users on the same device
 
-### IAM Roles
+#### IAM Roles
 
 * To get AWS services doing work on other service, we use IAM Role. Roles are assigned per application, or EC2 or lambda function...
 
@@ -238,46 +261,14 @@ To authorize access to a EC2 instance, we use IAM Roles. The `DemoEC2Role`, for 
 
 This role is then defined in the EC2 / Security  > attach IAM role.
 
-### Security tools
+#### Security tools
 
 * In IAM, use `> Credentials report` to download account based report.
 * In IAM, use `> Users > select one user (aws-jb) and then Access Advisor tab`: 
 Access Advisor shows the services that the selected user can access and when those services were last accessed
 
-## Route 53
 
-It is a managed Domain Name System. DNS is a collection of rules and records which helps clients understand
-how to reach a server through URLs. Here is a quick figure to summary the process
-
- ![7](./images/dns.png)
-
-DNS records Time to Live (TTL), is set to get the web browser to keep the DNS resolution in cache. High TTL is around 24 hours, low TTL at 60s will make more DNS calls. TTL should be set to strike a balance between how long the value should be cached vs how much pressure should go on the DNS. Need to define the TTL for the app depending on the expected deployment model.
-
-A hosted zone is a container that holds information about how we want to route traffic for a domain. Two types are supported: public or private within a VPC.
-
-Route 53 is a registrar. We can buy domain name.
-
-Use `dig <hostname>` to get the DNS resolution record.
-
-### CNAME vs Alias
-
-[CNAME](https://en.wikipedia.org/wiki/CNAME_record) is a DNS record to maps one domain name to another. CNAME should point to a ALB. **Alias** is used to point a hostname of an AWS resource and can work on root domain (domainname.com).
-
-### Routing
-
-A simple routing policy to get an IP @ from a hostname could not have health check defined. 
-
-The **weighted** routing policy controls the % of the requests that go to specific endpoint. Can do blue-green traffic management. It can also help to split traffic between two regions. It can be associated with Health Checks
-
-The **latency** routing Policy redirects to the server that has the least latency close to the client. Latency is evaluated in terms of user to designated AWS Region.
-
-**Health check** monitors the health and performance of the app servers or endpoints and assess DNS failure. We can have HTTP, TCP or HTTPS health checks. We can define from which region to run the health check. They are charged per HC / month. It is recommended to have one HC per app deployment. It can also monitor latency.
-
-The **failover** routing policy helps us to specify a record set to point to a primary and then a secondary instance for DR. 
-
-The **Geo Location** routing policy is based on user's location, and we may specify how the traffic from a given country should go to this specific IP. Need to define a “default” policy in case there’s no match on location.
-
-The **Multi Value** routing policy is used to access multiple resources. The record set, associates a Route 53 health checks with records. The client on DNS request gets up to 8 healthy records returned for each Multi Value query. If one fails then the client can try one other IIP @ from the list.
+--- 
 
 ## Some application patterns
 

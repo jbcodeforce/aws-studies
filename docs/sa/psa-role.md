@@ -1,5 +1,8 @@
 # Principal Solution Architect
 
+* Partner to navigate the 200+ services, deploy your solution to the cloud
+* Technologist Evangelist and educator
+
 ## Role
 
 * technical leader and a strategic influencer like a CTO
