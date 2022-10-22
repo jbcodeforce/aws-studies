@@ -2,7 +2,7 @@
 
 ## Relational Database Service - RDS
 
-Managed service for SQL based database (mySQL, Postgresql, SQL server, Oracle).  Support multi AZs for DR with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. It uses gp2 or io1 EBS. Transaction logs are backed-up every 5 minutes.
+Managed service for SQL based database (mySQL, Postgresql, SQL server, Oracle).  Support multi AZs for Reliability Availability with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. It uses gp2 or io1 EBS. Transaction logs are backed-up every 5 minutes.
 Support user triggered snapshot.
 
 * Installed in private subnet in a VPC. No public IP address. 
@@ -27,11 +27,11 @@ From a solution architecture point of view:
 
 ## Aurora
 
-Proprietary SQL database, work using postgresql and mysql drivers. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for postgresql. 
+Proprietary SQL database storage engine, works using postgresql and mysql drivers. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for postgresql. 
 
 Can grow up to 64 TB. Sub 10ms replica lag, up to 15 replicas.
 
-Failover in Aurora is instantaneous. It’s HA (High Availability) native. Use 1 master - 5 readers to create 6 copies over 3 AZs. 3 copies of 6 need for reads. Peer to peer replication. Use 100s volumes. Autoscaling on the read operation. 
+Failover in Aurora is instantaneous. It’s HA (High Availability) native. Use 1 master - 5 readers to create 6 copies over 3 AZs. 3 copies of 6 need for supporting read operations. Peer to peer replication. Use 100s volumes. Autoscaling on the read operation. 
 
  ![6](./images/aws-aurora.png)
 
@@ -45,6 +45,8 @@ With Aurora global database one primary region is used for write and then up to 
 * **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
 * **Reliability**: Multi AZ, HA
 * **Performance**: 5x performance, up to 15 read replicas.
+
+* [Building serverless applications with Amazon Aurora Serverless](https://aws.amazon.com/getting-started/hands-on/building-serverless-applications-with-amazon-aurora-serverless/)
 
 ## ElastiCache
 
@@ -65,7 +67,11 @@ Sub millisecond performance, in memory read replicas for sharding.
 
 ## DynamoDB
 
-AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Highly Available, Multi AZ  in an AWS Region by default, Read and Writes are decoupled, and DAX can be used for read cache. Data is stored on solid-state disks (SSDs).
+AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Highly Available, Multi AZ  in an AWS Region by default, Read and Writes are decoupled, and DAX can be used for read cache. 
+
+Single digit ms latency, even with increased number of requests. 
+
+Data is stored on solid-state disks (SSDs).
 
 A table is a collection of items, and each item is a collection of attributes. DynamoDB uses primary keys to uniquely identify each item in a table and secondary indexes to provide more querying flexibility
 

@@ -43,6 +43,8 @@ EC2 **instance types** like t2.micro or c5.2xlarge define CPU, memory... (see [e
 * T2/T3 for burstable instance: When the machine needs to process something unexpected (a spike in
 load for example), it can burst. Use burst credits to control CPU usage.
 
+[Graviton]() 
+
 ### EC2 Nitro
 
 Next generation of EC2. It uses new virtualization schema. Supports IPv6, better I/O on EBS and better security.  Name starts with C5, D5,...
@@ -55,7 +57,7 @@ vCPU represents thread running on core CPU. You can optimize vCPU allocation on 
 * **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. You can buy and sell it in the marketplace.
 * **Convertible reserved** instance for changing resource capacity over time.
 * **Scheduled reserved** instance for job based workload.
-* **Dedicated hosts** to book entire physical server and control instance placement. # years. BYOL. Can be on-demand or reserved. Most expensive solution. Use for example in the case where you deploy a database technology on an EC2 instance and the vendor license bills you based on the physical cores.
+* **Dedicated hosts** to book entire physical server and control instance placement. # years. BYOL. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where you deploy a database technology on an EC2 instance and the vendor license bills you based on the physical cores.
 * **Capacity reservations**: reserve capacity in a specific AZ for any duration
 * **Spot instance** for very short - 90% discount on on-demand - used for work resilient to failure like batch job, data analysis, image processing, stateless, containerized...
 
@@ -155,6 +157,9 @@ Important Ports:
 * 3389: Remote desktop protocol
 
 ## Networking
+
+All regions are interconnected via private AWS fiber links. This drives better availability, higher performance, lower jitter and reduced costs.
+Each region has redundant path to transit centers, which connect to private links to other AWS regions, and to AWS Direct Connect customers' data centers, internet via peering and paid transit. The connections be AZs is a metro area over DWDM (Dense wavelength division multiplexing) links. 82k fibers in a region. single digit milisecond latency. 25Tbps peak inter AZs traffic. 
 
 IPv4 allows 3.7 billions of different addresses. Private IP @ is for private network connections. Internet gateway has public and private connections. Public IP can be geo-located. When connected to an EC2 the prompt lists the private IP (`ec2-user@ip-172-31-18-48`). Private IP stays stable on instance restart, while public may change.
 

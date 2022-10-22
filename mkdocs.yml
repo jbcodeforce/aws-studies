@@ -34,8 +34,8 @@ theme:
       # - navigation.tabs
       - navigation.instant
       #- navigation.tracking
-      - navigation.sections
-      - navigation.expand
+      # - navigation.sections
+      # - navigation.expand
       - navigation.tabs.sticky
       # - navigation.top
   social:

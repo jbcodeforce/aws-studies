@@ -51,9 +51,17 @@ aws kinesis get-shard-iterator --stream-name test --shard-id shardId--00000000 -
 # The returned message gave the next message iterator that should be used in the next call.
 aws kinesis get-records --shard-iterator <the-iterator-id>
 ```
-## Data Firehose
+## Kinesis Data Firehose
 
 Firehose is a fully managed service for delivering real-time streaming data to various supported destinations.
+
+![](./diagrams/firehose.drawio.svg)
+
+It can delegates the record transformation processing to a custom Lambda function, but it supports different format already. It outputs batch files to the target destinations. Batch is based on 60s (or more) window or 1 MB of data. Therefore it is a near real-time service. Failed records can go to a S3 bucket.
+
+As a managed services it also support auto scaling.
+
+IAM role need to be referenced to write to S3.
 
 ## Stream analytics
 

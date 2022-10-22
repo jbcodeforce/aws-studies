@@ -7,7 +7,8 @@
 * The default retention is 4 days up to 14 days. low latency < 10ms. 
 * Max mesage size is 256KB. 
 * Duplicate messages is possible (at least once delivery) and out of order too (best effort). 
-* Consumer deletes the message. It is auto scaling.
+* Consumer deletes the message. 
+* Supports automatic scaling.
 
 Specific SDK to integrate to `SendMessage`, GetMessage...
 
@@ -19,13 +20,17 @@ Message has metadata out of the box. After a message is polled by a consumer, it
 
  ![Metadata](./images/sqs-msg.png)
 
+### Fan-out pattern
+
+When we need to send the same message to more than one SQS consumer, we need to combine SNS and SQS: message is sent to the SNS topic and then "fan-out" to multiple SQS queues. It's fully decoupled, no data loss, and you have the ability to add more SQS queues (more applications) over time.
+
 ### Visibility timeout
 
 By default, the “message visibility timeout” is 30 seconds, which means the message has 30 seconds to be processed (Amazon SQS prevents other consumers from receiving and processing the message). If a consumer fails to process a message within the Visibility Timeout, the message goes back to the queue.
 
 ![](./images/visibility-to.png)
 
-After the message visibility timeout is over, the message is “visible” in SQS, so it may be processed twice. But a consumer could call the `ChangeMessageVisibility` API to get more time. When the visibility timeout is high (hours), and the consumer crashes then the re-processing of all the messages will take time. If it is set too low (seconds), we may get duplicates
+After the message visibility timeout is over, the message is “visible” in SQS, therefore the message may be processed twice. But a consumer could call the `ChangeMessageVisibility` API to get more time to process. When the visibility timeout is high (hours), and the consumer crashes then the re-processing of all the messages will take time. If it is set too low (seconds), we may get duplicates.
 
 To reduce the number of API call to request message (improve latency and app performance), consumer can use the `long polling` API and wait for message arrival. 
 
@@ -45,8 +50,11 @@ It comes with monitoring.
 
 ### FIFO Queue
 
-Queue can be set as FIFO to guaranty the order: limited to throughput at 300 msg/s without batching or 3000 msg/s with batching. It can also support exactly once delivery. While configuring the FIFO queue a paramter can be set to remove duplicate by looking at the content.
+Queue can be set as FIFO to guaranty the order: limited to throughput at 300 msg/s without batching or 3000 msg/s with batching. It can also support exactly once delivery. While configuring the FIFO queue a parameter can be set to remove duplicate by looking at the content.
 *The name of the queue has to end with `.fifo`*.
+
+If we don't use a Group ID, messages are consumed in the order they are sent, with only one consumer. But using Group ID we can have as many consumers as there is groups. It looks like partition key in kinesis data streams. 
+Each consumer will get ordered records.
 
 ### Sample Code
 
@@ -55,13 +63,13 @@ Queue can be set as FIFO to guaranty the order: limited to throughput at 300 msg
 
 ## SNS - Simple Notification Service
 
-Used for pub/sub communication. Producer sends message to one SNS Topic. SNS supports up to 12,500,000 subscriptions per topic, 100,000 topics limit. 
+Used for pub/sub communication. Producer sends message to one SNS Topic. SNS pushes data to subscribers. SNS supports up to 12,500,000 subscriptions per topic, 100,000 topics limit. 
 
-Each subscriber to the topic will get all the messages.
+Each subscriber to the topic will get all the messages. As data is not persisted, we may lose messages not processed in a time window. 
 
 The producers can publish to topic via SDK and can use different protocols like: HTTP / HTTPS (with delivery retries – how many times), SMTP,  SMS, ... 
 
-The subscribers can be a SQS, a Lambda, Kinesis Firehose, Emails...
+The subscribers can be a SQS, a Lambda, Kinesis Firehose, Emails... But not Kinesis Data Streams
 
 Many AWS services can send data directly to SNS for notifications: CloudWatch (for alarms), AWS budget, Lambda, Auto Scaling Groups notifications, Amazon S3 (on bucket events), DynamoDB, CloudFormation, AWS DMS, RDS Event.
 
@@ -81,3 +89,9 @@ For security it supports HTTPS, and encryption at REST with KSM keys. For access
 ## Kinesis
 
 See [dedicated note](../kinesis/index.md)
+
+## Amazon MQ
+
+Amazon MQ is a managed message broker for RabbitMQ or ActiveMQ. It run on EC2 servers, and support multi-AZs deployment with failover. 
+
+To support High availability, one server in a different AZ will be in passive mode, and will get data from Amazon EFS. 

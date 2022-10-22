@@ -25,6 +25,10 @@ There are 5 main advantages to AWS:
 * Extend Enterprise IT
 * Support flexible big data analytics
 
+### Deep dive
+
+* [Six strategies to move to the cloud](https://medium.com/aws-enterprise-collection/6-strategies-for-migrating-applications-to-the-cloud-eb4e85c412b4)
+
 ## Cloud Value Frameworks
 
 Four business value pilars:
@@ -34,7 +38,7 @@ Four business value pilars:
 * Operational resilience: -32% downtime
 * Business Agility: 47% improvement 
 
-![](./images/cvf-4pillars.png)
+![Stephen Orban - 6 Strategies for Migrating Applications to the Cloud](./images/cvf-4pillars.png)
 
 ([IDC numbers](https://aws.amazon.com/resources/analyst-reports/?audit=2019q1&analyst-reports-main.sort-by=item.additionalFields.datePublished&analyst-reports-main.sort-order=desc&awsf.analyst-reports-flag=*all&awsf.tech-category=*all&awsf.analyst-reports-use-case=*all&awsf.analyst-reports-industry=*all&awsf.analyst-reports-firm=*all&awsf.analyst-reports-region=*all&awsf.analyst-reports-year=*all))
 
@@ -125,11 +129,15 @@ Includes four key areas:
 
 1. **Cloud financial operations**: invest in tools, people, and automation
 
-## Infrastructure
+## Global Infrastructure
 
 AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
 
-AZ is one or more DC with redundant power, networking and connectivity. Isolated from disasters using different facilities. Interconnected with low latency network.
+AZ is one or more Data Center with redundant power, networking and connectivity. Isolated from disasters using different facilities. Interconnected with low latency network.
+
+Data centers are independent facilities typically hosting 50k servers up to 80k servers. Larger DCs are not desirable because the economy of scale is not that great but the blast radius is becoming too big. Inbound traffic is 110 Tbps within a single DC.
+
+[James Hamilton pres about AWS infrastructure](https://www.youtube.com/watch?v=JIQETrFC_SQ)
 
 AWS services are local or very few are global:
 

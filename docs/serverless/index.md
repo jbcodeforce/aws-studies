@@ -1,5 +1,7 @@
 # Serverless
 
+Serverless would optimize for getting to market quickly, would remove the most amount of undifferentiated heavy lifting and allow dev teams to move as quickly as possible. 
+
 ## Container
 
 A container is a standardized unit that packages your code and its dependencies. This package is designed to run reliably on any platform, because the container creates its own independent environment
@@ -34,18 +36,24 @@ See also [ecs anywhere](https://press.aboutamazon.com/news-releases/news-release
 
 ## Fargate
 
-When running ECS and EKS on EC2, you are still responsible for maintaining the underlying EC2 instances.
+When running ECS and EKS on EC2, you are still responsible for maintaining the underlying EC2 instances. With Fargates we do no have to manage EC2 instances.
 
 AWS Fargate is a purpose-built serverless compute engine for containers. Fargate scales and manages the infrastructure, it removes the need to provision and manage servers, let you specify and pay for resources per application, and improves security through application isolation by design.
 
-It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC)
+It natively integrates with AWS Identity and Access Management (IAM) and Amazon Virtual Private Cloud (VPC).
 
 It uses the following constructs:
 
-* **Task Definition**: to define application containers, image URL, CPU and memory needed... It is immutable, so any update creates new version. 
-* **Task**: A running instance of a Task Definition. A task can have multiple containers running in parallel
-* **Cluster**: infrastructure isolation boundary
+* **Task Definition**: to define application containers, image URL, CPU and memory needed... It is immutable, so any update creates new version. It can define 1 to 10 container definitions. The container definition part includes memory reservation and cpu allocation. 
+* **Task**: A running instance of a Task Definition. A task can have multiple containers running in parallel. Each task has its own Elastic Network Interface with a private IP @ from the subnet.
+* **Cluster**: infrastructure isolation boundary. Tasks run in the cluster. 
 * **Service**: Endpoint to support ELB integration and do mapping to tasks
+
+**Pricing** is based on what you provision, then the task level CPU and memory and the per-second billing with one minute minimum.
+
+To share data between containers, Fargate provides 4 GB volumes space per task, and the volume is mounted in the container.
+
+For IAM security, the same policies can be set as we do on EC2. We still need to add an `execution role` to define access to ECR to download images and CloudWatch for monitoring.
 
 ## Step function
 
