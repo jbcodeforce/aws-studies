@@ -177,7 +177,7 @@ Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.
 
 ## AWS Cloud9
 
-AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser
+AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser.
 
 1. Go to the AWS Management Console, select Services then select Cloud9 under Developer Tools.
 1. Select Create environment.

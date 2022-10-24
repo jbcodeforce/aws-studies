@@ -8,6 +8,7 @@ nav:
       - Messaging: infra/messaging.md
   - Playground: 
       - Getting Started: playground/gettingstarted.md
+      - RDS: playground/rds.md
       - Data processing: playground/rt-data-processing.md
   - Solution architecture:
       - Well Architectured: sa/well-architectured.md

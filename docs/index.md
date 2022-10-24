@@ -1,21 +1,20 @@
 # Amazon Web Service Studies
 
-* Created in 2002, and launched as AWS in 2004 with SQS as first service offering, 2006 to businesses.
-* 2003 amazon.com was $5.2B retail businesses. 7800 employees
+* Created in 2002, and launched as AWS in 2004 with S3, SQS as first services offering.
 
 ## Why cloud
 
 There are 5 main advantages to AWS:
 
-* **Cost Savings**: Only pay for what you use, leveraging economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud. Moving from capex to variable expense
-* **Agility**: Teams can experiment and innovate quickly and frequently at minimum cost. Define infrastructure in minutes, as code, not weeks or event months.
-* **Elacticity**: Scale up and down so no need to guessed capacity.
+* **Cost Savings**: Only pay for what you use, leveraging economy of scale: EC2 instance with different pricing model. Usage from hundreds of thousands of customers is aggregated in the cloud. Moving from capex to variable expense (OPEX).
+* **Agility**: Teams can experiment and innovate quickly and frequently at minimum cost. Define infrastructure in minutes, as code, not weeks or even months.
+* **Elacticity**: Scale up and down so no need to guess resource capacity.
 * **Innovation**: Focus on business apps, not IT infrastructure and data centers.
-* **Global Footprint**: Extensible, reliable, and secure global cloud infrastructure. Reach in a minutes
+* **Global Footprint**: Extensible, reliable, and secure on global cloud infrastructure. Reach in a minutes.
 
 ???- "Notes"
     * The cloud transition has happened much faster because it yields great value and has fewer blockers, and bigger customer gains drive higher volume reinvestments into the platform.
-    * In 2014, every day, AWS adds enough new server capacity to support Amazon's global infrastructure when it was at $7B annual
+    * In 2014, every day, AWS adds enough new server capacity to support Amazon's global infrastructure when it was at $7B annual revenu.
     * **Scalability** is the ability of an application to accommodate growth without changing design. Scalability ensures that systems remain highly available into the future as the business expands. 
     * **Elasticity** is the power to instantly scale computing resources up or down easily. _Elastic Load Balancing_ and _Auto Scaling_ can automatically scale your AWS cloud-based resources up to meet unexpected demand.
 
@@ -33,10 +32,10 @@ There are 5 main advantages to AWS:
 
 Four business value pilars:
 
-* Cost savings: Total Cost Ownership. -50% is classical 
-* Staff productivity:  62% improvement 
-* Operational resilience: -32% downtime
-* Business Agility: 47% improvement 
+* **Cost savings**: Total Cost Ownership. -50% is classical 
+* **Staff productivity**:  62% improvement 
+* **Operational resilience**: -32% downtime
+* **Business Agility**: 47% improvement 
 
 ![Stephen Orban - 6 Strategies for Migrating Applications to the Cloud](./images/cvf-4pillars.png)
 
@@ -50,7 +49,7 @@ Four business value pilars:
     * For **sunk cost**: assess the hardware depreciation and the potential recovery value by reselling data center or hardware.
     * **Migration costs**: more difficult to assess, but we can use the break even migration cost per server by defining a target ROI. Now only one unknown in the previous equation: migration cost = Cost Savings / ROI - sunk cost. 
 
-* OPEX
+* OPEX (Operational Expenses)
 
 For actual cost, we need to consider:
 
