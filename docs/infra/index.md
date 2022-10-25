@@ -169,7 +169,7 @@ Elastic IP is a public IPv4 that you own as long as you want and you can attach 
 ### Virtual Private Cloud
 
 A virtual private cloud (VPC) is a virtual network dedicated to your AWS account. 
-It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances, within your VPC. You can specify an IP address range for the VPC, add subnets, associate security groups, ACL, and configure route tables.
+It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances, within your VPC. You can specify an IP address range, add subnets, associate security groups, ACL, and configure route tables.
 
 VPC Helps to:
 
@@ -221,6 +221,10 @@ The last elements are the Routing tables. As illustrated in the following diagra
 Security group policies are at the EC2 instance, and define firewall configuration.
 
 As seen in "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect your virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, you can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
+
+#### Deeper Dive
+
+* [VPC FAQs](https://aws.amazon.com/vpc/faqs/)
 
 ### Elastic Network Insterfaces
 

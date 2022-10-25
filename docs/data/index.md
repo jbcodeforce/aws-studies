@@ -27,7 +27,7 @@ AWS charges for network when for example data goes from one AZ to another. Repli
 
 ### DR - Multi AZ DB instance
 
-RDS supports instance standby with synchronous replication from master to standby. The application talk to one DNS name, and there will be automatic failover, if connection to master RDS fails.
+RDS supports instance standby with synchronous replication from master to standby. The application talks to one DNS name, and there will be automatic failover, if connection to master RDS fails.
 
 Read-replica DB can be setup as a multi AZ for DR, but RTO is not 0.
 
@@ -35,8 +35,11 @@ It is possible to move from a Single-AZ to a Multi-AZ with zero downtime, by cha
 
 ### Security 
 
-* Support at rest Encryption. Master needs to be encrypted to get encrypted replicas. 
-* We can create a snapshot from unencrypted DB and then copy it by enabling the encryption for this snapshot. From there we can create an Encrypted DB
+* Support at rest Encryption (need to specify it at launch time). Master needs to be encrypted to get encrypted replicas. 
+* We can create a snapshot from unencrypted DB and then copy it by enabling the encryption for this snapshot. From there, we can create an Encrypted DB
+* For in-flight encryption use AWS TLS root certificates on the client side.
+* To authenticate, traditional user/pwd can be used but also IAM roles to connect to your DB.
+* Audit Logs are sent to CloudWatch  
 
 Customer's responsibilities:
 
@@ -46,34 +49,57 @@ Customer's responsibilities:
 * Ensure parameter groups or DB is configured to only allow SSL connections
 * Specify a time window to do maintenance, for version to version migration for example.
 
+### Backup
+
+RDS has automatic bakcup executed daily during the maintenance window. But the transaction logs are backed-up every 5 minutes. 
+
+* It is possible to restore the DB states from oldest backup to 5mn ago. 
+* 1 to 35 days of retention for automatic backup (0 to disable). If you use manual backup with snapshot, then retention is defined as long as you want.  
+
+!!! note
+    The manual snapshot can be used when using the database rarely, and the cost of keeping a snapshot, is far less than letting the DB running. 
+
 ## Aurora
 
-Proprietary SQL database storage engine, works using **Postgresql** and **mysql** drivers. It is cloud optimized and claims 5x performance improvement over mySQL on RDS, and 3x for Postgresql. 
+Proprietary SQL database storage engine, works using **Postgresql** and **mysql** drivers. 
 
-The major benefit is the automatic storage scaling: it can grow up by increment of 10GB to 128 TB. Sub 10ms replica lag, up to 15 replicas (MySQL has only 5 replicas). It costs 20% more than RDS.
+* **Operations**:  less operation, auto scaling storage: it can grow up by increment of 10GB to 128 TB. 
+* **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
+* **Reliability**: Multi AZ, HA
+* **Performance**: Sub 10ms replica lag, up to 15 replicas (MySQL has only 5 replicas). It costs 20% more than RDS. 5x performance improvement over mySQL on RDS, and 3x for Postgresql.
 
 ### HA and Read Scaling
 
 Failover in Aurora is instantaneous. It’s HA (High Availability) native. Use 1 master - 5 readers to create 6 copies of the data over 3 AZs. It supports cross-region replications.
 
-* It needs 4 coies out of 6 to consider write operation as successful.
-* And 3 copies out of 6 need for read operations. 
+* It needs 4 copies out of 6 to consider write operation as successful.
+* And 3 copies out of 6 needed for read operations. 
 * There is a self-healing capability in case of data corruption with peer-to-peer replication. 
 * Storage is done across 100s of volumes. 
 * Autoscaling on the read operation from 1 to 15 read-replicas. 
 
  ![6](./images/aws-aurora.png)
 
-It is CQRS at DB level, and read can be global. Use **writer endpoint** for write operation and **reader endpoint**.
+It is CQRS at DB level, and read can be global. Use **writer endpoint** for write operation and **reader endpoint** to access read-replicas. It is also possible to design replicas to run on different EC2 server type, and then **custom** endpoints can be defined to access to those servers. This could be interesting for analytic queries.
 
-It also supports one write with multiple reader and parallel query, multiple writes and serverless to automate scaling down to zero (No capacity planning needed and pay per second).
+It also supports one write with multiple readers and parallel query, multiple writes and serverless to automate scaling down to zero (No capacity planning needed and pay per second).
 
-With Aurora global database one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
+### Other capabilities
 
-* **Operations**:  less operation, auto scaling storage.
-* **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
-* **Reliability**: Multi AZ, HA
-* **Performance**: 5x performance, up to 15 read replicas.
+With Aurora global database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
+
+* Serverless: automated database instantiation with auto scaling based on actual usage. This is a good approach for infrequent or impredictable usage. 
+* Multi-master, to protect on write node failure. Every node supports read and write operations. The client has multiple DB connection definitions for failover.
+* **Global Aurora**: cross region replicas, or use Global Database with one primary region for R/W and up to 5 secondary regions (Read-only), with a replica lag < 1s and up to 16 read replicas per secondary region. Promoting a region for DR should lead to a RTO < 1 mn. It takes less than a second to do replicas cross region. 
+* Aurora has integration with ML services like SageMaker and Comprehend. 
+
+### Backup
+
+Could not be disabled, and automatic is up to 35 days retention.
+
+It is possible to clone an existing Aurora DB, which is fast and cost-effective. For example to create a 'Staging' DB from production one. 
+
+### Code examples
 
 * [Building serverless applications with Amazon Aurora Serverless](https://aws.amazon.com/getting-started/hands-on/building-serverless-applications-with-amazon-aurora-serverless/)
 

@@ -93,11 +93,11 @@ Business agility allows customers to innovate by increasing "failfast" while red
 The KPIs to consider includes at least:
 
 * New app launched per year
-* Time to market for new app. (Observerved 20% gain)
+* Time to market for new app. (Observed 20% gain)
 * Time to provision new environments (days)
 * Deployment frequency
 * Time to deploy to production, to test...
-* Features per release (observerved 26% more)
+* Features per release (observed 26% more)
 * Total # of defects
 * % defects found in test
 * MTTR: mean time to resolution
