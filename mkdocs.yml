@@ -6,6 +6,9 @@ nav:
       - EC2-Network-ASG: infra/index.md
       - Storage: infra/storage.md
       - Messaging: infra/messaging.md
+  - Data:
+      - RDS-Aurora-ES: data/index.md
+      - RedShift: data/redshift.md
   - Playground: 
       - Getting Started: playground/gettingstarted.md
       - RDS: playground/rds.md
@@ -18,9 +21,7 @@ nav:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
   - Kinesis: kinesis/index.md
-  - Data:
-      - Data services: data/index.md
-      - RedShift: data/redshift.md
+
   - Coding:
       - Practices: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io

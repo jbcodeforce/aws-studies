@@ -37,7 +37,7 @@ Four business value pilars:
 * **Operational resilience**: -32% downtime
 * **Business Agility**: 47% improvement 
 
-![Stephen Orban - 6 Strategies for Migrating Applications to the Cloud](./images/cvf-4pillars.png)
+![](./images/cvf-4pillars.png)
 
 ([IDC numbers](https://aws.amazon.com/resources/analyst-reports/?audit=2019q1&analyst-reports-main.sort-by=item.additionalFields.datePublished&analyst-reports-main.sort-order=desc&awsf.analyst-reports-flag=*all&awsf.tech-category=*all&awsf.analyst-reports-use-case=*all&awsf.analyst-reports-industry=*all&awsf.analyst-reports-firm=*all&awsf.analyst-reports-region=*all&awsf.analyst-reports-year=*all))
 
@@ -132,6 +132,8 @@ Includes four key areas:
 
 AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
 
+![](./diagrams/global-infra.drawio.svg)
+
 AZ is one or more Data Center with redundant power, networking and connectivity. Isolated from disasters using different facilities. Interconnected with low latency network.
 
 Data centers are independent facilities typically hosting 50k servers up to 80k servers. Larger DCs are not desirable because the economy of scale is not that great but the blast radius is becoming too big. Inbound traffic is 110 Tbps within a single DC.
@@ -143,7 +145,7 @@ AWS services are local or very few are global:
 * EC2 is a regional service. Region-scoped services come with availabiltiy and resiliency. 
 * IAM is a global service.
 
-**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive applications in geography close to end-users.
+**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive applications in geography close to end-users. You can extend any VPC from the parent AWS Region into Local Zones. Local Zones have their own connections to the internet and support AWS Direct Connect.
 
 **AWS Wavelength** enables developers to build applications that deliver single-digit millisecond latencies to mobile devices and end-users. 
 AWS infrastructure deployments that embed AWS compute and storage services within the telecommunications providers’ datacenters at the edge of the 5G networks, and seamlessly access the breadth of AWS services in the region.

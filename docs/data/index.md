@@ -1,8 +1,12 @@
 # Data services
 
-## Relational Database Service - RDS
+## [Relational Database Service - RDS](https://docs.aws.amazon.com/rds/index.html)
 
 Managed service for SQL based database (MariaDB, MySQL, Postgresql, SQL server, Oracle, Amazon Aurora).  AWS maintains instance AMI, OS patching... 
+
+* HA support with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations. Resources aren't replicated across AWS Regions unless you do so specifically.
+
+![](./diagrams/rds-multi-AZ.drawio.svg){ width=600 }
 
 * Support multi AZs for Reliability Availability with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. 
 * It uses gp2 or io1 EBS. 
@@ -33,6 +37,10 @@ Read-replica DB can be setup as a multi AZ for DR, but RTO is not 0.
 
 It is possible to move from a Single-AZ to a Multi-AZ with zero downtime, by changing the multi-AZ parameter in the RDS.  The internal process is creating a snapshot from master, create a DB via restore operation in target AZ and start synchronous replication from master to standby.
 
+### Outpost integration
+
+AWS Outposts uses the same hardware as in public AWS Regions to bring AWS services, infrastructure, and operation models on-premises. With RDS on Outposts, you can provision managed DB instances close to the business applications that must run on-premises.
+
 ### Security 
 
 * Support at rest Encryption (need to specify it at launch time). Master needs to be encrypted to get encrypted replicas. 
@@ -58,6 +66,27 @@ RDS has automatic bakcup executed daily during the maintenance window. But the t
 
 !!! note
     The manual snapshot can be used when using the database rarely, and the cost of keeping a snapshot, is far less than letting the DB running. 
+
+### RDS Proxy
+
+This is a managed service to keep a pool of database connections between the DB and the clients, so it will improve the performance to access to the database servers. The connections are kept alive. The client connects to the proxy as it will do with the database. It is valuable with Lambda to DB connection.
+
+![](./images/rds-proxy.drawio.svg)
+
+
+This is a serverless, autoscaling, HA over multi-AZ.
+
+With this failover on EDS or Aurora is reduced  by up to 66%.
+
+Enforce IAM Authentication for DB and securely store credentials in AWS secrets manager.
+
+Not expose to public internet. Only visible in the VPC.
+
+### Code Examples
+
+See [Playground RDS](../playground/rds.md)
+
+* [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride)
 
 ## Aurora
 
@@ -86,7 +115,7 @@ It also supports one write with multiple readers and parallel query, multiple wr
 
 ### Other capabilities
 
-With Aurora global database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
+With Aurora Global Database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
 
 * Serverless: automated database instantiation with auto scaling based on actual usage. This is a good approach for infrequent or impredictable usage. 
 * Multi-master, to protect on write node failure. Every node supports read and write operations. The client has multiple DB connection definitions for failover.
@@ -105,20 +134,34 @@ It is possible to clone an existing Aurora DB, which is fast and cost-effective.
 
 ## ElastiCache
 
-Get a managed Redis or Memcached cluster. Applications queries ElastiCache, if not available, get from RDS and store in ElastiCache. Key-Value store.
-It can be used for user session store so user interaction can go to different application instances.
+Get a managed Redis or Memcached cluster. Applications queries ElastiCache, if data is not available, gets it from RDS and store it in ElastiCache. Key-Value store.
 
-**Redis** is a multi AZ with Auto-Failover, supports read replicas to scale and for high availability. It can persist data using AOF persistence, and has backup and restore features.
+It can be used for user session store so user interaction can go to different application instances. 
 
-**Memcached** is a multi-node for partitioning of data (sharding), and no persistence, no backup and restore. It is based on a multi-threaded architecture.
+**Redis** is a multi AZ with Auto-Failover, supports read replicas to scale on the read operations and to have high availability. It has data durability using AOF persistence, and has backup and restore features.
+
+**Memcached** is a multi-node for partitioning of data (sharding), and no persistence, no backup and restore, not HA via replication. It is based on a multi-threaded architecture.
+
 
 Some patterns for ElastiCache:
 
 * **Lazy Loading**: all the read data is cached, data can become stale in cache
 * **Write Through**: Adds or update data in the cache when written to a DB (no stale data)
-* **Session Store**: store temporary session data in a cache (using TTL features)
+* **Session Store**: store temporary session data in a cache (using Time To Level features)
 
 Sub millisecond performance, in memory read replicas for sharding. 
+
+### Configuration
+
+TBD add screen shots with some explanation
+
+For the configuration, it can also being deployed on premises via AWS Outposts.
+
+It does not support IAM authentication. But we can set a security token at the Redis cluster creation. For Redis you can use Redis auth to force user to enter a password to connect. It supports SSL for in-flight encryption. 
+
+### Coding
+
+There is the Redis Sorted Sets to guarantee both uniqueness and element ordering. Each time a new element is added to the cache, it is ranked and added in the correct order.
 
 ## DynamoDB
 
