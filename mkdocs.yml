@@ -17,6 +17,7 @@ nav:
       - Well Architectured: sa/well-architectured.md
       - Solution design: sa/sol-design.md
       - SA: sa/psa-role.md
+      - SaaS: sa/saas.md
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md

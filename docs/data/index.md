@@ -4,7 +4,7 @@
 
 Managed service for SQL based database (MariaDB, MySQL, Postgresql, SQL server, Oracle, Amazon Aurora).  AWS maintains instance AMI, OS patching... 
 
-* HA support with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations. Resources aren't replicated across AWS Regions unless you do so specifically.
+* HA support with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations and they are asynchronously replicated. Resources aren't replicated across AWS Regions unless you do so specifically.
 
 ![](./diagrams/rds-multi-AZ.drawio.svg){ width=600 }
 
@@ -46,7 +46,7 @@ AWS Outposts uses the same hardware as in public AWS Regions to bring AWS servic
 * Support at rest Encryption (need to specify it at launch time). Master needs to be encrypted to get encrypted replicas. 
 * We can create a snapshot from unencrypted DB and then copy it by enabling the encryption for this snapshot. From there, we can create an Encrypted DB
 * For in-flight encryption use AWS TLS root certificates on the client side.
-* To authenticate, traditional user/pwd can be used but also IAM roles to connect to your DB.
+* To authenticate, traditional user/pwd can be used but also IAM roles to connect to your DB. Enable IAM Database Authentication.
 * Audit Logs are sent to CloudWatch  
 
 Customer's responsibilities:
