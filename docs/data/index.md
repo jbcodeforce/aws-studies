@@ -37,6 +37,10 @@ Read-replica DB can be setup as a multi AZ for DR, but RTO is not 0.
 
 It is possible to move from a Single-AZ to a Multi-AZ with zero downtime, by changing the multi-AZ parameter in the RDS.  The internal process is creating a snapshot from master, create a DB via restore operation in target AZ and start synchronous replication from master to standby.
 
+With Multi-AZ RDS, a failure of one node generally recovers within a minute by switching to the standby instance with the only availability impact being the time it takes for the DNS pointer to update.
+
+For a single-AZ RDS instance, the RTO of an outage where the data isn't impacted, just the EC2 instance, the availability impact would be the length of time it takes for the underlying EC2 instance to recover, which could take several minutes plus the time to replay any transaction logs.
+
 ### Outpost integration
 
 AWS Outposts uses the same hardware as in public AWS Regions to bring AWS services, infrastructure, and operation models on-premises. With RDS on Outposts, you can provision managed DB instances close to the business applications that must run on-premises.

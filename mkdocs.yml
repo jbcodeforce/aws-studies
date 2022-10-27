@@ -3,26 +3,27 @@ repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
   - Infrastructure: 
-      - EC2-Network-ASG: infra/index.md
+      - EC2-Network-ELB-ASG: infra/index.md
       - Storage: infra/storage.md
+      - Route 53: infra/route53.md
       - Messaging: infra/messaging.md
-  - Data:
-      - RDS-Aurora-ES: data/index.md
-      - RedShift: data/redshift.md
-  - Playground: 
-      - Getting Started: playground/gettingstarted.md
-      - RDS: playground/rds.md
-      - Data processing: playground/rt-data-processing.md
-  - Solution architecture:
+      - Streams-Firehose: kinesis/index.md
+  - Architecture:
       - Well Architectured: sa/well-architectured.md
       - Solution design: sa/sol-design.md
       - SA: sa/psa-role.md
       - SaaS: sa/saas.md
+  - Data:
+      - RDS-Aurora-ES: data/index.md
+      - RedShift: data/redshift.md
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
-  - Kinesis: kinesis/index.md
-
+  - Analytics: analytics/index.md
+  - Playground: 
+      - Getting Started: playground/gettingstarted.md
+      - RDS: playground/rds.md
+      - Data processing: playground/rt-data-processing.md
   - Coding:
       - Practices: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io
