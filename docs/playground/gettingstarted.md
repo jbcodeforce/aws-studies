@@ -1,9 +1,18 @@
 # Getting started
 
-Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: my account alias `boyerje`: [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.amazon.com/console)
-and user: `aws-jb`.
+## Defined users and groups with IAM
 
-The credentials and API key are in `~/.aws/credentials`
+See [summary on IAM](../../#iam-identity-and-access-management)
+
+* Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: `aws-jb`
+* Search for IAM and then...
+* (With personal account )login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
+* Create groups (Developers), define basic policies.
+* Add users (mathieu) assign him to a group
+
+### Define security policies
+
+Attached to the group level.
 
 ## AWS CLI common commands
 
@@ -13,7 +22,7 @@ The keys are saved in `~/.aws/credentials`
 
 
 * Installation: [aws cli](https://aws.amazon.com/cli/)
-* The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key.
+* The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key. The credentials and API key are in `~/.aws/credentials`
 
 Test with some commands:
 
@@ -28,21 +37,11 @@ aws iam list-users
 * [aws-shell] is also available to facilitate the user experience in your laptop terminal console.
 
 
-When using CLI in a EC2 instance always use an IAM role to control security credentials. This role can come with a policy authorizing exactly what the EC2 instances should be able to do. Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
+When using CLI in a EC2 instance always use an IAM role to control security credentials. This role may come with a policy authorizing exactly what the EC2 instance should be able to do. 
 
+Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
 
-## Defined users and groups with IAM
-
-See [summary on IAM](../../#iam-identity-and-access-management)
-
-* Search for IAM and then...
-* login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
-* Create groups (Developers), define basic policies.
-* Add users (mathieu) assign him to a group
-
-## Define policies
-
-Attached to the group level.
+#
 
 ## Playing with Apache HTTP
 
@@ -69,9 +68,9 @@ echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/
 
 ## SSH to EC2
 
-* Get public IP address of the EC2 instanceh/
-* Get pem certificate for the CA
-* Issue the command where the certificate is:
+* Get public IP address of the EC2 instance
+* Get pem certificate for the CA while you created the EC2 via the Key pair
+* Issue the following command where the certificate is to open a SSH session
 
 ```sh
 ssh -i EC2key.pem ec2-user@35.91.239.193
@@ -177,7 +176,7 @@ Be sure to have a policy to authorize HTTP inbound traffic on port 80 for 0.0.0.
 
 ## AWS Cloud9
 
-AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser.
+AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code within a web browser.
 
 1. Go to the AWS Management Console, select Services then select Cloud9 under Developer Tools.
 1. Select Create environment.

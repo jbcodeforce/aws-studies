@@ -14,15 +14,50 @@ In AWS, containers run on EC2 instances. For example, you might have a large ins
 
 ## Amazon Elastic Container Service (Amazon ECS)
 
-[Amazon ECS](https://aws.amazon.com/ecs/) is an end-to-end container orchestration service that helps you spin up new containers and manages them across a cluster of EC2 instances.
+[Amazon ECS](https://aws.amazon.com/ecs/) is an end-to-end container orchestration service that helps you spin up new containers and manages them across a cluster of EC2 instances, without managing a control plane.
+It maintains application availability and allows you to scale your containers up or down to meet your application's capacity requirements.
 
-To run and manage your containers, you need to install the Amazon ECS container agent on your EC2 instances.
+Integrated with familiar features like Elastic Load Balancing, EBS volumes, VPC, and IAM. Simple APIs let you integrate and use your own schedulers or connect Amazon ECS into your existing software delivery process.
 
-![](./diagrams/ecs.drawio.png){ width=600 }
+It is possible to run container into two modes: EC2 or Fargate. For EC2 we can create those instances upfront or use an auto scaling group and start instances. We need to install the Amazon ECS container agent on each EC2 instances, the docker engine, and manage the EC2 ourselves...
+
+![](./diagrams/ecs.drawio.png){ width=500 }
+
+With Fargate, as a serverless approach, only specifying container configuration, services... is needed.
+
+![](./diagrams/ecs-fargate.drawio.png){ width=500 }
+
+It is possible to have Fargate and EC2 auto scaling group inside your ECS cluster.
+
+The container is run by defining Task and Service. Here is task definition example, which includes capacity and the docker image reference:
+
+![](./images/ecs-task-1.png)
+
+Running the task, creates a Service (we can also define the service and deploy it):
+
+![](./images/ecs-service-1.png)
+
+[See demo for NGInx for detailed configuration](../playground/ecs.md)
+
+1. First we create cluster: it is a regional grouping of container instances. Cluster may have one to many EC2 instances. Try to use Fargate as runtime engine.
+
+    ![](./images/ecs-fargate.png)
+
+    With all the resources created automatically:
+
+    ![](./images/ecs-fargate-2.png)
+    
+    It creates a VPC with two public subnets.
+
+    Task definitions can be defined outside of a cluster, but services are associating task to cluster, subnets, security groups...
+
+1. Specify the container images, environment variables and any resources configurations... Add a Application Load Balancer.
 
 To prepare your application to run on Amazon ECS, you create a task definition. The task definition is a text file, in JSON format, that describes one or more containers. 
 
-Apply docker compose to Amazon ECS and Fargate
+IAM Roles are defined for each container, and for EC2 launch a role for EC2 instance profile to access ECS, ECR, CloudWatch, ...
+
+Apply docker compose to Amazon ECS and Fargate.
 
 See also [ecs anywhere](https://press.aboutamazon.com/news-releases/news-release-details/aws-announces-general-availability-amazon-ecs-anywhere)
 

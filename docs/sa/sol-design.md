@@ -2,7 +2,7 @@
 
 This section presents some example of SA designs.
 
-## What Time App Deployment
+## Stateless with persistence app
 
 * Starting simple with one EC2 and the webapp deployed on it. Upgrading the EC2 instance type, brings the webapp down. Use Elastic IP address so client keep IP @.
 
@@ -14,6 +14,22 @@ This section presents some example of SA designs.
 * But to be more efficient we can add a DNS domain and subdomain with Route 53 records, two ELBs with Health Checks, one per AZ, restricted security groups and public and private subnets, auto scaling group, and may be use one reserved EC2 instance per AZ to reduce long term cost.
 
     ![](./diagrams/better-quarkus-app.drawio.svg)
+
+## Stateful app
+
+Keep data (shopping cart) into session. We can use the stickiness on ELB and session affinity. Or use a user cookie, with the app verifying the cookie content. 
+
+When we need to keep more data than what the cookie can save, then we keep the sessionID in the cookie and deploy an ElasticCache to store data with the key of sessionID.
+
+Final transactional data can be persisted in RDS, and with RDS replication we can route specific traffic ("/products") which is read/only to the RDS Read replicas. Which can also being supported by having the product in the ElasticCache.
+
+![](./diagrams/stateful-quarkus-app.drawio.svg)
+
+## Sharing images solution
+
+
+![](./diagrams/images-sol.drawio.svg)
+
 
 ## Disaster Recovery Solution
 

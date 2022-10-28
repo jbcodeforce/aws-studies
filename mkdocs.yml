@@ -25,7 +25,7 @@ nav:
       - RDS: playground/rds.md
       - Data processing: playground/rt-data-processing.md
   - Coding:
-      - Practices: coding/cdk.md
+      - Practices: coding/index.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material
