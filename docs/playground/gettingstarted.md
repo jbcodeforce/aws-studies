@@ -41,7 +41,7 @@ When using CLI in a EC2 instance always use an IAM role to control security cred
 
 Also within a EC2 instance, it is possible to use the URL http://169.254.169.254/latest/meta-data to get information about the EC2. We can retrieve the IAM Role name from that metadata.
 
-#
+
 
 ## Playing with Apache HTTP
 
@@ -191,8 +191,10 @@ Amazon Elastic Container Registry (Amazon ECR) is an AWS managed container image
 
 See [Getting started guide](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) which can be summarized as
 
-* Your client must authenticate to Amazon ECR registries as an AWS user before it can push and pull images. 
+* Your client must authenticate to Amazon ECR registries as an AWS user before you can push and pull images. 
 * You can control access to your repositories and the images within them with repository policies.
+
+[ECR public gallery](https://gallery.ecr.aws/) includes docker images to be reusable.
 
 ## Deploy a Web App on AWS Elastic Beanstalk
 

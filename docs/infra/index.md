@@ -67,7 +67,11 @@ vCPU represents thread running on core CPU. You can optimize vCPU allocation on 
     * The expected state is defined in a 'spot request' which can be cancelled. One time or persistent request types are supported. Cancel a spot request does not terminate instances, but need to be the first thing to do and then terminate the instances.
     * **Spot fleets** allow to automatically request spot instance and on-demand instance with the lowest price to meet the target capacity within the price constraints.
 
-Use **EC2 launch templates** to automate instance launches, simplify permission policies, and enforce best practices across the organization. (Look very similar to docker image)
+Use **EC2 launch templates** to automate instance launches, to simplify permission policies, and to enforce best practices across the organization. (Look very similar to docker image)
+
+### Metadata
+
+When in a EC2 instance shell we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**
 
 ### AMI
 

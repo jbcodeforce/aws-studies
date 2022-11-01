@@ -56,6 +56,10 @@ Queue can be set as FIFO to guaranty the order: limited to throughput at 300 msg
 If we don't use a Group ID, messages are consumed in the order they are sent, with only one consumer. But using Group ID we can have as many consumers as there is groups. It looks like partition key in kinesis data streams. 
 Each consumer will get ordered records.
 
+### Security
+
+Access policies can be defined at the queue level or at the user level (using IAM policies) that can grant rights to perform queue-based actions like get/put/list.
+
 ### Sample Code
 
 * [Python boto3 SQS](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/sqs.html)

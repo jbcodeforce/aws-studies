@@ -145,7 +145,7 @@ AWS services are local or very few are global:
 * EC2 is a regional service. Region-scoped services come with availabiltiy and resiliency. 
 * IAM is a global service.
 
-**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive applications in geography close to end-users. You can extend any VPC from the parent AWS Region into Local Zones. Local Zones have their own connections to the internet and support AWS Direct Connect.
+**AWS Local Zone** location is an extension of an AWS Region where you can run your latency sensitive applications in geography close to your end-users. You can extend any VPC from the parent AWS Region into Local Zones. Local Zones have their own connections to the internet and support AWS Direct Connect.
 
 **AWS Wavelength** enables developers to build applications that deliver single-digit millisecond latencies to mobile devices and end-users. 
 AWS infrastructure deployments that embed AWS compute and storage services within the telecommunications providers’ datacenters at the edge of the 5G networks, and seamlessly access the breadth of AWS services in the region.
@@ -154,7 +154,7 @@ Choose an AWS region, depending of your requirements like:
 
 * Compliance with data governance and legal requirements
 * Close to users to reduce latency
-* [Availability of service within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) 
+* [Service availability within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) 
 * Pricing
 
 ### Availability and reliability
@@ -173,108 +173,6 @@ Be sure to get clear agreement on following definitions:
 * [AWS CLI](https://aws.amazon.com/cli/)
 * [SDK](https://aws.amazon.com/developer/tools/) for C++, Go, Java, JavaScript, .NET, Node.js, PHP, Python, and Ruby
 
-## Security
-
-AWS runs highly secured data centers. Multiple geographic regions and Availability Zones allow customers to remain resilient in the face of most failure modes, including natural disasters or system failure. 
-
-Customers' security policy can be formalized and embedded with the design of their infrastructure.
-
-When you work with the AWS Cloud, managing security and compliance is a [shared responsibility](https://aws.amazon.com/compliance/shared-responsibility-model/) between AWS and you:
-
-* AWS is the security **of** the cloud
-* You are responsible for the security **in** the cloud: secure workloads and applications that you deploy onto the cloud.
-
-[AWS Compliance Center is a central location to research cloud-related regulatory requirements](https://aws.amazon.com/financial-services/security-compliance/compliance-center/)
-
-### Organization
-
-Organization helps to group accounts, and simplify account creation. Consolidate billing.
-
-**Concepts:**
-
-* `root` user: a single sign-in identity that has complete access to all AWS services and resources in the account
-* Organization unit (OU)
-* Account is part of 1 OU
-* Define service control policies
-
-[Organization console](https://us-east-1.console.aws.amazon.com/organizations/v2/home?region=us-east-1#)
-
-### IAM Identity and Access Management
-
-* Help to control access to AWS services
-
-![](./images/iam-authentication.png)
-
-* This is global services so defined at the account level and cross regions
-* Define user (physical person), group and roles, and permissions (policies)
-
-* Do not use root user, but create user and always use them when login. `jerome` and `mathieu` are users
-* get user as administrator, meaning it will be part of an admin group with admin priviledges, like `AdmintratorAccess`
-
-* Assign users to groups (`admin` and `developers`) and assign policies to groups and not to individual user.
-* Groups can only contain users, not other groups
-* Users can belong to multiple groups
-
-* Users are defined as global service encompasses all regions
-* AWS Account has a unique ID but can be set with an alias (e.g.`jbcodeforce` or `boyerje`) so to sign in to the console the URL becomes
-[https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console)
-or [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.amazon.com/console) use `aws-jb`.
-
-* Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
-* It must define an ID, a version and statement(s):
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:List*"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-
-Another example:
-
-![](./images/aws-policy.png)
-
-* Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**
-* Least privilege permission: Give users the minimal amount of permissions they need to do their job
-* Policy can define the password type `> Account settings > Password policy`, and when users are allowed to change the password.
-* Inline policy can be defined at the user level, but it is recommended to use Group and Group level policies. As user can be part of multi groups, he will heritate to the different policies of those groups.
-* IAM is not used for website authentication and authorization
-* For identity federation, SAML standard is used
-
-#### MFA
-
-* Multi Factor Authentication -  always protect root account. MFA = password + device we own. The device could be a universal 2nd factor security key. (ubikey) 
-* [Authy](https://authy.com/) is a multi-device service with free mobile app. We can have multiple users on the same device
-
-#### IAM Roles
-
-* To get AWS services doing work on other service, we use IAM Role. Roles are assigned per application, or EC2 or lambda function...
-
-![](./images/iam-roles.png)
-
-* Maintaining roles is more efficient than maintaining users.  When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes and 36 hours.
-
-* When connected to an EC2 machine via ssh or using EC2 instance connect, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached.
-
-To authorize access to a EC2 instance, we use IAM Roles. The `DemoEC2Role`, for example, is defined to access EC2 in read only:
-
-![](./images/aws-iam-role.png)
-
-This role is then defined in the EC2 / Security  > attach IAM role.
-
-#### Security tools
-
-* In IAM, use `> Credentials report` to download account based report.
-* In IAM, use `> Users > select one user (aws-jb) and then Access Advisor tab`: 
-Access Advisor shows the services that the selected user can access and when those services were last accessed
 
 
 --- 
@@ -430,16 +328,3 @@ The solution applies the traditional collect, inject, transform and query patter
 ![](./images/aws-big-data.png)
 
 IoT Core allows to collect data from IoT devices. Kinesis is used to get data as streams, and then FireHose upload every minute to S3. A Lambda can already do transformation from FireHose. As new files are added to S3 bucket, it trigger a Lambda to call queries defined in Athena. Athena pull the data and build a report published to another S3 bucket that will be used by QuickSight to visualize the data.
-
-## Other Database considerations
-
-### Redshift
-
-It is based on Postgresql. but not used for OLTP, it is used for analytical processing and data warehousing, scale to PBs. It is Columnar storage of data. It uses massively parallel query execution.
-
-Data can be loaded from S3, DynamoDB, DMS and other DBs. It can scale from 1 to 128 nodes, and each node has 160GB per node.
-
-The architecture is based on a leader node to support query planning and aggregate results, and compute nodes to perform the queries and send results back.
-
-Redshift spectrum performs queries directly on top of S3.
-

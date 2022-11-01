@@ -37,6 +37,8 @@
 
     As we want to facade with an ALB, we do not want to setup a public IP address with a ENI. 
 
+    ![](./images/ecs-service-5.png)
+
 1. Get DNS name of the application or from the ALB
 
     * If you created a public IP address then an ENI was created, and going to the ENI definition will let you access to the DNS name, something like: `ec2-34-216-228-13.us-west-2.compute.amazonaws.com` 

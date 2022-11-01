@@ -39,6 +39,7 @@ Running the task, creates a Service (we can also define the service and deploy i
 
 [See demo for NGInx for detailed configuration](../playground/ecs.md)
 
+1. Create a task definition: Specify the container images, environment variables and any resources configurations... Add a Application Load Balancer. The task definition is a text file, in JSON format, that describes one or more containers. 
 1. First we create cluster: it is a regional grouping of container instances. Cluster may have one to many EC2 instances. Try to use Fargate as runtime engine.
 
     ![](./images/ecs-fargate.png)
@@ -51,23 +52,25 @@ Running the task, creates a Service (we can also define the service and deploy i
 
     Task definitions can be defined outside of a cluster, but services are associating task to cluster, subnets, security groups...
 
-1. Specify the container images, environment variables and any resources configurations... Add a Application Load Balancer.
+### Service Auto Scaling
 
-To prepare your application to run on Amazon ECS, you create a task definition. The task definition is a text file, in JSON format, that describes one or more containers. 
+ECS service auto scaling helps to automatically increase/decrease ECS task number. It uses AWS Application Auto Scaling which specifies the service usage in term of CPU, memory and request count per target.
 
-IAM Roles are defined for each container, and for EC2 launch a role for EC2 instance profile to access ECS, ECR, CloudWatch, ...
+There are 3 ways  to define scaling rules:
 
-Apply docker compose to Amazon ECS and Fargate.
+* Target Tracking, based on value for a specific CloudWatch metric
+* Step Scaling, based on CloudWatch Alarm
+* Scheduled Scaling, based on a specified date/time
 
-See also [ecs anywhere](https://press.aboutamazon.com/news-releases/news-release-details/aws-announces-general-availability-amazon-ecs-anywhere)
+### Others 
 
-## EKS
+* IAM Roles are defined for each container. Other role can be added to access ECS, ECR, S3, CloudWatch, ...
+* EC2 Instance Profile is the IAM Role used by the ECS Agent on the EC2 instance to execute ECS-specific actions such as pulling Docker images from ECR and storing the container logs into CloudWatch Logs
+* ECS Task Role is the IAM Role used by the ECS task itself. Use when your container wants to call other AWS services like S3, SQS, etc.
+* Event Brige can define a rule to run a ECS task.
+* See also [ecs anywhere](https://press.aboutamazon.com/news-releases/news-release-details/aws-announces-general-availability-amazon-ecs-anywhere)
 
-[Amazon EKS](https://aws.amazon.com/eks/) is a fully managed Kubernetes service. 
-
-* An EC2 instance with the ECS agent installed and configured is called a container instance. In Amazon EKS, it is called a worker node.
-* An ECS container is called a task. In Amazon EKS, it is called a pod.
-* While Amazon ECS runs on AWS native technology, Amazon EKS runs on top of Kubernetes.
+ 
 
 ## Fargate
 
@@ -90,6 +93,34 @@ To share data between containers, Fargate provides 4 GB volumes space per task, 
 
 For IAM security, the same policies can be set as we do on EC2. We still need to add an `execution role` to define access to ECR to download images and CloudWatch for monitoring.
 
+## EKS
+
+[Amazon EKS](https://aws.amazon.com/eks/) is a fully managed Kubernetes service. It supports EC2 to deploy worker nodes or Fargate to deploy serverless containers. 
+
+![](./diagrams/eks-ec2.drawio.svg)
+
+The EKS node types are:
+
+* managed node groups: EC2 (could be On-demand or spot instances) created by you, assigned to a ASG managed by EKS. 
+* self-managed nodes: nodes created by you and attached to EKS cluster by an ASG
+* AWS fargate
+
+Data volumes (EBS, EFS, FSx) are defined with StorageClass and they need to have Container Storage Interface compliant driver
+
+### ECS comparisons
+
+* An EC2 instance with the ECS agent installed and configured is called a container instance. In Amazon EKS, it is called a worker node.
+* An ECS container is called a task. In Amazon EKS, it is called a pod.
+* While Amazon ECS runs on AWS native technology, Amazon EKS runs on top of Kubernetes.
+
+### What to do
+
+1. Create IAM Role with EKS Cluster role.
+1. Create cluster to be deployed in a VPC, subnets, and security groups.
+1. Add resources like node group, with IAM role of WorkerNode 
+
+[Demo EKS and deploy ]()
+
 ## Step function
 
 AWS Step Functions is a fully managed service that you can use to coordinate the components of distributed applications and microservices using visual workflows. You build small applications that each perform a discrete function (or step) in your workflow, which means that you can scale and change your applications quickly.
@@ -97,6 +128,10 @@ AWS Step Functions is a fully managed service that you can use to coordinate the
 ## AWS Elastic Beanstalk
 
 With Elastic Beanstalk, developers upload their application. Then, Elastic Beanstalk automatically handles the deployment details of capacity provisioning, load balancing, auto-scaling, and application health monitoring.
+
+## [AWS App runner](https://aws.amazon.com/apprunner/)
+
+AWS App Runner, a fully managed container application service that makes it easy for customers without any prior containers or infrastructure experience to build, deploy, and run containerized web applications and APIs 
 
 ## Amazon Lightsail
 
