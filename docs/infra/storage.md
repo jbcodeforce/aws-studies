@@ -88,18 +88,23 @@ The file system must be cluster aware.
 
 ## S3
 
-[Amazon S3](https://s3.console.aws.amazon.com/s3/get-started?region=us-west-1) allows people to store objects (files) in **buckets** (directories), which must have a globally unique name (cross users!). They are defined at the region level. **Object** in a bucket, is referenced as a **key** which can be seen as a file path in a file system. The max size for an object is 5 TB but big file needs to be uploaded in multipart using 5GB max size.
+[Amazon S3](https://s3.console.aws.amazon.com/s3/get-started?region=us-west-1) allows people to store objects (files) in **buckets** (directories), which must have a globally unique name (cross users!). They are defined at the region level. **Object** in a bucket, is referenced as a **key** which can be seen as a file path in a file system. The max size for an object is 5 TB but big file needs to be uploaded in multi-part using 5GB max size.
 
 S3 supports versioning at the bucket level. So file can be restored from previous version, and even deleted file can be retrieved from a previous version.
+
+Within the S3 console we will see all buckets in one view (its is a global service). But the buckets are created within a region and are local to the region. 
 
 ### Use cases
 
 * Backup and restore
-* DR
+* Disaster Recovery
 * Archive
-* [Data lakes](https://aws.amazon.com/big-data/datalakes-and-analytics/)
+* [Data lakes](https://aws.amazon.com/big-data/datalakes-and-analytics/) and big data analytics
 * Hybrid cloud storage: seamless connection between on-premises applications and S3 with AWS Storage Gateway.
 * Cloud-native application data
+* Media hosting
+* Software delivery
+* Static website
 
 
 [GETTING started](https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html)

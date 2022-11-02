@@ -43,9 +43,9 @@ Also within a EC2 instance, it is possible to use the URL http://169.254.169.254
 
 
 
-## Playing with Apache HTTP
+## Deploying Apache HTTP on EC2
 
-Create a EC2 t2.micro and add the following script in the `User Data` field (Under Advanced Details while configuring new EC2 instance) so when the instance starts it executes this code.
+Create a EC2 t2.micro instance with AWS Linux, a public IP address, a security group with SSH enabled and HTTP on port 80. Under the `Advanced details` section, add the following `bash` script in the `User Data` field:
 
 ```shell
 #!/bin/bash
@@ -59,35 +59,53 @@ systemctl start httpd
 systemctl enable httpd
 > Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service
 # Get the availability zone
-EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone/)
 # Change the home page by changing /var/www/html/index.html
 echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
 # or use the following
 echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
 ```
 
-## SSH to EC2
-
-* Get public IP address of the EC2 instance
-* Get pem certificate for the CA while you created the EC2 via the Key pair
-* Issue the following command where the certificate is to open a SSH session
-
-```sh
-ssh -i EC2key.pem ec2-user@35.91.239.193
-```
+Once launched, get the DNS name and try a curl or web browser to that HTTP address (not https).
 
 ### Troubleshooting
 
 * Connection timeout: Any timeout (not just for SSH) is related to security groups or a firewall. This may also means a corporate firewall or a personal firewall is blocking the connection.
 * `Permission denied (publickey,gssapi-keyex,gssapi-with-mic)`: You are using the wrong security key or not using a security key. 
-* able to connect yesterday, but not today: When you restart a EC2 instance, the public IP of your EC2 instance will change. 
+* "Able to connect yesterday, but not today": When you restart a EC2 instance, the public IP of your EC2 instance will change. 
+
+
+### SSH to EC2
+
+* Get public IP address of the EC2 instance
+* Get pem certificate for the CA while you created the EC2 via the Key pair (e.g. `my-key-pair.pem`)
+* Issue the following command where the certificate is to open a SSH session
+
+```sh
+ssh -i my-key-pair.pem ec2-user@35.91.239.193
+```
+
+you should get the prompt:
+
+```sh
+Last login: Wed Nov  2 17:24:30 2022 from ec2-18-237-140-165.us-west-2.compute.amazonaws.com
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+```
 
 ### EC2 Instance Connect
 
 Access the EC2 terminal inside the web browser using SSH. Select the instance and then `Connect` button at the top. 
-It comes with aws cli. Never enter any account id inside `aws configure` inside an EC2 instance, use IAM role instead.
 
-Go to the EC2 instance, Action > Security > Modify IAM Roles. For example adding  the DemoEC2Role which as iam read only access, so we do `aws iam list-users` command.
+![](./images/EC2-home.png)
+
+It comes with the `aws cli`. Never enter any account id inside `aws configure` inside an EC2 instance, use IAM role instead.
+
+For example to access another service (like IAM), we need an IAM Role added to the EC2 instance: go to the EC2 instance, `Action > Security > Modify IAM Roles` add `DemoEC2Role` for example. We should be able to do `aws iam list-users` command.
 
 
 ## A High availability WebApp deployment summary

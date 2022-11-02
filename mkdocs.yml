@@ -22,7 +22,7 @@ nav:
       - Lambda: serverless/lambda.md
   - Analytics: analytics/index.md
   - Playground: 
-      - Getting Started: playground/gettingstarted.md
+      - Getting Started IAM-EC2: playground/gettingstarted.md
       - RDS: playground/rds.md
       - Data processing: playground/rt-data-processing.md
   - Coding:
