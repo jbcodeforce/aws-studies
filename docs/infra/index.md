@@ -2,52 +2,51 @@
 
 ## Amazon Elastic Compute Cloud - EC2 components
 
-* EC2 is a renting machine
+* EC2 is a renting machine.
 * Amazon EC2 instances are a combination of virtual processors (vCPUs), memory, network, and, in some cases, instance storage and graphics processing units (GPUs).
-* Only size for what you used
-* Storing data on virtual drives: [EBS](#EBS)
-* Distribute load across machines using ELB
-* Auto scale the service via group: ASG
+* Only size for what you plan to use.
+* Storing data on virtual drives: [EBS](./storage/#amazon-elastic-block-storage-ebs).
+* Distribute load across machines using [ELB](#elastic-load-balancers).
+* Auto scale the service via group: [ASG](#auto-scaling-group-asg).
 
-EC2 can have MacOS, Linux ad Windows OS.
-Amazon Machine Image: AMI, image for OS and preinstalled softwares. Amazon Linux 2 for linux base image.
+EC2 can have MacOS, Linux or Windows OS.
+Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within your region to get what AMI could be installed.
 
  ![0](./images/EC2-instance.png)
 
-When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, and the storage (EBS) 
-for root folder to get the OS, the network card, and the firewall rules defined as [Security Group](#security-group). 
+When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
+for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
 The security group helps to isolate the instance, for example, authorizing ssh on port 22 and HTTP port 80.
-Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2.
+Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh.
 The `.pem` file need to be restricted with `chmod 0400`
 
-Can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port open.
+We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
 
 ### EC2 life cycle
 
-1. When you launch an instance, it enters the pending state. Billing is not started
+1. When you launch an instance, it enters in the `pending` state. Billing is not started.
 1. During rebooting, instance remains on the same host computer, and maintains its public and private IP address, in addition to any data on its instance store.
-1. When you terminate an instance, the instance stores are erased, and you lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged
+1. When you `terminate` an instance, the instance stores are erased, and you lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged.
 
 ### EC2 types
 
 EC2 has a section to add `User data`, which could be used to define a bash script to install dependent software
  and to start some services at boot time.
 
-EC2 **instance types** like t2.micro or c5.2xlarge define CPU, memory... (see [ec2instances.info](https://www.ec2instances.info) or the reference [aws ec2/instance-types](https://aws.amazon.com/ec2/instance-types/)). The first letter defines the class as:
+EC2 **instance types** like t2.micro or c5.2xlarge define CPU, memory... (see [ec2instances.info](https://www.ec2instances.info) or the reference [AWS ec2/instance-types](https://aws.amazon.com/ec2/instance-types/)). The first letter defines the class as:
 
-* R: (memory) applications that needs a lot of RAM – in-memory caches
-* C: (Compute Optimized) applications that needs good CPU – compute / databases, ETLm media transcoding, High Perf web servers, scientific modeling
-* M:  applications that are balanced (think “medium”) – general / web app
-* I: (storage) applications that need good local I/O (instance storage) – databases, NoSQL, cache like Redis, data warehousing, distributed file systems
-* G: applications that need a GPU
-* T2/T3 for burstable instance: When the machine needs to process something unexpected (a spike in
-load for example), it can burst. Use burst credits to control CPU usage.
+* R: (memory) applications that needs a lot of RAM – in-memory caches.
+* C: (Compute Optimized) applications that needs good CPU – compute / databases, ETL media transcoding, High Perf web servers, scientific modeling.
+* M:  applications that are balanced (think “medium”) – general / web app.
+* I: (storage) applications that need good local I/O (instance storage) – databases, NoSQL, cache like Redis, data warehousing, distributed file systems.
+* G: applications that need a GPU.
+* T2/T3 for burstable instance: When the machine needs to process something unexpected (a spike in load for example), it can burst. Use burst credits to control CPU usage.
 
-[Graviton]() 
+[Graviton](https://aws.amazon.com/ec2/graviton/) processors designed by AWS for cloud workloads to optimize cost and energy consumption. (t4g.*, M6g.*, C7*) 
 
-### EC2 Nitro
+### [EC2 Nitro System](https://aws.amazon.com/ec2/nitro/)
 
-Next generation of EC2. It uses new virtualization schema. Supports IPv6, better I/O on EBS and better security.  Name starts with C5, D5,...
+Next generation of EC2. It uses new virtualization infrastructure and hypervisor. Supports IPv6, better I/O on EBS and better security.  Name starts with C5, D5,...
 
 vCPU represents thread running on core CPU. You can optimize vCPU allocation on the EC2 instance, once created, by updating the launch configuration.
 
@@ -64,7 +63,7 @@ vCPU represents thread running on core CPU. You can optimize vCPU allocation on 
     * Define a **max spot price** and get the instance while the current spot price < max price wanting to pay. The hourly spot price varies based on offer and capacity. 
     * if the current spot price > max, then instance will be stopped in a 2 minutes.
     * with **spot block** we can define a time frame without interruptions from 1 to 6 hours.
-    * The expected state is defined in a 'spot request' which can be cancelled. One time or persistent request types are supported. Cancel a spot request does not terminate instances, but need to be the first thing to do and then terminate the instances.
+    * The expected state is defined in a 'spot request' which can be cancelled. One time or persistent request types are supported. Cancel a spot request does not terminate instance, but need to be the first thing to do and then terminate the instances.
     * **Spot fleets** allow to automatically request spot instance and on-demand instance with the lowest price to meet the target capacity within the price constraints.
 
 Use **EC2 launch templates** to automate instance launches, to simplify permission policies, and to enforce best practices across the organization. (Look very similar to docker image)
@@ -75,57 +74,56 @@ When in a EC2 instance shell we can get access to EC2 metadata by going to the U
 
 ### AMI
 
-Bring our own image. Shareable on amazon marketplace. Can be saved on S3 storage. By default, our AMIs are private, and locked for our account / region.
+Bring our own image. Shareable on Amazon marketplace. Can be saved on S3 storage. By default, our AMIs are private, and locked for our account / region.
 
-AMI are built for a specific AWS region. But they can be copied and shared [See AWS doc - copying an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html).
+AMIs can be copied and shared [See AWS doc - copying an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html).
 
 ### EC2 Hibernate
 
 The in memory state is preserved, persisted to a file in the root EBS volume. It helps to make the instance startup time quicker. The root EBS volume needs to be encrypted.
 
-* memory is constrained by 150GB RAM. 
+* Memory is constrained by 150GB RAM. 
 * No more than 60 days.
-* no instance store volume possible,
+* No instance store volume possible.
 
 ### Basic Fault Tolerance
 
 The following diagram illustrates some fault tolerance principles offered by the basic AWS services:
 
-![](./diagrams/ec2-fault-tolerance.drawio.svg)
+![](./diagrams/ec2-fault-tolerance.drawio.svg){ width=700 }
 
 * AMI defines image for the EC2 with static or dynamic configuration. From one AMI, we can scale by adding new EC2 based on same image.
-* Instance failure can be replaced by starting a new instance from the same AMI
-* Auto scaling group defines a set of EC2 instances, and can start new EC2 instance automatically
-* To minimize down time, we can have one EC2 instance in standby, and use elastic IP addresses. 
+* Instance failure can be replaced by starting a new instance from the same AMI.
+* Auto Scaling Group defines a set of EC2 instances, and can start new EC2 instance automatically.
+* Auto scaling adjusts the capacity of EC2 and EC2 instance within the group.
+* To minimize down time, we can have one EC2 instance in standby, and use elastic IP addresses to be reassigned in case of primary EC2 failure. 
 * Data is saved on EBS and replicated to other EBS inside the same availabiltiy zone.
-* Snapshot backup can be done to replicate data between AZs, and persisted for long retention in S3. 
-* Need to flush data from memory to disk before any snapshot
-* Auto scaling adjusts the capacity of EC2 and EC2 instance within the group
+* Snapshot backup can be done to replicate data between AZs and/or regions, and persisted for long retention in S3. 
+* Need to flush data from memory to disk before any snapshot.
 * Applications can be deployed between AZs.
-* Elastic Load Balancer balances traffic among servers in multiple AZs and DNS will route traffic to the good server.
-* Data can be replicated between regions
+* Elastic Load Balancer balances traffic among servers in multiple AZs and [DNS](./route53.md) will route traffic to the good server.
 * Elastic IP addresses are static and defined at the AWS account level. New EC2 instance can be reallocated to Elastic IP @, but they are mapped by internet gateway to the private address of the EC2. The service may be down until new EC2 instace is restarted.
-* ELB ensures higher fault tolerance for EC2s, containers, lambdas, IP addresses  and physical servers
-* Application LB load balances at the HTTP, HTTPS level, and within a VPC based on the content of the request.
+* ELB ensures higher fault tolerance for EC2s, containers, lambdas, IP addresses  and physical servers.
+* Application LB load balance at the HTTP, HTTPS level, and within a VPC based on the content of the request.
 * NLB is for TCP, UDP, TLS routing and load balancing.  
 
 ### Placement groups
 
 Define strategy to place EC2 instances:
 
-* **Cluster**: groups instances into a low-latency group in a single Availability Zone
-    * highest performance while talking to each other as when performing big data analysis
-* **Spread**: groups across underlying hardware (max 7 instances per group per AZ)
-    * Reduced risk is simultaneous failure
-    * EC2 Instances are on different physical hardware
-    * Application that needs to maximize high availability
-    * Critical Applications where each instance must be isolated from failure from each other
+* **Cluster**: groups instances into a low-latency group in a single Availability Zone.
+    * Highest performance while talking to each other as when performing big data analysis.
+* **Spread**: groups across underlying hardware (max 7 instances per group per AZ).
+    * Reduced risk is simultaneous failure.
+    * EC2 Instances are on different physical hardware.
+    * Application that needs to maximize high availability.
+    * Critical Applications where each instance must be isolated from failure from each other.
 * **Partition**: spreads instances across many different partitions (which rely on different sets of racks) within an AZ.
-    * Partition is a set of racks
-    * Up to 100s of EC2 instances
-    * The instances in a partition do not share racks with the instances in the other partitions
-    * A partition failure can affect many EC2s but won’t affect other partitions
-    * EC2 instances get access to the partition information as metadata
+    * Partition is a set of racks.
+    * Up to 100s of EC2 instances.
+    * The instances in a partition do not share racks with the instances in the other partitions.
+    * A partition failure can affect many EC2s but won’t affect other partitions.
+    * EC2 instances get access to the partition information as metadata.
     * HDFS, HBase, Cassandra, Kafka
 
 Access from network and policies menu, define the group with expected strategy, and then it is used when creating the EC2 instance by adding the instance to a placement group.

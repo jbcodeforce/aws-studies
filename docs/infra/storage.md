@@ -106,24 +106,29 @@ Within the S3 console we will see all buckets in one view (its is a global servi
 * Software delivery
 * Static website
 
-
 [GETTING started](https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html)
 
 ### Security control
 
-Objects can also be encrypted, and different mechanisms are available:
+* Objects can also be encrypted, and different mechanisms are available:
 
-* **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
-* **SSE-KMS**: leverage AWS Key Management Service to manage encryption keys. `x-amz-server-side-encryption: "aws:kms"` header. Server side encrypted. It gives user control of the key rotation policy and audit trail.
-* **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTP headers, for every HTTP request made. HTTPS is mandatory
-* **Client Side Encryption**: encrypt before sending object.
+    * **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
+    * **SSE-KMS**: leverage AWS Key Management Service to manage encryption keys. `x-amz-server-side-encryption: "aws:kms"` header. Server side encrypted. It gives user control of the key rotation policy and audit trail.
+    * **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTP headers, for every HTTP request made. HTTPS is mandatory.
+    * **Client Side Encryption**: encrypt before sending object.
 
+* **S3 Bucket Policy**: is security policy defined in S3 console, and allows cross-account access control. Can be set at the bucket or object level.
+* Explicit DENY in an IAM policy will take precedence over a [bucket policy permission](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html).
+* An IAM principal can access an S3 object if the user IAM permissions allow it or the resource policy allos it and there is no explicit deny.
+* By default a bucket access is not public, using Block Public Access setting. Can be enforced at the account level.
 
-Explicit DENY in an IAM policy will take precedence over a bucket policy permission.
+    ![](./images/s3-block-access.png)
 
-### S3 Website
+### S3 Website hosting
 
-We can have static web site on S3. Once html pages are uploaded, setting the properties as static web site from the bucket. The bucket needs to be public, and have a security policy to allow any user to `GetObject` action. The URL may look like: `<bucket-name>.s3-website.<AWS-region>.amazonaws.com`
+We can have static website on S3. Once html pages are uploaded, setting the properties as static web site from the bucket. The bucket needs to be public, and have a security policy to allow any user to `GetObject` action. The URL may look like: `<bucket-name>.s3-website.<AWS-region>.amazonaws.com`
+
+![](./images/s3-static-website.png)
 
 * **Cross Origin resource sharing CORS**: The web browser requests won’t be fulfilled unless the other origin allows for the requests, using CORS Headers `Access-Control-Allow-Origin`. If a client does a cross-origin request on our S3 bucket, we need to enable the correct CORS headers: this is done by adding a security policy with CORS configuration like:
 
