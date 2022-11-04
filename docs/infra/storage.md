@@ -110,6 +110,22 @@ Within the S3 console we will see all buckets in one view (its is a global servi
 
 ### Security control
 
+* By default a bucket access is not public, see the `Block Public Access` setting. Can be enforced at the account level and need to be disable at the account level, before doing it at the bucket level (amazon S3 > block public access settings for this account > edit block public access settings for this account).
+
+    ![](./images/s3-block-access.png)
+
+* To control access with policies we need to disable this, and then define Bucket policy.
+* **S3 Bucket Policy**: is security policy defined in S3 console, and also allows cross-account access control. Can be set at the bucket or object level.
+* Explicit DENY in an IAM policy will take precedence over a [bucket policy permission](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html).
+* Define policies from [examples](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html) or using [policy generator tool](https://awspolicygen.s3.amazonaws.com/policygen.html).
+
+    ![](./images/policygen.png)
+
+    And copy paste the generated policy
+
+    ![](./images/s3-bucket-policy.png)
+
+* By default, when another AWS account uploads an object to your S3 bucket, that account (the object writer) owns the object, has access to it, and can grant other users access to it through ACLs.
 * Objects can also be encrypted, and different mechanisms are available:
 
     * **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
@@ -117,12 +133,8 @@ Within the S3 console we will see all buckets in one view (its is a global servi
     * **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTP headers, for every HTTP request made. HTTPS is mandatory.
     * **Client Side Encryption**: encrypt before sending object.
 
-* **S3 Bucket Policy**: is security policy defined in S3 console, and allows cross-account access control. Can be set at the bucket or object level.
-* Explicit DENY in an IAM policy will take precedence over a [bucket policy permission](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html).
-* An IAM principal can access an S3 object if the user IAM permissions allow it or the resource policy allos it and there is no explicit deny.
-* By default a bucket access is not public, using Block Public Access setting. Can be enforced at the account level.
 
-    ![](./images/s3-block-access.png)
+* An IAM principal can access an S3 object if the user IAM permissions allow it or the resource policy allows it and there is no explicit deny.
 
 ### S3 Website hosting
 
@@ -130,7 +142,16 @@ We can have static website on S3. Once html pages are uploaded, setting the prop
 
 ![](./images/s3-static-website.png)
 
-* **Cross Origin resource sharing CORS**: The web browser requests won’t be fulfilled unless the other origin allows for the requests, using CORS Headers `Access-Control-Allow-Origin`. If a client does a cross-origin request on our S3 bucket, we need to enable the correct CORS headers: this is done by adding a security policy with CORS configuration like:
+* Example of pushing a mkdocs site to s3 after enabling public access
+
+```sh
+mkdocs build
+aws s3 sync ./site s3://jbcodeforce-aws-studies 
+# The url is at the bottom of the bucket in the website under the Bucket website endpoint for example:
+http://jbcodeforce-aws-studies.s3-website-us-west-2.amazonaws.com
+```
+
+* **Cross Origin Resource Sharing CORS**: The web browser requests won’t be fulfilled unless the other origin allows for the requests, using CORS Headers `Access-Control-Allow-Origin`. If a client does a cross-origin request on our S3 bucket, we need to enable the correct CORS headers: this is done by adding a security policy with CORS configuration like:
 
 ```xml
 <CORSConfiguration>
@@ -143,31 +164,41 @@ We can have static website on S3. Once html pages are uploaded, setting the prop
 </CORSConfiguration>
 ```
 
-Finally S3 is eventually consistent.
-
 #### S3 replication
 
-Once versioning enabled, a bucket can be replicated in the same region or cross regions. S3 replication is done on at least 3 AZs. Each AZ can be up to 8 data centers. One DC down does not impact S3 availability. The replication is done asynchronously. SRR is for log aggregation for example, while CRR is used for compliance and DR or replication across accounts. Delete operations are not replicated.
+Once versioning enabled on source and target, a bucket can be replicated in the same region (SRR) or cross regions (CRR). S3 replication is done on at least 3 AZs. One DC down does not impact S3 availability. The replication is done asynchronously. SRR is for log aggregation for example or live replication between production and test, while CRR is used for compliance and DR or replication across AWS accounts. Delete operations are not replicated.
+
+Must give proper IAM permissions to S3. When replication is set, only new objects are replicated. To replicate exiting objects use S3 Batch Replication.
+
+S3 is eventually consistent.
+
+By default delete markers are not replicated by with the advanced options we can enable it.
 
 ### S3 Storage classes
 
-When uploading a document into an existing bucket we can specify the storage class for keep data over time. Different levels are offered with different cost and SLA.
+When uploading a document into an existing bucket we can specify the storage class to keep data over time. Different levels are offered with different cost and SLA.
 
  ![A](./images/storage-class.png)
 
-To prevent accidental file deletes, we can setup MFA Delete to use MFA tokens before deleting objects.
+S3 has 11 9's high durability of objects across multiple AZ. Availability varies with storage class, S3 standard is 99.99%. 
 
-Amazon **Glacier** is for archiving, like writing to tapes. 
+To prevent accidental file deletions, we can setup MFA Delete to use MFA tokens before deleting objects.
 
-We can transition objects between storage classes. For infrequently accessed object, move them to STANDARD_IA. For archive objects, that we don’t need in real-time, use GLACIER or DEEP_ARCHIVE. Moving objects can be automated using a lifecycle configuration
+Amazon **Glacier** is for archiving, like writing to tapes. The pricing includes storage and object retrieval cost. 
+
+We can transition objects between storage classes. For infrequently accessed object, move them to STANDARD_IA. For archive objects, that we don’t need in real-time, use GLACIER or DEEP_ARCHIVE. Moving objects can be automated using a lifecycle configuration.
 
 At the bucket level, a user can define lifecycle rules for when to transition an object to another storage class.
 
- ![B](./images/storage-rule.png)
+ ![B](./images/s3-lifecycle-rule-1.png)
+
+ and
+
+ ![B](./images/s3-lifecycle-rule-2.png)
 
 To improve performance, a big file can be split and then uploaded with local connection to the closed edge access and then use AWS private network to copy between buckets in different region.
 
-[S3 to Kafka lab](https://ibm-cloud-architecture.github.io/refarch-eda/use-cases/connect-s3/)
+[S3 to Kafka lab](https://jbcodeforce.github.io/refarch-eda/use-cases/connect-s3/)
 
 
 ## Elastic File System (EFS)

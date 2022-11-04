@@ -74,6 +74,21 @@ docker push  <...>.amazonaws.com/jbcodeforce/autonomous-car-ride:latest
 
 ## App Runner
 
+## [Servless Application Model](https://aws.amazon.com/serverless/sam/)
+
+SAM is an open-source framework for building serverless applications. It provides shorthand syntax to express functions, APIs, databases, and event source mappings.
+It simplify development and local testing.
+
+* [Install](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html)
+
+```sh
+brew install aws-sam-cli
+# or upgrade
+brew upgrade aws-sam-cli
+sam --version
+```
+
+* [Serverless pattern collection](https://serverlessland.com/patterns?framework=SAM)
 
 ## CodePipeline
 

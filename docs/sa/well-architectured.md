@@ -4,7 +4,6 @@ The [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected
 
 By using the Framework, customers will learn architectural best practices for designing and operating reliable, secure, efficient, and cost-effective systems in the cloud.
 
-
 Those are the questions to ask for designing a cloud native solution by understanding the potential impact . All hardware are becoming software.
 
 **Workload** represents interrelated applications, infrastructure, policies, governance and operations. 
@@ -13,7 +12,7 @@ Those are the questions to ask for designing a cloud native solution by understa
 
 When architecting technology solutions, never neglect the six pillars of:
 
-* Operational Excellence
+* [Operational Excellence](#operational-excellence)
 * Security
 * Reliability
 * Performance Efficiency
@@ -35,10 +34,10 @@ Support development and run workloads effectively, gain insight into their opera
 
 Four area of focus:
 
-* Organization: define clear responsabilities, roles, and success interdependencies
-* Prepare: design telemetry (logs, metrics...), improve flow, mitigate deployment risks, understand operational readiness
-* Operate: understand workload health, operation health, achievement of business outcome. Runbooks and playbooks should define escalation process, and define owneship for each action
-* Evolve: learn from experience, make improvements, share with teams
+* **Organization**: define clear responsabilities, roles, and success interdependencies
+* **Prepare**: design telemetry (logs, metrics...), improve flow, mitigate deployment risks, understand operational readiness
+* **Operate**: understand workload health, operation health, achievement of business outcome. Runbooks and playbooks should define escalation process, and define owneship for each action
+* **Evolve**: learn from experience, make improvements, share with teams
 
 **Design principles:**
 
@@ -67,6 +66,8 @@ CloudWatch is used to aggregate and present business, workload, and operations l
 | How do you evolve operations? |
 
 ### Security
+
+Emcompass the ability to protect data, systems and assets by controlling access and get visibility on who does what.
 
 * Design principles
 
@@ -122,6 +123,7 @@ Before architecting any system, foundational requirements that influence reliabi
 | How do you plan for disaster recovery (DR)? | Regularly back up your data and test your backup files to ensure that you can recover from both logical and physical errors |
 
 Use AZ, regions and bulkhead (elements of an application are isolated into pools so that if one fails, the others will continue to function)
+
 ### Performance efficiency
 
 Use computing resources efficiently to meet system requirements, and to maintain that efficiency as demand changes and technologies evolve.
@@ -150,10 +152,11 @@ In AWS, compute is available in three forms: instances, containers, and function
 
 Amazon **CloudWatch** is a monitoring and observability service that provides you with data and actionable insights to monitor your workload, respond to system-wide performance changes, optimize resource utilization, and get a unified view of operational health
 
-AWS [cloudformation]() to define infrastructure as code.
+AWS [cloudformation](https://aws.amazon.com/cloudformation/) to define infrastructure as code.
+
 ### Cost optimization
 
- run systems to deliver business value at the lowest price point
+Run systems to deliver business value at the lowest price point possible.
 
 * Design principles:
 
@@ -175,7 +178,7 @@ AWS [cloudformation]() to define infrastructure as code.
 
 ### Sustainability
 
- Focuses on environmental impacts, especially energy consumption and efficiency.
+Focuses on environmental impacts, especially energy consumption and efficiency.
 
  * Scale infrastructure to continually match user load and ensure that only the minimum resources required to support users are deployed
  * identify redundancy, underutilization, and potential decommission targets
@@ -192,5 +195,5 @@ AWS [cloudformation]() to define infrastructure as code.
 
 ## More readings
 
-* [system design exercices use AWS services](../../architecture/system-design/)
+* [system design exercices using AWS services](https://jbcodeforce.github.io/architecture/system-design/)
 * [Disaster Recovery AWS](https://aws.amazon.com/disaster-recovery/)
