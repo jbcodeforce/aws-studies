@@ -86,9 +86,13 @@ EBS snapshots can be used to create multiple new volumes, whether they’re in t
 Only for io1 or io2 EBS type, a volume can be attached to multiple EC2 instances (up to 16) running in the same AZ. Each instance has full R/W permission. 
 The file system must be cluster aware.
 
-## S3
+## S3 - Simple Storage Service
 
 [Amazon S3](https://s3.console.aws.amazon.com/s3/get-started?region=us-west-1) allows people to store objects (files) in **buckets** (directories), which must have a globally unique name (cross users!). They are defined at the region level. **Object** in a bucket, is referenced as a **key** which can be seen as a file path in a file system. The max size for an object is 5 TB but big file needs to be uploaded in multi-part using 5GB max size.
+
+S3 has 11 9's high durability of objects across **multiple AZ** (At least 3). Availability varies with storage class, S3 standard is 99.99%. 
+
+S3 supports **strong consistency** for all operations with a read-after-write consistency.
 
 S3 supports versioning at the bucket level. So file can be restored from previous version, and even deleted file can be retrieved from a previous version.
 
@@ -125,7 +129,7 @@ Within the S3 console we will see all buckets in one view (its is a global servi
 
     ![](./images/s3-bucket-policy.png)
 
-* By default, when another AWS account uploads an object to your S3 bucket, that account (the object writer) owns the object, has access to it, and can grant other users access to it through ACLs.
+* By default, when another AWS account uploads an object to your S3 bucket, that account (the object writer) owns the object, has access to it, and can grant other users access to it through ACLs. Bucket owner can take ownership of all objects. It is recommended to disable ACL and use identity and bucket policies. 
 * Objects can also be encrypted, and different mechanisms are available:
 
     * **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
@@ -164,13 +168,11 @@ http://jbcodeforce-aws-studies.s3-website-us-west-2.amazonaws.com
 </CORSConfiguration>
 ```
 
-#### S3 replication
+### S3 replication
 
 Once versioning enabled on source and target, a bucket can be replicated in the same region (SRR) or cross regions (CRR). S3 replication is done on at least 3 AZs. One DC down does not impact S3 availability. The replication is done asynchronously. SRR is for log aggregation for example or live replication between production and test, while CRR is used for compliance and DR or replication across AWS accounts. Delete operations are not replicated.
 
 Must give proper IAM permissions to S3. When replication is set, only new objects are replicated. To replicate exiting objects use S3 Batch Replication.
-
-S3 is eventually consistent.
 
 By default delete markers are not replicated by with the advanced options we can enable it.
 
@@ -180,13 +182,14 @@ When uploading a document into an existing bucket we can specify the storage cla
 
  ![A](./images/storage-class.png)
 
-S3 has 11 9's high durability of objects across multiple AZ. Availability varies with storage class, S3 standard is 99.99%. 
+With **Intelligent Tiering**, S3 automates the process of moving objects to the most cost-effective access tier based on access frequency. With **One Zone IA**, there is a risk of data loss in the event of availability zone destruction, and some objects may be unavailable when an AZ goes down. **Standard** is the most expensive storage option. **Standard IA** has a separate retrieval fee.
 
-To prevent accidental file deletions, we can setup MFA Delete to use MFA tokens before deleting objects.
-
-Amazon **Glacier** is for archiving, like writing to tapes. The pricing includes storage and object retrieval cost. 
+Amazon **Glacier** is for archiving, like writing to tapes. The pricing includes storage and object retrieval cost.
+**Glacier Deep Archive** (also named Bulk) is the lowest cost storage option for long-term archival and digital preservation. Deep Archive can take several hours (from 12 to 48 hours) depending on the retrieval tier.
 
 We can transition objects between storage classes. For infrequently accessed object, move them to STANDARD_IA. For archive objects, that we don’t need in real-time, use GLACIER or DEEP_ARCHIVE. Moving objects can be automated using a lifecycle configuration.
+
+To prevent accidental file deletions, we can setup MFA Delete to use MFA tokens before deleting objects.
 
 At the bucket level, a user can define lifecycle rules for when to transition an object to another storage class.
 
@@ -200,6 +203,26 @@ To improve performance, a big file can be split and then uploaded with local con
 
 [S3 to Kafka lab](https://jbcodeforce.github.io/refarch-eda/use-cases/connect-s3/)
 
+**Storage Class Analysis** can continuously monitor your bucket and track how your objects are accessed over time. This tool generates detailed reports on the percentage of data retrieved and by age groups. You can use this report to manage lifecycle policies. 
+
+**Storage Lens** provides a dashboard on all S3 activities and is automatically enabled.
+
+### Other features
+
+* **Secure FTP**: server to let you send file via SFTP
+* **Pre-signed URL**: share object with URL with temporary access. Can be done with the command: `aws s3 presign`
+* **S3 select and Glacier Select**: to retrieve a smaller set of data from an object using SQL.
+* **Amazon Macie**: is a machine learning security service to discover, classify and protect sensitive data stored in S3. 
+* **Object lock**: to meet regulatory requirements of write once read many storage.
+
+### FAQ
+
+???- "The last one MB of each file in bucket contains summary information that you want to expose in a search what to use?"
+    Byte-Range fetch allows you to read only a portion of data from the object. Since the summary is a small part of each, it is efficient to directly read the summary rather than downloading an entire object from S3. 
+
+???- "Pricing factors"
+    Frequency of access, storage cost, retrieval cost and retrieval time.
+    The S3 Intelligent Tiering automatically changes storage class depending on usage to optimize cost. S3 lifecycle is based on age and can be defined with rules.
 
 ## Elastic File System (EFS)
 
