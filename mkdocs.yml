@@ -14,6 +14,7 @@ nav:
       - Solution design: sa/sol-design.md
       - SA: sa/psa-role.md
       - SaaS: sa/saas.md
+      - Design templates: templ/index.md
   - Data:
       - RDS-Aurora-ES: data/index.md
       - RedShift: data/redshift.md

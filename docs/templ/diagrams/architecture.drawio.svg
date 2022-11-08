@@ -1,0 +1,144 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="741px" height="1301px" viewBox="-0.5 -0.5 741 1301" content="&lt;mxfile&gt;&lt;diagram id=&quot;uMlPsTr3UhGDriS_j-QK&quot; name=&quot;Page-1&quot;&gt;7Vhdj6M2FP01kdqXFR+BYR4nZLatNNOuBlV9NuCANcZGtmnC/vpeG0MgkJlsl11ppZUigo99sX3uub4XNn5cnX4TqC6feY7pxnPy08bfbzzv3vXgqoG2AwLP6YBCkLyD3DOQkM/Ygv2whuRYTgYqzqki9RTMOGM4UxMMCcGP02EHTqez1qjAMyDJEJ2j/5BclR0aBc4Z/x2Touxndh3bU6F+sAVkiXJ+HEH+48aPBeequ6tOMaaau56Xzu7jld5hYQIzdYuB3xn8i2hj9/ZQYJYjuzrV9luWR1JRxKC1O3CmEtvjQDsrCc2fUMsbPaVUKHvtW7uSC/IZxiMKXS4A0C2U9agX6qcRSmNOuTDz+DnC0SGbWCb6iXYugSXYfur3515Az+g0GfiEpOpXySlFtSSpWbc2rJAoCNtxpXhlB0kl+CseLSfMIpweoMfyhIXCp6tcu4MHQfmYV1iJFoZYg97nVvRb2zyeFeRGFivH6untkFVtMTx5mOwFVI5YAVu7Nlswn+1uYTJwyWQuRBUWDCm84w3L5VhLcDPa5RkyCltW23amtj8YMJ43mSKcQc8vgQ4S9utMfsC6mvmH8U6PIwVZCFFSMGhSfNBm2m0EwvfBworX+mE1yggrnsyY/faMvFg+NMTB9kBNiJYkzzHT2uIKKZQOAVBzwpQhLNjBD2iNnQ/BJoCFx9B2z2346eFCxZzBXhAxysGg0iPWSr1NZv6yzNqpC9/T1aWrx7Ka+PgNhwYzh/4tcYak1qGAm1r71P3p1K92auB9P6eG85wg4IxXcMY0Qnv2qBvwn3IkcqB2o018V7P2p3ap5yQKQyrWR1CIqtpQ4PxVYx3ieyKzRkoT74PZT2n8f2ncRbdJY+t9vTTuZ9KAvPtqJOA8CPx22TBN9IcDDrNsKefmd/ep41zWCv46SXh7924W9u6XAst9IwvfSl//jHFosTbmVY1YO8QKS6UNmT0UMYUOmgTbiFkOk1JVfX3VR0IGfGCxEAsVqFqbdxXSVVVr4aJGcdnR735BMK7gpUHA7ZS4d4+/NZzkzpwUN8Ks3HNAy7mEvIbN4fYRro1JdjrnyS9Qfx7gKN8uqT/yUj8M16HRn7I4VHzjItBfoDFw1uDRm/EIKUAgW+olL49zvkrNrL9vKvqQKT6W7xNKMf0EcjTm/j61ZfuVs34UEfAiQgkDivt3Qedmct9mN9y+W2IvkRuuwe38ve0ZDmKszFH8Y7N6KVrnO9I6f0GJGwmMYLEQ3D8UrResLpwE34zU+UvCjEuwILXU56SpLROoy3TPUaALftagYthVO93kOLl4C2REa5AxL66TVipcbczXKpPPV62h1s8i0UIyXi2LQPP88av7wnD+gug//gc=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs>
+        <clipPath id="mx-clip-4-61-172-26-0">
+            <rect x="4" y="61" width="172" height="26"/>
+        </clipPath>
+        <clipPath id="mx-clip-4-87-172-26-0">
+            <rect x="4" y="87" width="172" height="26"/>
+        </clipPath>
+        <clipPath id="mx-clip-4-113-172-42-0">
+            <rect x="4" y="113" width="172" height="42"/>
+        </clipPath>
+    </defs>
+    <g>
+        <path d="M 0 56 L 0 30 L 180 30 L 180 56" fill="#dae8fc" stroke="#6c8ebf" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 0 56 L 0 150 L 180 150 L 180 56" fill="none" stroke="#6c8ebf" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 0 56 L 180 56" fill="none" stroke="#6c8ebf" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" text-anchor="middle" font-size="12px">
+            <text x="89.5" y="47.5">
+                Agenda
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-61-172-26-0)" font-size="12px">
+            <text x="5.5" y="73.5">
+                Introduction (5 mn)
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-87-172-26-0)" font-size="12px">
+            <text x="5.5" y="99.5">
+                Usecase recap (15 mn)
+            </text>
+        </g>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" pointer-events="none" clip-path="url(#mx-clip-4-113-172-42-0)" font-size="12px">
+            <text x="5.5" y="125.5">
+                Architecture white boarding
+            </text>
+            <text x="5.5" y="139.5">
+                Next Steps &amp; Open Discussion
+            </text>
+        </g>
+        <path d="M 450 53 L 450 30 L 740 30 L 740 53" fill="#ffe6cc" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 450 53 L 450 240 L 740 240 L 740 53" fill="none" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 450 53 L 740 53" fill="none" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-weight="bold" pointer-events="none" text-anchor="middle" font-size="12px">
+            <text x="594.5" y="46">
+                Parking Area
+            </text>
+        </g>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 10px; margin-left: 250px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: nowrap;">
+                                AnyCompany  Design Session
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="250" y="14" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    AnyCompany  Design Session
+                </text>
+            </switch>
+        </g>
+        <path d="M 10 283 L 10 260 L 740 260 L 740 283" fill="#d5e8d4" stroke="#82b366" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 10 283 L 10 760 L 740 760 L 740 283" fill="none" stroke="#82b366" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 10 283 L 740 283" fill="none" stroke="#82b366" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-weight="bold" pointer-events="none" text-anchor="middle" font-size="12px">
+            <text x="374.5" y="276">
+                Current landscape / use cases
+            </text>
+        </g>
+        <ellipse cx="665" cy="317.5" rx="7.5" ry="7.5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <path d="M 665 325 L 665 350 M 665 330 L 650 330 M 665 330 L 680 330 M 665 350 L 650 370 M 665 350 L 680 370" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 377px; margin-left: 665px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: nowrap;">
+                                Operation SRE
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="665" y="389" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Opera...
+                </text>
+            </switch>
+        </g>
+        <ellipse cx="655" cy="467.5" rx="7.5" ry="7.5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <path d="M 655 475 L 655 500 M 655 480 L 640 480 M 655 480 L 670 480 M 655 500 L 640 520 M 655 500 L 670 520" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 527px; margin-left: 655px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: nowrap;">
+                                Marketing
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="655" y="539" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Marke...
+                </text>
+            </switch>
+        </g>
+        <ellipse cx="55" cy="337.5" rx="7.5" ry="7.5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <path d="M 55 345 L 55 370 M 55 350 L 40 350 M 55 350 L 70 350 M 55 370 L 40 390 M 55 370 L 70 390" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 397px; margin-left: 55px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: nowrap;">
+                                Customers
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="55" y="409" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Custo...
+                </text>
+            </switch>
+        </g>
+        <ellipse cx="330" cy="360" rx="60" ry="40" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="none"/>
+        <path d="M 10 823 L 10 800 L 740 800 L 740 823" fill="#ffe6cc" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 10 823 L 10 1300 L 740 1300 L 740 823" fill="none" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <path d="M 10 823 L 740 823" fill="none" stroke="#d79b00" stroke-miterlimit="10" pointer-events="none"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-weight="bold" pointer-events="none" text-anchor="middle" font-size="12px">
+            <text x="374.5" y="816">
+                System context
+            </text>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>

@@ -188,7 +188,7 @@ The following diagram illustrates classical VPC, as defined years ago, with one 
 *A subnet is assigned a /24 CIDR block, which means 8 bits encoding, but AWS uses 5 IP address for gateway, LB,... so the number of available is 256 - 5 = 251. To identify a single 32 bit IPv4 address, you can use /32 CIDR convention* 
 
 * non-default subnet has a private IPv4 address, but no public IPv4 
-* By default, AWS create a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
+* By default, AWS creates a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
 * AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.
 * You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC. Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway.
 * You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the internet gateway
@@ -210,6 +210,8 @@ Because the VPC is cross AZs, we need a router to route between subnets. (See [T
 You can have [VPC endpoint service]() to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in your VPC. You need to ensure there is one interface endpoint for each availability zone. You need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
 
 TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) establishes private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
+
+CIDR Blocks should not overlap between VPCs for setting up a peering connection. Peering connection is allowed within a region, across regions, across different accounts
 
 You can optionally connect your VPC to your own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of your data center. A VPN connection consists of a virtual private gateway (VGW) attached to your VPC and a customer gateway located in your data center. 
 

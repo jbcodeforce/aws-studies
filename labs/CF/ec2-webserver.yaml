@@ -1,0 +1,45 @@
+Parameters:  
+  KeyName:
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+    Type: AWS::EC2::KeyPair::KeyName
+Resources:
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [AWSRegionArch2AMI, !Ref 'AWS::Region', !FindInMap [AWSInstanceType2Arch, !Ref InstanceType, Arch]]      
+      InstanceType:
+        Ref: t2-micro
+      KeyName:
+        Ref: KeyName
+      SecurityGroups:
+      - Ref: WebServerSecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+           #!/bin/bash -xe
+           yum update -y
+           # Get Apache HTTPd
+           yum install -y httpd
+           # Start the service
+           systemctl start httpd
+           # Enable it cross restart
+           systemctl enable httpd
+           # Get the availability zone
+           EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+           # Change the home page by changing /var/www/html/index.html
+           echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
+           # or use the following
+           echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
+  WebServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Enable HTTP access via port 80 locked down to the load balancer + SSH access"
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 80
+        IpProtocol: tcp
+        ToPort: 80
+      - CidrIp: !Ref SSHLocation
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 22

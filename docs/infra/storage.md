@@ -132,11 +132,18 @@ Within the S3 console we will see all buckets in one view (its is a global servi
 * By default, when another AWS account uploads an object to your S3 bucket, that account (the object writer) owns the object, has access to it, and can grant other users access to it through ACLs. Bucket owner can take ownership of all objects. It is recommended to disable ACL and use identity and bucket policies. 
 * Objects can also be encrypted, and different mechanisms are available:
 
-    * **SSE-S3**: server-side encrypted S3 objects using keys handled & managed by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request.
-    * **SSE-KMS**: leverage AWS Key Management Service to manage encryption keys. `x-amz-server-side-encryption: "aws:kms"` header. Server side encrypted. It gives user control of the key rotation policy and audit trail.
-    * **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTP headers, for every HTTP request made. HTTPS is mandatory.
-    * **Client Side Encryption**: encrypt before sending object.
+    * **SSE-S3**: server-side encrypted S3 objects using keys handled & managed and own by AWS using AES-256 protocol must set `x-amz-server-side-encryption: "AES256"` header in the POST request to upload the file.
 
+    ![](./diagrams/sse-s3.drawio.png)
+
+    * **SSE-KMS**: leverage [AWS Key Management Service](https://us-west-2.console.aws.amazon.com/kms/home) to manage encryption keys. Use `x-amz-server-side-encryption: "aws:kms"` header in POST request. Server side encrypted. It gives user control of the key rotation policy and audit trail with [CloudTrail](https://us-west-2.console.aws.amazon.com/cloudtrail/home).
+    * **SSE-C**: when we want to manage our own encryption keys. Server-side encrypted. Encryption key must be provided in HTTPS headers, for every HTTPS request made. HTTPS is mandatory.
+
+    ![](./diagrams/sse-c.drawio.png)
+
+    * **Client Side Encryption**: encrypt before sending objects to S3.
+
+* Encryption can be done at the bucket level, or using bucker policies to refuse any PUT calls on S3 object without encryption header. 
 
 * An IAM principal can access an S3 object if the user IAM permissions allow it or the resource policy allows it and there is no explicit deny.
 
@@ -178,7 +185,7 @@ By default delete markers are not replicated by with the advanced options we can
 
 ### S3 Storage classes
 
-When uploading a document into an existing bucket we can specify the storage class to keep data over time. Different levels are offered with different cost and SLA.
+When uploading a document into an existing bucket, we can specify the storage class to keep data over time. Different levels are offered with different cost and SLA.
 
  ![A](./images/storage-class.png)
 
@@ -189,8 +196,6 @@ Amazon **Glacier** is for archiving, like writing to tapes. The pricing includes
 
 We can transition objects between storage classes. For infrequently accessed object, move them to STANDARD_IA. For archive objects, that we don’t need in real-time, use GLACIER or DEEP_ARCHIVE. Moving objects can be automated using a lifecycle configuration.
 
-To prevent accidental file deletions, we can setup MFA Delete to use MFA tokens before deleting objects.
-
 At the bucket level, a user can define lifecycle rules for when to transition an object to another storage class.
 
  ![B](./images/s3-lifecycle-rule-1.png)
@@ -199,7 +204,9 @@ At the bucket level, a user can define lifecycle rules for when to transition an
 
  ![B](./images/s3-lifecycle-rule-2.png)
 
-To improve performance, a big file can be split and then uploaded with local connection to the closed edge access and then use AWS private network to copy between buckets in different region.
+To prevent accidental file deletions, we can setup MFA Delete to use MFA tokens before deleting objects.
+
+To improve performance, a big file can be split and then uploaded with local connection to the closed edge access and then use AWS private network to copy between buckets in different region. In case of infinished parts use S3 Lifecycle policy to automate old/unfinished parts deletion.
 
 [S3 to Kafka lab](https://jbcodeforce.github.io/refarch-eda/use-cases/connect-s3/)
 
@@ -209,11 +216,18 @@ To improve performance, a big file can be split and then uploaded with local con
 
 ### Other features
 
-* **Secure FTP**: server to let you send file via SFTP
-* **Pre-signed URL**: share object with URL with temporary access. Can be done with the command: `aws s3 presign`
-* **S3 select and Glacier Select**: to retrieve a smaller set of data from an object using SQL.
+* **Secure FTP**: server to let you send file via SFTP.
+* **Requester Pay**: The requester (AWS authenticated) of the data pay for the cost of the request and the data download from the bucket, not the owner. 
+* **Pre-signed URL**: share object with URL with temporary access. Can be done with the command: `aws s3 presign`. Up to 168 hours valid.
+* **S3 Select and Glacier Select**: to retrieve a smaller set of data from an object using server-side SQL. Can filter by rows and columns. 80% cheaper and 400% faster as it uses less network transfer and less CPU on client side.
+* **Event Notifications**: on actions like S3:ObjectCreated, S3:ObjectRemoved, S3:ObjectRestore. Can be combined with name filtering. Events may be sent to SNS, SQS, Lambda function, and EventBridge.
 * **Amazon Macie**: is a machine learning security service to discover, classify and protect sensitive data stored in S3. 
-* **Object lock**: to meet regulatory requirements of write once read many storage.
+* **S3 Object lock**: to meet regulatory requirements of write once read many storage. Use _Legal Hold_ to prevent an object or its versions from being overwritten or deleted indefinitely and gives you the ability to remove it manually.
+* **S3 Byte-Range Fetches**: parallelize GET by requesting specific byte ranges. Used to speed up download or download partial data. 
+* **S3 Batch operations**: perform bulk operations on existing S3 objects with a single request. To get the list of object, use [S3 Inventory]().
+* **Server Access Logs**: used for audit purpose to track any request made to S3 in the same region, from any account. Logs are saved in another bucket. 
+* **S3 Glacier Vault Lock**: Adopt a Write Once Read Many) model, by creating a Vault Lock Policy. Data will never be deleted.
+* **S3 Access points:** Access points are named network endpoints that are attached to buckets that you can use to perform S3 object operations. An Access Point alias provides the same functionality as an Access Point ARN and can be substituted for use anywhere an S3 bucket name is normally used for data access. 
 
 ### FAQ
 
@@ -224,12 +238,15 @@ To improve performance, a big file can be split and then uploaded with local con
     Frequency of access, storage cost, retrieval cost and retrieval time.
     The S3 Intelligent Tiering automatically changes storage class depending on usage to optimize cost. S3 lifecycle is based on age and can be defined with rules.
 
+???- "Expected performance?"
+    S3 automatically scales to high request rates and latency around 100 tp 200ms. 5500 HET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
+
 ## Elastic File System (EFS)
 
 Fully managed NFS file system. [FAQ](https://aws.amazon.com/efs/faq/) for multi AZs. (3x gp2 cost), controlled by using security group. This security group needs to add in bound rule of type NFS connected / linked to the SG of the EC2.
 
 * Only Linux based AMI. POSIX filesystem. Encryption is supported using KMS.
-* 1000 concurrent clients
+* 1000 concurrent clients.
 * 10GB+/s throughput, bursting or provisioned, grow to petabyte.
 
 ![](./images/efs.png)
