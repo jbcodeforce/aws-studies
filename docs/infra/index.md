@@ -375,5 +375,28 @@ Automatically Register new instances to a load balancer.
 * Cool down period is set to 5 mn and will not change the number of instance until this period.
 * when an ALB validates an health check issue it terminates the EC2 instance.
 
+## [CloudFront](https://aws.amazon.com/cloudfront/)
+
+Content Delivery Network service with DDoS protection. It caches data to the edge to improve web browsing and application performance. 410+ Edge locations. This is a global service. 
+
+The origins of those files are S3 bucket objects, or Custom Origin resource accessible via HTTP (ALB, EC2...). 
+
+CloudFront keeps cache for the data read. For the edge to access the S3 bucket, it uses an origin access identity (OAI), managed as IAM role.
+
+For EC2 instance, the security group needs to accept traffic from edge location IP addresses.
+
+It is possible to control with geographic restriction using whitelist or blacklist.
+
+It also supports the concept of signed URL. When you want to distribute content to different user groups over the world, attach a policy with:
+
+* URL expiration
+* IP range to access the data from
+* Trusted signers (which AWS accounts can create signed URLs)
+* How long should the URL be valid for?
+* Shared content (movie, music): make it short (a few minutes)
+* Private content (private to the user): you can make it last for years
+* Signed URL = access to individual files (one signed URL per file)
+* Signed Cookies = access to multiple files (one signed cookie for many files)
+
 
 

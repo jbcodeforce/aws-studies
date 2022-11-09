@@ -2,23 +2,13 @@
 
 ## [SDK](https://aws.amazon.com/developer/tools/)
 
-Supports a lot of languages to integrate with a lot of managed services.
+Supports a lot of languages to integrate with a lot of managed services from your business application.
 
 ## [DevOps](https://aws.amazon.com/devops/)
 
-## [CloudFormation](https://aws.amazon.com/cloudformation)
+## [CloudFormation](./cloudFormation.md)
 
-Create and manage a collection of related AWS resources as code. The template defines AWS resources, called a stack, as Yaml or JSON. Can be uploaded from a S3 bucket or your local computer. 
-
-Stacks are defined in region, but StackSets helps to share stacks between accounts and regions.
-Stack can be created by other stack (nested).
-
-To create a stack from our template we can use CLI, API or the Console.
-
-Once stack is created, `Change Sets` may be applied to update the running resources. There is also the `Drift` detection feature to identify configuration changes between live resources and template. 
-It is possible to use a CloudFormation public registry, with 3nd party resources published in APN.
-
-Pay for what the resources it uses. 
+See [separate note](./cloudFormation.md).
 
 ## Elastic Beanstalk
 
@@ -53,14 +43,8 @@ Data transfer to services within the same region is free of charge.
 
 ### Demonstration
 
-* Create an ECR repository = to your application.
-
-* From an EC2 instance
-
-```sh
-```
-
-* From Laptop
+* Create one ECR repository per app or microservice.
+* From you Laptop you docker build with the ECR repo URL.
 
 ```sh
 aws ecr help
@@ -72,14 +56,37 @@ docker tag jbcodeforce/autonomous-car-ride:latest <...>.amazonaws.com/jbcodeforc
 docker push  <...>.amazonaws.com/jbcodeforce/autonomous-car-ride:latest
 ```
 
+If you want to run your application using docker engine inside of EC2, create a simple EC2 and then ssh to it and add docker, and do a docker run. Here are the installation you need:
+
+```sh
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+apt-cache madison docker-ce
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt install docker.io
+```
+
 ## App Runner
 
-## [Servless Application Model](https://aws.amazon.com/serverless/sam/)
+## [Chalice](https://aws.github.io/chalice/index.html)
+
+A python framework to build serverless applications. We can have a REST API deployed to Amazon API Gateway and AWS Lambda in minutes.
+
+## [Serverless Application Model](https://aws.amazon.com/serverless/sam/)
 
 SAM is an open-source framework for building serverless applications. It provides shorthand syntax to express functions, APIs, databases, and event source mappings.
-It simplify development and local testing.
+During deployment, SAM transforms and expands the SAM syntax into AWS CloudFormation syntax.
 
-* [Install](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html)
+SAM CLI provides a Lambda-like execution environment that lets you locally build, test, and debug applications defined by SAM templates or through the AWS Cloud Development Kit (CDK).
+
+* [Install](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-mac.html), which can be summarized as:
 
 ```sh
 brew install aws-sam-cli
@@ -90,18 +97,57 @@ sam --version
 
 * [Serverless pattern collection](https://serverlessland.com/patterns?framework=SAM)
 
-## CodePipeline
+## [CodePipeline](https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html)
 
-## CodeBuild
+AWS CodePipeline is a continuous delivery service.
+
+* [Getting started](https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html#welcome-get-started)
+* Pricing 1$ / month per pipeline. All pipelines are free for the first 30 days.
+
+## [CodeBuild](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html)
+
+AWS CodeBuild is a fully managed build service that compiles source code, runs tests, and produces software packages that are ready to deploy.
 
 ## CodeDeploy
 
-## CodeStar
+## [CodeStar](https://aws.amazon.com/codestar/)
+
+AWS CodeStar provides a unified user interface, enabling you to easily manage your software development activities in one place.
+
+To start a project, you can choose from a variety of AWS CodeStar templates for Amazon EC2, AWS Lambda, and AWS Elastic Beanstalk. You have the option to choose AWS CodeCommit or GitHub to use as your project’s source control.
+
+There is no additional charge for AWS CodeStar.
+
+* [Getting started](https://docs.aws.amazon.com/codestar/latest/userguide/getting-started-topnode.html)
+* [Product documentation](https://docs.aws.amazon.com/codestar/)
 
 ## CloudWatch
 
 ## [AWS Proton](https://docs.aws.amazon.com/proton/latest/userguide/Welcome.html)
 
-Automated infrastructure as code provisioning and deployment of serverless and container-based applications
+Automated infrastructure as code provisioning and deployment of serverless and container-based applications.
 
-## CDK
+## [Cloud Development Kit - CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html)
+
+The AWS CDK lets you build reliable, scalable, cost-effective applications in the cloud with the considerable expressive power of a programming language (Go, Java, Python, C#, JavaScript, Typescript).
+
+Build with high-level constructs that automatically provide sensible, secure defaults for your AWS resources, defining more infrastructure with less code.
+
+It uses AWS CloudFormation to perform infrastructure deployments predictably and repeatedly, with rollback on error. The output of an AWS CDK program is an AWS CloudFormation template.
+
+A CDK app defines one or more Stacks (= CloudFormation stack). A Stack includes Constructs. Each construct defines one or more concrete AWS resources.
+Constructs (and also stacks and apps) are represented as classes (types) in your programming language of choice. You instantiate constructs within a stack to declare them to AWS, and connect them to each other using well-defined interfaces.
+
+The AWS CDK Toolkit is a command line tool for interacting with CDK apps.
+
+```sh
+cdk --version
+```
+
+Deploying stacks with the AWS CDK requires dedicated Amazon S3 buckets and other containers to be available to AWS CloudFormation during deployment.
+
+* See [CDK workshops](https://cdkworkshop.com/)
+
+### CDK Python for an EC2
+
+See the [labs/cdk] folder.

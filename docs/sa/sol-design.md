@@ -1,6 +1,6 @@
 # Solution design with AWS services
 
-This section presents some example of SA designs.
+This section presents some examples of SA design.
 
 ## Stateless with persistence app
 

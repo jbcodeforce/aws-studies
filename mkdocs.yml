@@ -28,6 +28,7 @@ nav:
       - Data processing: playground/rt-data-processing.md
   - Coding:
       - Practices: coding/index.md
+      - CloudFormation: coding/cloudFormation.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material
@@ -39,7 +40,7 @@ theme:
       - content.tooltips
       # - navigation.tabs
       - navigation.instant
-      #- navigation.tracking
+      - navigation.tracking
       # - navigation.sections
       # - navigation.expand
       - navigation.tabs.sticky

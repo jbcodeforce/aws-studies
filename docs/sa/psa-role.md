@@ -20,3 +20,5 @@
 * relentlessly simplify and are able to deconstruct extraordinarily complex problems into their constituent building blocks, accelerating customer adoption and/or enabling teams across the organization to work in parallel on the problem.
 * recognize problems both inside and outside your area, build consensus around a vision, and drive resolution leveraging the right resources
 
+## Associate certification study
+

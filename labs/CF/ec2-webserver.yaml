@@ -1,4 +1,4 @@
-Parameters:  
+Parameters:
   KeyName:
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
@@ -26,9 +26,6 @@ Resources:
            systemctl enable httpd
            # Get the availability zone
            EC2-AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-           # Change the home page by changing /var/www/html/index.html
-           echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
-           # or use the following
            echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
   WebServerSecurityGroup:
     Type: AWS::EC2::SecurityGroup

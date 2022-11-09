@@ -10,7 +10,7 @@ Everything done in SaaS is about multi-tenancy, data isolation and sharing resou
 
 ## Agility
 
-Agility is the major requirements to go to SaaS, which means
+Agility is the major requirements to go to SaaS, which means:
 
 * on-boarding without friction: including environment provisioning
 * Frequent feature release: get to customer hand as quick as possible. Release on daily release can be possible.

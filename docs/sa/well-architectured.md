@@ -34,22 +34,24 @@ Support development and run workloads effectively, gain insight into their opera
 
 Four area of focus:
 
-* **Organization**: define clear responsabilities, roles, and success interdependencies
-* **Prepare**: design telemetry (logs, metrics...), improve flow, mitigate deployment risks, understand operational readiness
-* **Operate**: understand workload health, operation health, achievement of business outcome. Runbooks and playbooks should define escalation process, and define owneship for each action
-* **Evolve**: learn from experience, make improvements, share with teams
+* **Organization**: define clear responsabilities, roles, and success interdependencies.
+* **Prepare**: design telemetry (logs, metrics...), improve flow, mitigate deployment risks, understand operational readiness.
+* **Operate**: understand workload health, operation health, achievement of business outcome. Runbooks and playbooks should define escalation process, and define owneship for each action.
+* **Evolve**: learn from experience, make improvements, share with teams.
 
 **Design principles:**
 
-* Perform operations as code
-* Make frequent, small, reversible changes
+* Perform operations as code.
+* Make frequent, small, reversible changes.
 * Refine operations procedures frequently. Set up regular game days to review and validate that all procedures are effective.
 * Anticipate failure: Perform “pre-mortem” exercises to identify potential sources of failure so that they can be removed or mitigated. 
-* Learn from all operational failures
+* Learn from all operational failures.
 
 Use established runbooks for well-understood events, and use playbooks to aid in investigation and resolution of issues. 
 
-CloudWatch is used to aggregate and present business, workload, and operations level views of operations activities.
+AWS CloudWatch is used to aggregate and present business, workload, and operations level views of operations activities.
+
+#### Assessment
 
 | Questions to assess|
 | --- |
@@ -64,6 +66,10 @@ CloudWatch is used to aggregate and present business, workload, and operations l
 | How do you understand the health of your operations? |
 | How do you manage workload and operations events? |
 | How do you evolve operations? |
+
+#### Deeper dive
+
+* [100 and 200 labs](https://www.wellarchitectedlabs.com/operational-excellence/)
 
 ### Security
 
@@ -116,7 +122,7 @@ Before architecting any system, foundational requirements that influence reliabi
 |  How do you monitor workload resources? | Monitor Logs and metrics |
 | How do you design your workload to adapt to changes in demand? |  Add or remove resources automatically to adapt to the demand |
 | How do you implement change? |  Controlled changes to deploy new feature, patched or replaced in a predictable manner | 
-| How do you back up data? | Helps to addres [RTO and RPO](../../architecture/DR/#concepts) |
+| How do you back up data? | Helps to addres [RTO and RPO](https://jbcodeforce.github.io/architecture/DR/#concepts) |
 | How do you use fault isolation to protect your workload? | Components outside of the boundary should not be affected by the failure. |
 | How do you design your workload to withstand component failures? | | 
 | How do you test reliability? | testing is the only way to ensure that it will operate as designed |

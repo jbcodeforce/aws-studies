@@ -216,32 +216,11 @@ No need for complex ETL jobs to prepare your data for analytics.
 
 Integrated with AWS **Glue Data Catalog**, allowing you to create a unified metadata repository across various services, crawl data sources to discover schemas and populate your Catalog with new and modified table and partition definitions, and maintain schema versioning.
 
-## CloudFront
-
-CDN service with DDoS protection. It caches data to the edge to improve web browsing and app performance. 216 Edge locations.
-
-The origins of those files are S3 buckets, Custom resource accessible via HTTP. CloudFront keeps cache for the data read. For the edge to access the S3 bucket, it uses an origin access identity (OAI), managed as IAM role.
-
-For EC2 instance, the security group needs to accept traffic from edge location IP addresses.
-
-It is possible to control with geo restriction.
-
-It also supports the concept of signed URL. When you want to distribute content to different user groups over the world, attach a policy with:
-
-* URL expiration
-* IP ranges to access the data from
-* Trusted signers (which AWS accounts can create signed URLs)
-* How long should the URL be valid for?
-* Shared content (movie, music): make it short (a few minutes)
-* Private content (private to the user): you can make it last for years
-* Signed URL = access to individual files (one signed URL per file)
-* Signed Cookies = access to multiple files (one signed cookie for many files)
+--- 
 
 
 
-
-
-### EventBridge
+## EventBridge
 
 [EventBridge](https://aws.amazon.com/eventbridge/) is a serverless event bus that makes it easier to 
 build event-driven applications at scale using events generated from your applications, integrated Software-as-a-Service (SaaS) applications, and AWS services.
