@@ -7,12 +7,12 @@
 1. Create a virtualenv on MacOS and Linux:
 
     ```sh
-    $ python3 -m venv .venv
+    python3 -m venv .venv
     ```
 1. Activate your virtualenv.
 
     ```sh
-    $ source .venv/bin/activate
+    source .venv/bin/activate
     ```
 1. Install the required python modules.
 

@@ -10,6 +10,12 @@ Supports a lot of languages to integrate with a lot of managed services from you
 
 See [separate note](./cloudFormation.md).
 
+## [CodeCommit](https://docs.aws.amazon.com/codecommit/)
+
+Version control fully managed service to manage Git repositories. HA, secured, encryption at rest and in transit. 
+
+Be sure to get the Git Credentials for the IAM user we will use to do the Git repository actions. 
+
 ## Elastic Beanstalk
 
 [Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk) is a developer centric view of the deployment of web apps on AWS using EC2, ALB, ELB, RDS, ASG...
@@ -138,16 +144,78 @@ It uses AWS CloudFormation to perform infrastructure deployments predictably and
 A CDK app defines one or more Stacks (= CloudFormation stack). A Stack includes Constructs. Each construct defines one or more concrete AWS resources.
 Constructs (and also stacks and apps) are represented as classes (types) in your programming language of choice. You instantiate constructs within a stack to declare them to AWS, and connect them to each other using well-defined interfaces.
 
-The AWS CDK Toolkit is a command line tool for interacting with CDK apps.
+Here is an example of constructs defined in a python class constructor for a lambda function and an API Gateway
+
+```python
+class MyLambdaStack(Stack):
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+        my_lambda = _lambda.Function(self, 'HelloHandler',
+            runtime=_lambda.Runtime.PYTHON_3_7,
+            code=_lambda.Code.from_asset('lambda'),
+            handler='hello.handler',
+        )
+
+        apigw.LambdaRestApi(
+            self, 'Endpoint',
+            handler=my_lambda,
+        )
+```
+
+The AWS CDK Toolkit is a command line tool for interacting with CDK apps. Needs to be in the folder of the `cdk.json` file.
 
 ```sh
 cdk --version
+# Get the CloudFormation template
+cdk ls
 ```
 
-Deploying stacks with the AWS CDK requires dedicated Amazon S3 buckets and other containers to be available to AWS CloudFormation during deployment.
+The AWS CDK is shipped with an extensive library of constructs called the [AWS Construct Library](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-construct-library.html). The construct library is divided into modules, one for each AWS service
+
+The first time you deploy an AWS CDK app into an environment (account/region), you’ll need to install a “bootstrap stack”. This stack includes resources that are needed for the toolkit’s operation. It requires dedicated Amazon S3 buckets to store template and assets. 
+
+![](./images/cdk-toolkit-cf.png)
 
 * See [CDK workshops](https://cdkworkshop.com/)
 
 ### CDK Python for an EC2
 
-See the [labs/cdk] folder.
+Summary of the actions to jumpstart a sample app in python
+
+```sh
+# Create a python CDK project under a new created folder. The name of the folder defines the name of the app.
+cdk init sample-app --language python
+# create virtual env
+python3 -m venv .venv
+# Active the virtual env
+source .venv/bin/activate
+# Install dependencies
+pip install -r requirements.txt
+# Synthesize the Cloud Formation template 
+cdk synth
+# The first time bootstrap the stack - which will create a CF CDKToolkit
+cdk bootstrap
+# Deploy the stack
+cdk deploy
+# Update the code and do a partial (hotswappable) deployment
+cdk deploy --hotswap
+
+```
+
+Then go to the CloudFormation console and look at the deployed stack, and then resources.
+
+See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk) folder for some examples of CDK stack definitions.
+
+### Useful commands
+
+ * `cdk ls`          list all stacks in the app
+ * `cdk synth`       emits the synthesized CloudFormation template
+ * `cdk deploy`      deploy this stack to your default AWS account/region
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk docs`        open CDK documentation
+ * `cdk watch`       monitors your code and assets for changes and attempts to perform a deployment automatically when a change is detected
+ * `cdk destroy`    remove all the resources/stacks. Most resources will get deleted upon stack deletion. CloudWatch logs that are permanently retained
+
+### Other tools
+
+* [cdk-dynamo-table-viewer](https://pypi.org/project/cdk-dynamo-table-view/) An AWS CDK construct which exposes a public HTTP endpoint which displays an HTML page with the contents of a DynamoDB table in your stack
