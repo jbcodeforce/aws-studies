@@ -16,6 +16,8 @@ Version control fully managed service to manage Git repositories. HA, secured, e
 
 Be sure to get the Git Credentials for the IAM user we will use to do the Git repository actions. 
 
+* [Setup SSH connection to CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-ssh-unixes.html)
+
 ## Elastic Beanstalk
 
 [Elastic Beanstalk](https://docs.aws.amazon.com/elasticbeanstalk) is a developer centric view of the deployment of web apps on AWS using EC2, ALB, ELB, RDS, ASG...
@@ -218,4 +220,6 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 
 ### Other tools
 
-* [cdk-dynamo-table-viewer](https://pypi.org/project/cdk-dynamo-table-view/) An AWS CDK construct which exposes a public HTTP endpoint which displays an HTML page with the contents of a DynamoDB table in your stack
+* [cdk-dynamo-table-viewer](https://pypi.org/project/cdk-dynamo-table-view/) An AWS CDK construct which exposes a public HTTP endpoint which displays an HTML page with the contents of a DynamoDB table in your stack.
+* [CDK samples in Python](https://github.com/aws-samples/aws-cdk-examples/tree/master/python)
+* [Constructs HUB](https://constructs.dev/)

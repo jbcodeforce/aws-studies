@@ -259,29 +259,88 @@ Fully managed NFS file system. [FAQ](https://aws.amazon.com/efs/faq/) for multi 
 * Is defined in a subnet, so the EC2 needs to specify in which subnet it runs.
 
 
-## Snowball
+## [Snowball](https://aws.amazon.com/snowball/)
 
-Move TB of data in and out AWS using physical device to ship data. The edge has 100TB and compute power to do some local processing on data. Snow mobile is a truck with 100 PB capacity. Once on site, it is transferred to S3.
+Move TB of data in and out AWS using physical device to ship data as doing over network will take a lot of time ,and may fail. 
 
-Snowball Edge brings computing capabilities to allow data pre-processing while it's being moved in Snowball, so we save time on the pre-processing side as well.
+* The Snowball Edge has 100TB and compute power to do some local processing on data.  With Compute Optimized version there are 52 vCPUs, 200GB of RAM, optional GPU, 42TB. And for Storage Optimized version, 40 vCPUs,, 80 GB RAM, and object storage clustering.
+* Snowcone: smaller portable, secured, rugged, for harsh environments. Limited to 8TB. We can use AWS DataSync to sned data. 2 CPUs, 4GB of mem. 
+* SnowMobile is a truck with 100 PB capacity. Once on site, it is transferred to S3.
+
+Can be used for Edge Computing when there is no internet access.
+
+* All can run EC2 instances and AWS lambda function using AWS IoT Greengrass.
+* for local configuration of the snowball, there is a the AWS OpsHub app.
+
+## [FSx](https://aws.amazon.com/fsx/)
+
+A managed service for file system technology from 3nd party vendors like Lustre, NetApp ONTAP, Windows File Server, OpenZFS...
+
+* For Windows FS, supports SMB protocol and NTFS. Can be mounted to Linux EC2. 10s GB/s IOPS and 100s PB of data. Can be configured on multi AZ.
+* Data is backed-up on S3
+* Lustre is a linux clustered FS and supports High Performance Computing, POSIX... sub ms latency, 100s GB/s IOPS. 
+* NetApp ONTAP: supports NFS, SMB, iSCSI protocols. Supports storage auto scaling, and point in time instantaneous cloning.
+* OpenZFS compatibles with NFS, scale to 1 million IOPS with < 0,5ms latency, and point in time instantaneous cloning. 
+
+Deployment options:
+
+* Scratch FS is used for temporary storage with no replication. Supports High burst
+* Persistent FS: long-term storage, replicaed in same AZ
 
 ## Hybrid cloud storage
 
-Storage gateway expose an API in front of S3. Three gateway types:
+AWS [Storage Gateway](https://aws.amazon.com/storagegateway/) exposes an API in front of S3 to provide on-premises applications with access to virtually unlimited cloud storage.
 
-* **file**: S3 bucket accessible using NFS or SMB protocols. Controlled access via IAM roles. File gateway is installed on-premise and communicate with AWS.
-* **volume**: this is a block storage using iSCSI protocol. On-premise and visible as a local volume backed by S3.
-* **tape**: same approach but with virtual tape library. Can go to S3 and Glacier.
+Three gateway types:
 
-### Storage comparison
+* **file**: FSx or S3 . 
 
-* S3: Object Storage
-* Glacier: Object Archival
-* EFS: Network File System for Linux instances, POSIX filesystem
-* FSx for Windows: Network File System for Windows servers
-* FSx for Lustre: High Performance Computing Linux file system
-* EBS volumes: Network storage for one EC2 instance at a time
-* Instance Storage: Physical storage for your EC2 instance (high IOPS)
-* Storage Gateway: File Gateway, Volume Gateway (cache & stored), Tape Gateway
-* Snowball / Snowmobile: to move large amount of data to the cloud, physically
-* Database: for specific workloads, usually with indexing and querying
+    * S3 buckets are accessible using NFS or SMB protocols. Controlled access via IAM roles. File gateway is installed on-premise and communicate with AWS via HTTPS.
+    * FSx, storage gateways brings cache of last accessed files.
+
+* **volume**: this is a block storage using iSCSI protocol. On-premise and visible as a local volume backed by S3. Two volume types:
+
+    * Cached volumes: Your primary data is stored in Amazon S3 while your frequently acccessed data is retained locally in the cache for low-latency access.
+    * Stored volumes: Your entire dataset is stored locally while also being asynchronously backed up to Amazon S3.
+
+* **tape**: same approach but with virtual tape library. Can go to S3 and Glacier. Works with existing tape software.
+* Hardware appliance to run a Storage gateway in the on-premises data center. 
+
+## [Tranfer Family](https://docs.aws.amazon.com/transfer/latest/userguide)
+
+To transfer data with FTP, FTPS, SFTP protocols to AWS Storage services like S3, EFS
+
+## [DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/)
+
+Move a large amount of data to and from on-premises (using agent) to AWS, or to AWS to AWS different storage services.
+
+Can be used for:
+
+* Data Migration with automatic encryption and data integrity validation
+* Archive cold data
+* Data protection
+* Data movement for timely in-cloud processing
+
+Replication tasks can be scheduled.
+
+It keeps the metadata and permissions about the file. 
+
+One agent task can get 10 GB/s
+
+![](./diagrams/datasync.drawio.png)
+
+## Storage comparison
+
+* S3: Object Storage.
+* Glacier: Object Archival.
+* EFS: Network File System for Linux instances, POSIX filesystem.
+* FSx for Windows: Network File System for Windows servers.
+* FSx for Lustre: High Performance Computing Linux file system.
+* FSx for NetApp: High OS compatibility.
+* FSx for OpenZFS: for ZFS compatibility.
+* EBS volumes: Network storage for one EC2 instance at a time.
+* Instance Storage: Physical storage for your EC2 instance (high IOPS).
+* Storage Gateway: File Gateway, Volume Gateway (cache & stored), Tape Gateway.
+* Snowcone, Snowball / Snowmobile: to move large amount of data to the cloud, physically.
+* Database: for specific workloads, usually with indexing and querying.
+* DataSync: schedule data sync from on-premises to AWS or AWS to AWS services.
