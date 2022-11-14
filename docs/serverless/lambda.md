@@ -64,6 +64,8 @@ Can be used for:
 * search engine optimization (SEO)
 * intelligently route across origins and data centers
 * bot mitigation at the Edge
+* real time image transformation.
+* user authentication and authorization
 
 ## More reading
 

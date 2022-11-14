@@ -186,6 +186,7 @@ Summary of the actions to jumpstart a sample app in python
 
 ```sh
 # Create a python CDK project under a new created folder. The name of the folder defines the name of the app.
+# It uses the sample-app template. If template is not specified the stack will have only constructor
 cdk init sample-app --language python
 # create virtual env
 python3 -m venv .venv
@@ -218,8 +219,9 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
  * `cdk watch`       monitors your code and assets for changes and attempts to perform a deployment automatically when a change is detected
  * `cdk destroy`    remove all the resources/stacks. Most resources will get deleted upon stack deletion. CloudWatch logs that are permanently retained
 
-### Other tools
+### Other tools - samples
 
 * [cdk-dynamo-table-viewer](https://pypi.org/project/cdk-dynamo-table-view/) An AWS CDK construct which exposes a public HTTP endpoint which displays an HTML page with the contents of a DynamoDB table in your stack.
 * [CDK samples in Python](https://github.com/aws-samples/aws-cdk-examples/tree/master/python)
 * [Constructs HUB](https://constructs.dev/)
+* [A Flask app for orders management with DynamoDB as persistence - ECR - CDK](https://github.com/jbcodeforce/python-code/tree/master/aws/dynamoDB)
