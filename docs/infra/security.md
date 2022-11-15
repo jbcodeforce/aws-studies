@@ -25,7 +25,7 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 
 ## Organization
 
-[AWS Organization](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. 
+[AWS Organization](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. Using accounts helps to isolate AWS resources.
 
 **Concepts:**
 
@@ -36,6 +36,9 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 * AWS Organization exposes APIs to automate account management.
 * It helps consolidating billing.
 
+### Deeper Dive
+
+* [Presentation on organization](https://broadcast.amazon.com/videos/192190)
 
 ## IAM Identity and Access Management
 

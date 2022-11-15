@@ -20,6 +20,50 @@
 
 ## Discover architecture requirements
 
-This is a simple agenda, parking lots, use cases and system context map in one drawio.
+This is a simple agenda, parking lots zone, use cases and system context map in one drawio template:
 
 ![](./diagrams/architecture.drawio.svg)
+
+Be sure to address:
+
+* Do you understand the business? 
+* Do you know how they make money?
+* Do you understand the problem?
+* Who will be using this/who is the customer?
+* What is the expectation from the customer?
+* What does success look like?
+* Does the customer have an established timeline or deadline?
+
+Use [Well-Architected Pillars](../sa/well-architectured.md) to approach a problem:
+
+* **Cost:**
+
+    * What’s their budget? 
+    * How do they make money? 
+
+* **Reliability:** 
+
+    * What happens if this app fails? 
+    * Is there an SLA, internal or external? 
+
+* **Operations:**
+
+    * What does the team look like that is building this? 
+    * Who will support it once it’s built? 
+    * Do they need help? 
+    * Is there a partner they work with?
+
+* **Performance:** 
+
+    * Are there performance requirements? 
+    * How fast does it need to be? 
+    * Do they already have a similar app? 
+    * Have they had any problems with it?
+
+* **Security:**
+
+    * Are there security or compliance requirements? 
+    * Any PII data? 
+    * Do you have any upcoming audits? 
+    * How do those tend to do? 
+    * Do they need help? 

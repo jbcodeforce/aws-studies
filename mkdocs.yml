@@ -14,9 +14,10 @@ nav:
       - Solution design: sa/sol-design.md
       - SA: sa/psa-role.md
       - SaaS: sa/saas.md
-      - Design templates: templ/index.md
+      - Conduct Design session: templ/index.md
   - Data:
       - RDS-Aurora-ES: data/index.md
+      - Data Lake: data/data-lake.md
       - RedShift: data/redshift.md
   - Serverless:
       - Introduction: serverless/index.md
@@ -29,6 +30,7 @@ nav:
   - Coding:
       - Practices: coding/index.md
       - CloudFormation: coding/cloudFormation.md
+      - CDK: coding/cdk.md
   - Return to main: https://jbcodeforce.github.io
 theme: 
   name: material

@@ -13,11 +13,11 @@ Those are the questions to ask for designing a cloud native solution by understa
 When architecting technology solutions, never neglect the six pillars of:
 
 * [Operational Excellence](#operational-excellence)
-* Security
-* Reliability
-* Performance Efficiency
-* Cost Optimization
-* Sustainability 
+* [Security](#security)
+* [Reliability](#reliability)
+* [Performance Efficiency](#performance-efficiency)
+* [Cost Optimization](#cost-optimization)
+* [Sustainability](#sustainability)
 
 ## Design Principles
 
