@@ -90,7 +90,7 @@ Not expose to public internet. Only visible in the VPC.
 
 See [Playground RDS](../playground/rds.md)
 
-* [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride)
+* [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride) uses PostgreSQL in RDS and quarkus app.
 
 ## Aurora
 
@@ -167,26 +167,6 @@ It does not support IAM authentication. But we can set a security token at the R
 
 There is the Redis Sorted Sets to guarantee both uniqueness and element ordering. Each time a new element is added to the cache, it is ranked and added in the correct order.
 
-## DynamoDB
-
-AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Fully managed,  Highly Available with replication across multiple AZs  in a AWS Region by default, Read and Writes are decoupled, and DAX can be used for read cache. 
-
-Single digit ms latency, even with increased number of requests. Can support millions of requests per second, trillions of row, 100s od TB storage. Data is stored on solid-state disks (SSDs).
-
-It is integrated with IAM for authentication and authorization.
-
-A table is a collection of items, and each item is a collection of attributes. DynamoDB uses primary keys to uniquely identify each item in a table and secondary indexes to provide more querying flexibility
-
-The read operations can be eventually consistent or strongly consistent.
-
-DynamoDB Streams to integrate with AWS Lambda.
-
-Use case is when the data schema may change overtime. 
-
-There is two capacities modes: 
-
-* provisioned: where you specify and pay for read capacity units and write capacity units. Need to plan beforehand. Less expensive
-* on-demand: read and writes automatically scale up/down with your workloads. Better for unpredictable workloads. More expensive.
 
 ## DocumentDB
 

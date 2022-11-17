@@ -14,9 +14,11 @@ nav:
       - Solution design: sa/sol-design.md
       - SA: sa/psa-role.md
       - SaaS: sa/saas.md
+      - Resilience: sa/resilience.md
       - Conduct Design session: templ/index.md
   - Data:
       - RDS-Aurora-ES: data/index.md
+      - DynamoDB: data/dynamodb.md
       - Data Lake: data/data-lake.md
       - RedShift: data/redshift.md
   - Serverless:

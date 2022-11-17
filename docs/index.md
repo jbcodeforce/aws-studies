@@ -130,7 +130,7 @@ Includes four key areas:
 
 ## Global Infrastructure
 
-AWS is a [global infrastructure](https://infrastructure.aws) with 27 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
+AWS is a [global infrastructure](https://infrastructure.aws) with 28 regions and 2 to 6 separated availability zones per region. Ex: us-west-1-2a. 
 
 ![](./diagrams/global-infra.drawio.svg)
 

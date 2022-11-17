@@ -130,6 +130,8 @@ Before architecting any system, foundational requirements that influence reliabi
 
 Use AZ, regions and bulkhead (elements of an application are isolated into pools so that if one fails, the others will continue to function)
 
+* [Lab from AWS](https://www.wellarchitectedlabs.com/reliability/)
+
 ### Performance efficiency
 
 Use computing resources efficiently to meet system requirements, and to maintain that efficiency as demand changes and technologies evolve.
