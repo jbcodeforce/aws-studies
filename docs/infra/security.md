@@ -25,16 +25,32 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 
 ## Organization
 
-[AWS Organization](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. Using accounts helps to isolate AWS resources.
+[AWS Organization](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. Using accounts helps to isolate AWS resources. It is a global service.
 
-**Concepts:**
+### Concepts
 
+![](./diagrams/organization.drawio.png)
+
+* The main account is the management account where other added accounts are members.
 * An organization is a hierarchical structure (a tree) with a root and Organization units (OU), and AWS accounts.
 * The `root` user is a single sign-in identity that has complete access to all AWS services and resources in any accounts.
 * Organization unit (OU) contains AWS Accounts or other OUs. It can have only one parent.
+
+![](./images/organization.png)
+
+* OU can be per team, per line of business.
 * We can create service control policies (SCPs) cross AWS accounts to deny access to AWS services for individuals or group of accounts in an OU. 
 * AWS Organization exposes APIs to automate account management.
-* It helps consolidating billing.
+* It helps consolidating billing accross all the accounts and user can get pricing benefits from aggregate usage. Shared reserved instances and Saving Plans discounts apply across accounts. Can defined Blocklist or Allowlist strategies.
+
+### Advantages
+
+* Better isolation than VPC.
+* Can use tagging for billing purpose
+* Enable CloudTrail for all accounts and get report in S3
+* Can define service control policies (SCP) as IAM policies applied to OU or Accounts to restric Users and Roles. Explicit allow. The root OU will have `FullAWSAccess` SCP. 
+
+![](./images/org-policies.png)
 
 ### Deeper Dive
 

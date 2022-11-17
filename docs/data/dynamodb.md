@@ -1,6 +1,6 @@
 # [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html)
 
-AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Fully managed,  Highly Available with replication across multiple AZs in one AWS Region by default, Read and Writes are decoupled, and DAX can be used for read cache. 
+AWS proprietary NoSQL database, Serverless, provisioned capacity, auto scaling, on demand capacity. Fully managed,  Highly Available with replication across multiple AZs in one AWS Region by default, Read and Writes are decoupled, and DAX can be used for delivering a read cache. 
 
 Single digit ms latency, even with increased number of requests. Can support millions of requests per second, trillions of row, 100s of TB storage. Data is stored on solid-state disks (SSDs) and may be encrypted at rest.
 
@@ -12,8 +12,6 @@ A table is a collection of items, and each item is a collection of attributes. D
 Useful when the solution does not want to design a data schema upfront and which may change overtime. 
 
 The read operations can be eventually consistent or strongly consistent.
-
-DynamoDB Streams to integrate with AWS Lambda.
 
 There is two capacities modes: 
 

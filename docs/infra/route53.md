@@ -1,16 +1,15 @@
-# Route 53
+# [Route 53](https://aws.amazon.com/route53/features/)
 
 A highly available, scalable, fully manager, and authoritative (we can update DNS records) DNS. It is also a Domain Registra. 
 A lot of routing types to respond to DNS query by taking into account % of traffic, latency, healthchecks...
 
 It uses the concept of `hosted zone` which is a "container" that holds information about how you want to route traffic for a domain or subdomain. The zone can be public (internet facing) or private (inside VPC). Need a DNS domain.
 
-A domain is at least 12$ a year and Route 53 fees is $0.5 per month per hosted zone.
+A domain is at least 12$ a year and Route 53 fees is $0.5 per month per hosted zone. See [Pricing page](https://aws.amazon.com/route53/pricing/).
 
 ## DNS
 
-DNS is a collection of rules and records which helps clients understand
-how to reach a server through URLs. Here is a quick figure to summary the process, which in fact should also have the root server (for the `.com`... resolution) and TLD server (for `amazon` or `google`). The SLD server is the one presented in the figure.
+DNS is a collection of rules and records which helps clients understand how to reach a server through URLs. Here is a quick figure to summarize the process, which in fact should also have the root server (for the `.com`... resolution) and TLD server (for `amazon` or `google`). The SLD server is the one presented in the figure.
 
  ![7](./images/dns.png)
 
@@ -78,3 +77,4 @@ Eight types:
 1. The **Multi Value** routing policy is used to access multiple resources. The record set, associates a Route 53 health checks with the records. The client on DNS request gets up to 8 healthy records returned for each Multi Value query. If one fails then the client can try one other IIP @ from the list.
 
 If you used another domain registra, it is possible to get the list of AWS DNS server associated to the hosted public zone, and then configure your registra for the NS records to go to those DNS servers. 
+

@@ -2,25 +2,41 @@
 
 A licensing and delivery model whereby software is centrally managed and hosted by a provider and available to customers on a subsciption or pay-per-user basis.
 
-Everything done in SaaS is about multi-tenancy, data isolation and sharing resources like compute, storage. 
+## Concepts
 
-![](./diagrams/saas-core.drawio.png)
+Everything done in SaaS is about multi-tenancy, data isolation and sharing resources like compute, networking and storage as part of the infrastructure. 
+
+![](./diagrams/saas-core.drawio.png){ width=500 }
+
+**Figure 1**
+
+As illustrated in the figure above an onboarding / shared service component is needed to manage the multi-tenant platform. Any software vendor is bringing their own solution and it is highlighted as application specific domain. If we take a big data platform provider such application domain may look like the following architecture, which supports a map/reduce job execution environment with data ingestion, transformation and persistence:
+
+![](./diagrams/big-data-isv-starting.drawio.png)
+
+**Figure 2**
 
 Footprint scales dynamically based on aggregate load of all tenants. All tenants are managed via a single operational control plane or lens.
 
-Analytics are important to understand how our customers are using our platform, and how to optimize the usage and platform.
+The Analytic component is very important to understand how the vendor's customers are using the platform, and how to optimize the usage of the platform.
 
-Features are deployed to all tenants, more quickly via DevOps adoption. 
+For the application domain, new features are deployed to all tenants, more quickly via DevOps adoption. 
+
+### Multi tenancy support approaches
 
 There are multiple patterns for multi-tenancy, some linked to business requirements and sometime technical reasons: 
 
 ![](./diagrams/saas-tenant-patterns.drawio.png)
 
+**Figure 3**
+
 * **Silo**: Each tenant gets unique set of infrastructure resources. As environments are partitioned, there is no cross-tenant impacts. Agility is compromised. Needed for strong regulatory and compliance. We can tune the configuration per tenant and get specific SLAs. It costs more and operations are more complex. The analytics services need to aggregate from those silos. Tenant may be mapped to AWS Account and a linked account to aggregate billing. Or based in VPC.
 * **Bridge**: a mix of silo and pool. Can be applied to the different level of the solution architecture, for example, web and data tier can be pool, and app layer in silo.
 * **Pool**: shared resources, centralized management, simplified deployment. Compliance is a challenge and cross-tenant impacts with a all or nothing availability. The advantages are cost optimization and operation. 
 
-## Agility
+It is important to decide what approach the SaaS architecture needs to support.
+
+## Needs
 
 Agility is the major requirements to go to SaaS, which means:
 
@@ -35,37 +51,71 @@ The important metrics to consider:
 * Survey and customer satisfaction.
 * Engagement data.
 
-## Landscape
+## Architecture Landscape
 
-The following figure illustrates the classical components of a SaaS architecture:
+There are a set of shared services that we will find in any SaaS solution which supports the high level view introduced in figure 1. Those services are:
 
-![](./diagrams/saas-landscape.drawio.svg)
-
-* **Frictionless On-Boarding**: complex solution to provision all the environment.
-* **Authentication**: identity is a very important element of SaaS. Connect users to tenant.
-* **App services**: build microservices with multitenancy.
-* **Storage partitioning**: or data partitioning, how to isolate data for tenant.
-* **Tenant isolation**: needs to have strong boundaries, not just authentication. Need to classify your tenants and build APIs to support those classifications. Apply policies.
-* The administration services are supporting the SaaS business. 
+* **Admin Console**: SaaS provider administrative application. It may include a landing web app to get tenant registering. The administration services are supporting the SaaS business. 
+* **On-Boarding**: complex solution to provision all the environment.
+* **Identity**: identity is a very important element of SaaS. Connect users to tenant.
+* **Tenant management**: as a multi-tenancy platform, tenant is a main business entities.
+* **User management**: Each tenant has one to many users of the vendor software.
 * **Metering and billing**: how to get tenant metrics and how to isolate billing.
+* **Analytics**: service responsible to gather usage metrics, and open new use case of cost optimization, customer churn assessment...
+* **Monitoring and infrastructure management:** for integrating into the cloud provider and manage compute, storage, networking resources.
 
-The conceptual architecture includes the following components with specific microservices:
+The figure below illustrates the integration of those services within the landscape:
+
+![](./diagrams/saas-services.drawio.png)
+
+**Figure 4**
+
+_Amazon Cognito is used as an OpenID identity provider_.
+
+The app domain is the specific ISV solution. DevSecOps is to support devOps practices and security validation. 
+
+The shared services can be developed using a serverless / container approach or using AMI images for EC2 instances. We will adopt a container approach so we can more quickly adapt those service runtime execution according to the demand, and deploy them on Kubernetes cluster.
+
+The shared services deployment on EKS will look like in the following diagram within the VPC of the software vendor (not all services are presented):
+
+![](./diagrams/saas-sharedserv-eks.drawio.svg)
+
+**Figure 5**
+
+Some of those services will use AWS managed services like DynamoDB to persist tenant and user data, Cognito for authentication to their platform, EFS for sharing file, S3...
+
+Bridge or Pool runs in the SaaS vendor VPC, and Web and App tiers are shared and persist data in same DB (may be different schema or a dedicated tenantID column in tables). 
+
+Now on the SaaS provider's customer side we may use kubernetes namespace to deliver tenant isolation. The SaaS control plane runs and the customers own use of the solution runs in the same k8s cluster. Dedicated worker nodes can be used. In the figure 6, the ISV solution is instantiated as pods in different namespaces (gree, purple, red colors) for each tenant. The control plane, shared services run in the same cluster. All the solution is managed inside of this unique k8s cluster. 
+
+![](./diagrams/saas-eks-tenant.drawio.png)
+
+**Figure 6**
+
+Silo Isolation model may be achieve with VPC per tenant. Therefore the supporting approach will be to deploy the solution in dedicated EKS cluster in the customers VPC.
+
+![](./diagrams/saas-eks-cluster-tenant.drawio.png)
+
+**Figure 7**
+
+Registering a tenant generates Terraform scripts to create the needed infrastructure and deploy the needed components to support one of the tenant isolation selected. The type of isolation can also being related to the tenant profile. Gold being on its own cluster for example. 
+
+Coming back to the big-data processing platform example we also need to consider **data and storage partitioning**, how to isolate data for each tenant. Long term persistence of object can be done in S3, now buckets can be defined in the VPC of the SaaS provider or in the customer's VPC.
+
+
+As mentioned before the solution could also being deployed on EC2s which may looks like:
 
 ![](./diagrams/saas-conceptual.drawio.svg){ width=600 }
 
-_Amazon cognito is used as an OpenID identity provider_.
+
 
 Which maps to the following provisionned environment with classical HA deployment within a region / VPC, two AZs, private and public subnets and gateway & application load balancer. 
 
 ![](./diagrams/saas-env.drawio.svg){ width=600 }
 
-Microservices runs in ECS as containers. 
 
 IAM roles and policies are used to support isolation. 
  
-Silo Isolation model may be achieve with VPC per tenant or account per tenant driven. 
-
-Bridge or Pool runs in the SaaS vendor VPC, and Web and App tiers are shared and persist data in same DB (may be different schema or a dedicated tenantID column in tables). 
 
 IAM policies should help isolating some resources in AWS services like S3 bucket or dynamoDB tables, while other like queues can be shared. 
 
@@ -93,7 +143,10 @@ What to measure when focusing on consumption? request count, execution time (lat
 The content on this note comes from:
 
 * [Saas at AWS](https://aws.amazon.com/solutions/saas/#)
-* [Tod Golding form AWS SaaS factory: Deconstructing SaaS: A Deep Dive into Building Multi-tenant Solu](https://www.youtube.com/watch?v=kmVUbngCyOw) has the diagrams above plus a deep discussion on how to secure and support tenants to access pooled resources like content in DynamoDB. (Need further study)
+* [Tod Golding form AWS SaaS factory: Deconstructing SaaS: A Deep Dive into Building Multi-tenant Solu](https://www.youtube.com/watch?v=kmVUbngCyOw) has the diagrams above plus a deep discussion on how to secure and support tenants to access pooled resources like content in DynamoDB. (Need further study).
 * [Serverless SaaS documentation](https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/serverless-saas.html)
-* [DevCon 2022: Building a customizable, multi-tenant serverless orchestration framework for bulk-data ingestion](https://broadcast.amazon.com/videos/611469?ref=home&src=featured-playlist)
-* [SaaS youtube playlist](https://www.youtube.com/playlist?list=PLKnVwO5e7SXQ3K4pFnF66AlZ-ljLAIxHB)
+* [DevCon 2022: Building a customizable, multi-tenant serverless orchestration framework for bulk-data ingestion](https://broadcast.amazon.com/videos/611469?ref=home&src=featured-playlist).
+* [SaaS youtube playlist](https://www.youtube.com/playlist?list=PLKnVwO5e7SXQ3K4pFnF66AlZ-ljLAIxHB).
+* [SaaS head start, using ready-made solutions to accelerate adoption](https://www.youtube.com/watch?v=DggGqg4L9Y4).
+* [Open source project - SaaS Boost](https://aws.amazon.com/partners/saas-boost/) with the corresponding [git repo](https://github.com/awslabs/aws-saas-boost).
+* [AWS SaaS factory reference architecture git repo](https://github.com/aws-samples/aws-saas-factory-eks-reference-architecture)
