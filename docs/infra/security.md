@@ -23,9 +23,9 @@ Encryption is widely available through a lot of services and features on top of 
 
 The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), helps centrally managing our own keys. It is integrated into a lot of services and the keys never leave AWS [FIPS 140-validated](https://en.wikipedia.org/wiki/FIPS_140-2) Hardware Security Modules unencrypted. User controls access and usage of the keys.
 
-## Organization
+## Organizations
 
-[AWS Organization](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. Using accounts helps to isolate AWS resources. It is a global service.
+[AWS Organizations](https://us-east-1.console.aws.amazon.com/organizations) helps to centraly manage multiple AWS accounts, group accounts, and simplify account creation. Using accounts helps to isolate AWS resources. It is a global service.
 
 ### Concepts
 
@@ -42,6 +42,7 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 * We can create service control policies (SCPs) cross AWS accounts to deny access to AWS services for individuals or group of accounts in an OU. 
 * AWS Organization exposes APIs to automate account management.
 * It helps consolidating billing accross all the accounts and user can get pricing benefits from aggregate usage. Shared reserved instances and Saving Plans discounts apply across accounts. Can defined Blocklist or Allowlist strategies.
+* There is no cost to use AWS Organizations.
 
 ### Advantages
 
@@ -54,7 +55,7 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 
 ### Deeper Dive
 
-* [Presentation on organization](https://broadcast.amazon.com/videos/192190)
+* [Presentation on organizations](https://broadcast.amazon.com/videos/192190)
 
 ## IAM Identity and Access Management
 
@@ -100,6 +101,10 @@ or [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.am
 
 * Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**.
 * Use the `Least privilege permission` approach: Give users the minimal amount of permissions they need to do their job.
+* As soon as there is a deny in the chain of policy evaluation, then allows will not work. See the diagram below from [the product documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html).
+
+![](https://docs.aws.amazon.com/images/IAM/latest/UserGuide/images/PolicyEvaluationHorizontal111621.png)
+
 * Policy can define the password type `> Account settings > Password policy`, and when users are allowed to change the password.
 * Inline policy can be defined at the user level, but it is recommended to use Group and Group level policies. As user can be part of multi groups, she/he will heritate to the different policies of those groups.
 * IAM is not used for website authentication and authorization.
@@ -134,12 +139,71 @@ For example, the `DemoEC2Role` role is defined to access EC2 in read only:
 
 This role is then defined in the EC2 / Security  > attach IAM role.
 
+When user, application or service assumes a role, it takes the permissions assigned to the role, and loose its original permissions. While when we use resource-based policy, the principal doesn't have to give up his permissions. For example if a user in Account A need to scan DynamoDB table in account A and dumpt it in S3 bucket in account B, then it is important to use resource-based policy for S3 bucket, so user does not loose its access to dynamoDB.
+
+This is also used for EventBridge to access lambda, SNS, SQS, cloudWatch logs, API gateway...
+
+### Permissions boundary
+
+Set a permissions boundary to control the maximum permissions this user can have. This is at user's or role level, and we define policy for example to authorize him to do anything on EC2, CloudWatch or S3. 
+
+The effective permission of a user is the join between Organization SCP, Permissions Boundary, and identity based policies.
+
+![](./diagrams/effective-perm.drawio.png)
+
+This is used to:
+
+* Delegate responsibilities to non-admin within their permission boundaries to create specific resources, like IAM user
+* Allow developers to self-assign policies and manage their own permissions, while makine sre they can increase their privileges.
+* Restrict one user
+
 ### Security tools
 
 * In IAM, use `> Credentials report` to download account based report.
 * In IAM, use `> Users > select one user (aws-jb) and then Access Advisor tab`: 
 Access Advisor shows the services that the selected user can access and when those services were last accessed
 * [Amazon GuardDuty](https://aws.amazon.com/guardduty/) is a security tool to continuously monitor your AWS accounts, instances, containers, users, and storage for potential threats.
+
+### IAM Deeper dive
+
+* [Policy evaluation logic](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html)
+
+
+## [Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html)
+
+Amazon Cognito offers Authentication and Authorization features, it has **User pools** and **Identity pools**. Scalable and highly available, managed service. Allows user to add user registration, sign in, and define access control.
+
+* Supports standards based identity providers like OAuth 2.0, SAML, OIDC.
+* **User pools** are user directories that provide sign-up and sign-in options for your app or mobile users. 
+* User pool is for sign-in functionality, and it integrates with API Gateway and ALB. 
+* **Identity pools** provide AWS credentials to grant your users access to your API, other AWS services via IAM permissions.
+
+![](https://docs.aws.amazon.com/images/cognito/latest/developerguide/images/scenario-cup-cib2.png)
+
+* Free tier of 50,000 MAUs for users who sign in directly to Cognito User Pools and 50 MAUs for users federated through SAML 2.0 based identity providers.
+* Users can sign in through social identity providers like Google, Facebook, and Amazon. They can also sign in through enterprise providers like ADFS and Okta with SAML 2.0 and OpenID Connect authentication.
+* Use Amazon Cognito's built-in UI and options for federating with multiple identity providers to add user sign-in, sign-up into an application. 
+* use [AWS Amplify](https://docs.amplify.aws/) and the [aws-amplify-vue](https://docs.amplify.aws/start/) module to provide basic user sign up, sign in, and sign out functionality.
+
+
+### Examples
+
+* Configure how user login:
+
+![](./images/cognito-conf-1.png)
+
+* Then define if you want to use MFA, get an option to reset password..
+* Configure sign-up and message delivery. We can disable auto sign-up and sending email.
+
+## [IAM Identity Center](https://docs.aws.amazon.com/singlesignon/index.html)
+
+Single sign-on for all AWS accounts within AWS Organizations, cloud applications, SAML2.0-enabled applications, EC2 Windows instances. 
+
+The identity provider can be an identity store in IAM Identity center or an Active Directory, OneLogin, Okta...
+
+* [API reference](https://docs.aws.amazon.com/singlesignon/latest/APIReference/welcome.html)
+
+
 
 ## Security FAQ
 
