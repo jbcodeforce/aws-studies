@@ -5,7 +5,7 @@ nav:
   - Infrastructure: 
       - EC2-Network-ELB-ASG: infra/index.md
       - Security: infra/security.md
-      - Storage: infra/storage.md
+      - S3-Storage: infra/storage.md
       - Route 53: infra/route53.md
       - Messaging: infra/messaging.md
       - Streams-Firehose: kinesis/index.md

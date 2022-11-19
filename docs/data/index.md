@@ -173,3 +173,10 @@ There is the Redis Sorted Sets to guarantee both uniqueness and element ordering
 ## Neptune - GraphDB
 
 ## Amazon QLDB
+
+## [OpenSearch](https://docs.aws.amazon.com/opensearch-service/)
+
+OpenSearch is a managed services to search data with indexing. It is the new name of open source project, ElasticSearch.
+Can use up to 3 PB of attached storage.
+
+Pricing is pay for each hour of use of an EC2 instance and for the cumulative size of any EBS storage volumes attached to your instances. If a domain uses multiple Availability Zones, OpenSearch Service does not bill for traffic between the Availability Zones. 

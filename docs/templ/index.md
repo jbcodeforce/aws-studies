@@ -4,7 +4,7 @@
 
 * Complement the discussion with diagrams, flows, and more engaging with participants.
 * Discovery and collaborate on a one of a kind solution that the participants own.
-* Take care of time management (segmentation of the agenda and what needs to be addressed )and space management (name section of the whiteboard, use 25% (agenda), 50% (main), 25% (takeaways) sections). BE PREPARE. 
+* Take care of time management (segmentation of the agenda and what needs to be addressed )and space management (name section of the whiteboard, use 25% (agenda), 50% (main), 25% (takeaways) sections). BE PREPARED. 
 * Example of sections: topics, takeaways, next steps (action for me and then action for customer)
 * Brings your own supplies: markers, eraser..
 * Use Uppercase, limit color
@@ -30,7 +30,7 @@ Be sure to address:
 * Do you know how they make money?
 * Do you understand the problem?
 * Who will be using this/who is the customer?
-* What is the expectation from the customer?
+* What are the expectations from the customer?
 * What does success look like?
 * Does the customer have an established timeline or deadline?
 

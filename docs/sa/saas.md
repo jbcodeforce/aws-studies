@@ -100,8 +100,9 @@ Silo Isolation model may be achieve with VPC per tenant. Therefore the supportin
 
 Registering a tenant generates Terraform scripts to create the needed infrastructure and deploy the needed components to support one of the tenant isolation selected. The type of isolation can also being related to the tenant profile. Gold being on its own cluster for example. 
 
-Coming back to the big-data processing platform example we also need to consider **data and storage partitioning**, how to isolate data for each tenant. Long term persistence of object can be done in S3, now buckets can be defined in the VPC of the SaaS provider or in the customer's VPC.
+Coming back to the big-data processing platform example, we also need to consider **data and storage partitioning**, how to isolate data for each tenant. Long term persistence of object can be done in S3, now buckets can be defined in the VPC of the SaaS provider or in the customer's VPC. All the metadata about customer's interactions with the platform, the jaob execution can be ingected back to the ISV platform and then analytics can be used to do product and features usage assessment.
 
+![](./diagrams/saas-analytics.drawio.png)
 
 As mentioned before the solution could also being deployed on EC2s which may looks like:
 

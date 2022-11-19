@@ -1,13 +1,13 @@
 # [CloudFormation](https://docs.aws.amazon.com/cloudformation/index.html)
 
-Create and manage a collection of related AWS resources as code. The template defines AWS resources, called a stack, as Yaml or JSON. Can be uploaded from a S3 bucket or your local computer. 
+Create and manage a collection of related AWS resources as code. The template defines AWS resources, called a stack, as Yaml or JSON. Can be uploaded from a S3 bucket or from your local computer. 
 
-The goals are to move as Infrastructure as code and repeat infrastructure between regions or accounts. One of the greatest benefits of templates and CloudFormation is the ability to create a set of resources that work together to create an application or solution.
+The goal is to use Infrastructure as code and repeat infrastructure between regions or accounts. One of the greatest benefits of templates and CloudFormation is the ability to create a set of resources that work together to create an application or solution.
 
 Stacks are defined in region, but StackSets helps to share stacks between accounts and regions.
 Stack can be created by other stack (nested).
 
-To create a stack from our template we can use CLI, API, the Console or start from one of the examples.
+To create a stack from AWS templates we can use CLI, API, the Console or start from one of the samples.
 
 Once stack is created, `Change Sets` may be applied to update the running resources. There is also the `Drift` detection feature to identify configuration changes between live resources and template. 
 It is possible to use a CloudFormation public registry, with 3nd party resources published in APN.
@@ -96,10 +96,10 @@ Resources:
 
 * [Use Cloud formation linter](https://github.com/aws-cloudformation/cfn-lint) to validate the yaml declaration
 * [Json to Yaml online tool](https://www.json2yaml.com/)
-* Consider [CDK](../#cloud-development-kit-cdk) as a higher abstraction level.
+* Consider [CDK](../#cloud-development-kit-cdk) as a higher abstraction level to generate Cloud Formation stacks.
 
 ## Deeper dive
 
-* [AWS CloudFormation Workshop](https://catalog.workshops.aws/cfn101/en-US) with Git repo https://github.com/aws-samples/cfn101-workshop cloned in Studies.
+* [AWS CloudFormation Workshop](https://catalog.workshops.aws/cfn101/en-US) with Git repo [aws-samples/cfn101-workshop](https://github.com/aws-samples/cfn101-workshop) cloned in Code/Studies folder.
 * [Best practices](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html)
 * [Sample templates for some AWS services](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-services-us-west-1.html)
