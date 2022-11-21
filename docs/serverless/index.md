@@ -93,34 +93,6 @@ To share data between containers, Fargate provides 4 GB volumes space per task, 
 
 For IAM security, the same policies can be set as we do on EC2. We still need to add an `execution role` to define access to ECR to download images and CloudWatch for monitoring.
 
-## EKS
-
-[Amazon EKS](https://aws.amazon.com/eks/) is a fully managed Kubernetes service. It supports EC2 to deploy worker nodes or Fargate to deploy serverless containers. 
-
-![](./diagrams/eks-ec2.drawio.svg)
-
-The EKS node types are:
-
-* managed node groups: EC2 (could be On-demand or spot instances) created by you, assigned to a ASG managed by EKS. 
-* self-managed nodes: nodes created by you and attached to EKS cluster by an ASG
-* AWS fargate
-
-Data volumes (EBS, EFS, FSx) are defined with StorageClass and they need to have Container Storage Interface compliant driver
-
-### ECS comparisons
-
-* An EC2 instance with the ECS agent installed and configured is called a container instance. In Amazon EKS, it is called a worker node.
-* An ECS container is called a task. In Amazon EKS, it is called a pod.
-* While Amazon ECS runs on AWS native technology, Amazon EKS runs on top of Kubernetes.
-
-### What to do
-
-1. Create IAM Role with EKS Cluster role.
-1. Create cluster to be deployed in a VPC, subnets, and security groups.
-1. Add resources like node group, with IAM role of WorkerNode 
-
-[Demo EKS and deploy ]()
-
 ## Step function
 
 AWS Step Functions is a fully managed service that you can use to coordinate the components of distributed applications and microservices using visual workflows. You build small applications that each perform a discrete function (or step) in your workflow, which means that you can scale and change your applications quickly.

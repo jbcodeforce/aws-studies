@@ -56,6 +56,33 @@ It helps creating an Hadoop cluster (HPFS) to process big data. The cluster can 
 
 It comes bundled with Spark, HBase, Presto, Flink. For auto scaling of the task nodes, it uses Spot instances. Master node should be reserved instance.
 
+### [EMR on EKS](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/emr-eks.html)
+
+Advantages:
+
+* Run with other workload deployed on EKS. Fully managed lifecycle of the EMR jobs.
+* 3x faster performance.
+* Improves resource utilization and simplifies infrastructure management across multiple Availability Zones.
+* Deploy in seconds instead of minutes.
+* Centrally manage a common computing platform to consolidate EMR workloads with other apps. Access to built-in monitoring and logging functionality.
+* Reduce operational overhead with automated Kubernetes cluster management and OS patching
+
+![](https://docs.aws.amazon.com/images/emr/latest/EMR-on-EKS-DevelopmentGuide/images/emr-on-eks-architecture.png)
+
+* Amazon EMR uses virtual clusters to run jobs and host endpoints. A virtual cluster is a Kubernetes namespace that Amazon EMR is registered with. 
+
+#### Deployment and setup
+
+* [Prepare a EKS cluster](../serverless/eks.md)
+* Amazon EMR on EKS needs CoreDNS for running jobs on EKS cluster. So update CoreDNS if needed.
+* [Enable cluster access for Amazon EMR on EKS](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-cluster-access.html) to a specific namespace by creating a k8s role, role binding to a k8s user, and map this user to the service linked role `AWSServiceRoleForAmazonEMRContainers`.
+* [Enable IAM Roles for Service Accounts (IRSA) on the EKS cluster](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/setting-up-enable-IAM.html) by creating an OIDC identity provider
+* Create a job execution role
+
+#### Deeper dive
+
+* [](https://www.eksworkshop.com/advanced/430_emr_on_eks/)
+
 ## [QuickSight](https://aws.amazon.com/quicksight)
 
 Dashboard tool, serverless, machine learning powered BI service.

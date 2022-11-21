@@ -12,7 +12,9 @@
 EC2 can have MacOS, Linux or Windows OS.
 Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within your region to get what AMI could be installed.
 
- ![0](./images/EC2-instance.png)
+ ![EC2 instance](./images/EC2-instance.png)
+
+ **Figure 1: EC2 instance**
 
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
@@ -92,6 +94,8 @@ The following diagram illustrates some fault tolerance principles offered by the
 
 ![](./diagrams/ec2-fault-tolerance.drawio.svg){ width=700 }
 
+**Figure 2**
+
 * AMI defines image for the EC2 with static or dynamic configuration. From one AMI, we can scale by adding new EC2 based on same image.
 * Instance failure can be replaced by starting a new instance from the same AMI.
 * Auto Scaling Group defines a set of EC2 instances, and can start new EC2 instance automatically.
@@ -150,6 +154,8 @@ Define inbound and outbound security rules.  It is like a virtual firewall insid
 
  ![2](./images/security-group.png)
 
+**Figure 3: security group with inbound rules**
+
 Important Ports:
 
 * 22 for SSH (Secure Shell) and SFTP
@@ -180,9 +186,11 @@ VPC Helps to:
 * Control the outbound traffic from your instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering).
 
 * We can have multiple VPCs per region (max to 5 but this is a soft limit). % maximum CIDR per VPC. 
-* The IP range is min /28 and max /16 and in range 10.0.0.0, 172.16.0.0, 192.1.168.0.0
+* The IP range is min /28 and max /16. The following figure 
 
 ![](./images/default-vpc.png)
+
+**Figure 4: VPC**
 
 * Default VPC includes an **Internet Gateway**. Internet gateway is a managed service and automatically scales, redundant and highly available.
 * Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets with which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
@@ -194,11 +202,21 @@ The following diagram illustrates classical VPC, as defined years ago, with one 
 
 ![](./images/vpc.png){ width="600" }
 
+**Figure 5: EC2s in public subnets**
+
 *A subnet is assigned a /24 CIDR block, which means 8 bits encoding (32-24), but AWS uses 5 IP address for gateway, LB,... so the number of available addresses is 256 - 5 = 251. To identify a single 32 bit IPv4 address, you can use /32 CIDR convention* 
+
+#### Hands-on work
+
+The CDK example in [the ec2-vpc folder](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) supports the following diagram:
+
+![](./diagrams/hands-on-vpc.drawio.svg)
+
+**Figure 6: More classical VPC**
 
 * Non-default subnet has a private IPv4 address, but no public IPv4.
 * You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing table. Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway. The figure above illustrates a route coming from any IP @ (0.0.0.0/0) goes to the internet gateway. Any host in the private network 172.31.0.0/16 can communicate with other hosts in the local network.
-* You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the internet gateway
+* You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the Internet Gateway.
 * Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
 * IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, you can use a NAT instance or NAT Gateway
 * A NAT device has an Elastic IP address and is connected to the internet through an internet gateway.
@@ -206,7 +224,7 @@ The following diagram illustrates classical VPC, as defined years ago, with one 
 
 Route tables defines `172.31` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
 
-![](./diagrams/default-vpc.drawio.svg)
+
 
 Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](https://jbcodeforce.github.io/architecture/tcpip))
 
@@ -251,6 +269,20 @@ ENI is a logical component in a VPC that represents a virtual network card. It h
 
 [New ENI doc.](https://aws.amazon.com/blogs/aws/new-elastic-network-interfaces-in-the-virtual-private-cloud/)
 
+### Bastion Host
+
+The goal is to be able to access any EC2 instances running in the private subnets from outside of the VPC, using SSH. The bastion is running on public subnet, and then connected to the private subnets. The security group for the Bastion Host authorizies inbound on port 22 from restricted public CIDR.
+Security group of the EC2 instance allows the SG of the bastion host to accept connection on port 22.
+
+### [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
+
+Use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
+
+Charged for each hour that your NAT gateway is available and each Gigabyte of data that it processes.
+
+It is created in a specified AZ and uses an Elastic IP and can only be used by EC2 in other subnets. The route is from the private subnet to the NATGW to the IGW. To get HA we need one NATG per AZ. 
+
+The bandwidth is from 5 Gbps to  automatic scale up 45Gbps.
 
 ## Elastic Load balancers
 

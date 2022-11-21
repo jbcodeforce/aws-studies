@@ -26,7 +26,7 @@ class Ec2VpcStack(Stack):
                     cidr_mask=24),
                 ec2.SubnetConfiguration(
                     subnet_type=ec2.SubnetType.PRIVATE_ISOLATED,
-                    name="DB",
+                    name="private",
                     cidr_mask=24)
             ]
             )
@@ -44,9 +44,17 @@ class Ec2VpcStack(Stack):
 
         self.role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"))
 
-        # Instance
+        # Create Bastion
+        self.bastion = ec2.BastionHostLinux(self, "myBastion",
+                                       vpc=self.vpc,
+                                       subnet_selection=ec2.SubnetSelection(
+                                           subnet_type=ec2.SubnetType.PUBLIC),
+                                       instance_name="myBastionHostLinux",
+                                       instance_type=ec2.InstanceType(instance_type_identifier="t2.micro"))
+                                       
+        # Instance with user data
         self.instance = ec2.Instance(self, "Instance",
-            instance_type=ec2.InstanceType("t3.nano"),
+            instance_type=ec2.InstanceType("t2.micro"),
             machine_image=self.amzn_linux,
             vpc = self.vpc,
             role = self.role

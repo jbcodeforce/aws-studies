@@ -32,23 +32,25 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 ![](./diagrams/organization.drawio.png)
 
 * The main account is the management account where other added accounts are members.
-* An organization is a hierarchical structure (a tree) with a root and Organization units (OU), and AWS accounts.
+* An organization is a hierarchical structure (a tree) with a root and Organization Units (OU), and AWS accounts.
 * The `root` user is a single sign-in identity that has complete access to all AWS services and resources in any accounts.
 * Organization unit (OU) contains AWS Accounts or other OUs. It can have only one parent.
 
 ![](./images/organization.png)
 
 * OU can be per team, per line of business.
+* AWS Organizations uses [IAM service-linked roles](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html#orgs_integrate_services-using_slrs) to enable trusted services to perform tasks on your behalf in your organization's member accounts.
 * We can create service control policies (SCPs) cross AWS accounts to deny access to AWS services for individuals or group of accounts in an OU. 
 * AWS Organization exposes APIs to automate account management.
-* It helps consolidating billing accross all the accounts and user can get pricing benefits from aggregate usage. Shared reserved instances and Saving Plans discounts apply across accounts. Can defined Blocklist or Allowlist strategies.
+* It helps consolidating billing accross all the accounts and user can get pricing benefits from aggregate usage. Shared reserved instances and Saving Plans discounts apply across accounts. Can define Blocklist or Allowlist strategies.
 * There is no cost to use AWS Organizations.
+* We can invite an existing AWS account to our organization. But payment changes of ownership. 
 
 ### Advantages
 
 * Better isolation than VPC.
-* Can use tagging for billing purpose
-* Enable CloudTrail for all accounts and get report in S3
+* Can use tagging for billing purpose.
+* Enable CloudTrail for all accounts and get report in S3.
 * Can define service control policies (SCP) as IAM policies applied to OU or Accounts to restric Users and Roles. Explicit allow. The root OU will have `FullAWSAccess` SCP. 
 
 ![](./images/org-policies.png)
@@ -56,6 +58,8 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 ### Deeper Dive
 
 * [Presentation on organizations](https://broadcast.amazon.com/videos/192190)
+* [User guide](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html)
+* [Organization API](https://docs.aws.amazon.com/organizations/latest/APIReference/API_Organization.html)
 
 ## IAM Identity and Access Management
 

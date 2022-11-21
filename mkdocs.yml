@@ -16,6 +16,7 @@ nav:
       - SaaS: sa/saas.md
       - Resilience: sa/resilience.md
       - Conduct Design session: templ/index.md
+  - Analytics: analytics/index.md
   - Data:
       - RDS-Aurora-ES: data/index.md
       - DynamoDB: data/dynamodb.md
@@ -24,7 +25,7 @@ nav:
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
-  - Analytics: analytics/index.md
+      - EKS: serverless/eks.md
   - Playground: 
       - Getting Started IAM-EC2: playground/gettingstarted.md
       - RDS: playground/rds.md
