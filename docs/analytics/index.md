@@ -20,10 +20,29 @@
 
 ### Simple demo script
 
-* Create a S3 bucket
-* Upload a csv file
-* Create a database in Athena
-* Define SQL query and run them in the Editor.
+* Create a S3 bucket to keep results of Athena queries.
+* Create a second S3 bucket to keep source data, and upload a csv file as data source.
+* Create a database in Athena:
+
+    ```sql
+    CREATE DATABASE mydatabase
+    ```
+
+* Define SQL query to create table to match the source (external table) and run it in the Editor.
+
+    ```sql
+    CREATE EXTERNAL TABLE IF NOT EXISTS tablename-datasource (
+        `Date` DATE,
+        Time STRING,
+        Location STRING, ... 
+    )
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    LINES TERMINATED BY '\n'
+    LOCATION 's3://url-to-bucket'
+    ```
+
+* 
 
 ### Deeper dive
 

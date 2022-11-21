@@ -170,27 +170,34 @@ Elastic IP is a public IPv4 that you own as long as you want and you can attach 
 
 ### Virtual Private Cloud
 
-A virtual private cloud (VPC) is a virtual network dedicated to your AWS account. 
-It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances, within your VPC. You can specify an IP address range, add subnets, associate security groups, ACL, and configure route tables.
+A virtual private cloud (VPC) is a virtual network dedicated to your AWS account. All new accounts have a default VPC. 
+It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances, within your VPC. New EC2 instances are launched into the default VPC if no subnet is specified. You can specify an IP address range, add subnets, associate security groups, ACL, and configure route tables.
 
 VPC Helps to:
 
-* Assign static IP addresses, potentially multiple addresses for the same instance
-* Change security group membership for your instances while they're running
-* Control the outbound traffic from your instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering)
-* Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets with which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
-* Default VPC includes an internet gateway. Internet gateway is a managed service and automatically scales, redundant and highly available.
+* Assign static IP addresses, potentially multiple addresses for the same EC2 instance.
+* Change security group membership for your instances while they're running.
+* Control the outbound traffic from your instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering).
 
-The following diagram illustrates classical VPC, as defined years ago, with one vpc, 2 availability zones, 2 subnets with EC2 instances within those subnets and AZs. Subnets are defined within a VPC and an availability zone. It defines an IP CIDR range.
+* We can have multiple VPCs per region (max to 5 but this is a soft limit). % maximum CIDR per VPC. 
+* The IP range is min /28 and max /16 and in range 10.0.0.0, 172.16.0.0, 192.1.168.0.0
+
+![](./images/default-vpc.png)
+
+* Default VPC includes an **Internet Gateway**. Internet gateway is a managed service and automatically scales, redundant and highly available.
+* Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets with which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
+
+* By default, AWS creates a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
+* AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.
+
+The following diagram illustrates classical VPC, as defined years ago, with one vpc, 2 availability zones, 2 subnets with EC2 instances within those subnets and AZs. An internet gateway connected to a router. Subnets are defined within a VPC and an availability zone. It defines an IP CIDR range: you should have less IP on public subnet as they are used for ELB.
 
 ![](./images/vpc.png){ width="600" }
 
-*A subnet is assigned a /24 CIDR block, which means 8 bits encoding, but AWS uses 5 IP address for gateway, LB,... so the number of available is 256 - 5 = 251. To identify a single 32 bit IPv4 address, you can use /32 CIDR convention* 
+*A subnet is assigned a /24 CIDR block, which means 8 bits encoding (32-24), but AWS uses 5 IP address for gateway, LB,... so the number of available addresses is 256 - 5 = 251. To identify a single 32 bit IPv4 address, you can use /32 CIDR convention* 
 
-* non-default subnet has a private IPv4 address, but no public IPv4 
-* By default, AWS creates a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
-* AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.
-* You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC. Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway.
+* Non-default subnet has a private IPv4 address, but no public IPv4.
+* You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing table. Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway. The figure above illustrates a route coming from any IP @ (0.0.0.0/0) goes to the internet gateway. Any host in the private network 172.31.0.0/16 can communicate with other hosts in the local network.
 * You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the internet gateway
 * Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
 * IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, you can use a NAT instance or NAT Gateway

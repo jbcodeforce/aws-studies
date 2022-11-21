@@ -27,7 +27,7 @@ class MyLambdaStack(Stack):
         )
 ```
 
-The AWS CDK Toolkit is a command line tool for interacting with CDK apps. Needs to be in the folder of the `cdk.json` file.
+The AWS CDK Toolkit is a command line tool for interacting with CDK apps. Need to be in the folder of the `cdk.json` file.
 
 ```sh
 cdk --version
@@ -45,12 +45,13 @@ The first time you deploy an AWS CDK app into an environment (account/region), y
 
 ## CDK Python for an EC2
 
-Summary of the actions to jumpstart a sample app in python
+Summary of the actions to jumpstart a CDK sample app in python
 
-```sh
+```shell
 # Create a python CDK project under a new created folder. The name of the folder defines the name of the app.
 # It uses the sample-app template. If template is not specified the stack will have only constructor
 cdk init sample-app --language python
+# cdk init --language python 
 # create virtual env
 python3 -m venv .venv
 # Active the virtual env
@@ -68,9 +69,14 @@ cdk deploy --hotswap
 
 ```
 
-Then go to the CloudFormation console and look at the deployed stack, and then resources.
+Then go to the CloudFormation console and look at the deployed stack, and resources.
 
-See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk) folder for some examples of CDK stack definitions.
+See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk) folder for some examples of CDK stack definitions: 
+
+| Folder | Description |
+| --- | --- |
+| [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and subnet |
+| [labs/cdk/cdk_workhop](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/cdk_workshop) | Lambda functions in python with an API gateway and TableViewer.|
 
 ## Useful commands
 

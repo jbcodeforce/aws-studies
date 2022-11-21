@@ -149,5 +149,6 @@ The content on this note comes from:
 * [DevCon 2022: Building a customizable, multi-tenant serverless orchestration framework for bulk-data ingestion](https://broadcast.amazon.com/videos/611469?ref=home&src=featured-playlist).
 * [SaaS youtube playlist](https://www.youtube.com/playlist?list=PLKnVwO5e7SXQ3K4pFnF66AlZ-ljLAIxHB).
 * [SaaS head start, using ready-made solutions to accelerate adoption](https://www.youtube.com/watch?v=DggGqg4L9Y4).
-* [Open source project - SaaS Boost](https://aws.amazon.com/partners/saas-boost/) with the corresponding [git repo](https://github.com/awslabs/aws-saas-boost).
+* [Open source project - SaaS Boost](https://aws.amazon.com/partners/saas-boost/) with the corresponding [AWS SaaS boost git repo](https://github.com/awslabs/aws-saas-boost).
 * [AWS SaaS factory reference architecture git repo](https://github.com/aws-samples/aws-saas-factory-eks-reference-architecture)
+* [Aug 2021 blog: Building a Multi-Tenant SaaS Solution Using AWS Serverless Services](https://aws.amazon.com/blogs/apn/building-a-multi-tenant-saas-solution-using-aws-serverless-services/)
