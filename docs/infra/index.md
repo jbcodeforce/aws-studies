@@ -4,13 +4,13 @@
 
 * EC2 is a renting machine.
 * Amazon EC2 instances are a combination of virtual processors (vCPUs), memory, network, and, in some cases, instance storage and graphics processing units (GPUs).
-* Only size for what you plan to use.
+* Only size for what we plan to use.
 * Storing data on virtual drives: [EBS](./storage/#amazon-elastic-block-storage-ebs).
 * Distribute load across machines using [ELB](#elastic-load-balancers).
 * Auto scale the service via group: [ASG](#auto-scaling-group-asg).
 
 EC2 can have MacOS, Linux or Windows OS.
-Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within your region to get what AMI could be installed.
+Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within our region to get what AMI could be installed.
 
  ![EC2 instance](./images/EC2-instance.png)
 
@@ -18,17 +18,18 @@ Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon L
 
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
-The security group helps to isolate the instance, for example, authorizing ssh on port 22 and HTTP port 80.
-Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh.
-The `.pem` file need to be restricted with `chmod 0400`
+The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 and HTTP on port 80.
+Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. The `.pem` file need to be restricted with `chmod 0400`
 
 We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
 
+See [this EC2 playground for demonstrating the deployment of a HTTP server.](../../playground/gettingstarted/#amazon-elastic-compute-cloud-ec2-components)
+
 ### EC2 life cycle
 
-1. When you launch an instance, it enters in the `pending` state. Billing is not started.
+1. When we launch an instance, it enters in the `pending` state. Billing is not started.
 1. During rebooting, instance remains on the same host computer, and maintains its public and private IP address, in addition to any data on its instance store.
-1. When you `terminate` an instance, the instance stores are erased, and you lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged.
+1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged.
 
 ### EC2 types
 
@@ -44,21 +45,21 @@ EC2 **instance types** like t2.micro or c5.2xlarge define CPU, memory... (see [e
 * G: applications that need a GPU.
 * T2/T3 for burstable instance: When the machine needs to process something unexpected (a spike in load for example), it can burst. Use burst credits to control CPU usage.
 
-[Graviton](https://aws.amazon.com/ec2/graviton/) processors designed by AWS for cloud workloads to optimize cost and energy consumption. (t4g.*, M6g.*, C7*) 
+[Graviton](https://aws.amazon.com/ec2/graviton/) processors are designed by AWS for cloud workloads to optimize cost and energy consumption. (t4g.*, M6g.*, C7*) 
 
 ### [EC2 Nitro System](https://aws.amazon.com/ec2/nitro/)
 
-Next generation of EC2. It uses new virtualization infrastructure and hypervisor. Supports IPv6, better I/O on EBS and better security.  Name starts with C5, D5,...
+Next generation of EC2. It uses new virtualization infrastructure and hypervisor. Supports IPv6, better I/O on EBS and better security.  Name type starts with C5, D5,...
 
-vCPU represents thread running on core CPU. You can optimize vCPU allocation on the EC2 instance, once created, by updating the launch configuration.
+vCPU represents thread running on core CPU. We can optimize vCPU allocation on the EC2 instance, once created, by updating the launch configuration.
 
 ### Launch types
 
 * **On demand**: short workload, predictable pricing, pay per second after first minute. No long term commitment.
-* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. You can buy and sell it in the marketplace.
+* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. We can buy and sell it in the marketplace.
 * **Convertible reserved** instance for changing resource capacity over time.
 * **Scheduled reserved** instance for job based workload.
-* **Dedicated hosts** to book entire physical server and control instance placement. # years. BYOL. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where you deploy a database technology on an EC2 instance and the vendor license bills you based on the physical cores.
+* **Dedicated hosts** to book entire physical server and control instance placement. # years. BYOL. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where we deploy a database technology on an EC2 instance and the vendor license bills we based on the physical cores.
 * **Capacity reservations**: reserve capacity in a specific AZ for any duration
 * **Spot instance** for very short - 90% discount on on-demand - used for work resilient to failure like batch job, data analysis, image processing, stateless, containerized...
 
@@ -72,11 +73,11 @@ Use **EC2 launch templates** to automate instance launches, to simplify permissi
 
 ### Metadata
 
-When in a EC2 instance shell we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**
+When in a EC2 instance shell, we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**
 
 ### AMI
 
-Bring our own image. Shareable on Amazon marketplace. Can be saved on S3 storage. By default, our AMIs are private, and locked for our account / region.
+Bring our own image. Shareable on Amazon Marketplace. Can be saved on S3 storage. By default, our AMIs are privates, and locked for our account / region.
 
 AMIs can be copied and shared [See AWS doc - copying an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html).
 
@@ -100,7 +101,7 @@ The following diagram illustrates some fault tolerance principles offered by the
 * Instance failure can be replaced by starting a new instance from the same AMI.
 * Auto Scaling Group defines a set of EC2 instances, and can start new EC2 instance automatically.
 * Auto scaling adjusts the capacity of EC2 and EC2 instance within the group.
-* To minimize down time, we can have one EC2 instance in standby, and use elastic IP addresses to be reassigned in case of primary EC2 failure. 
+* To minimize down time, we can have one EC2 instance in `Standby` mode, and use elastic IP addresses to be reassigned in case of the primary EC2 failure. 
 * Data is saved on EBS and replicated to other EBS inside the same availabiltiy zone.
 * Snapshot backup can be done to replicate data between AZs and/or regions, and persisted for long retention in S3. 
 * Need to flush data from memory to disk before any snapshot.
@@ -147,7 +148,7 @@ Define inbound and outbound security rules.  It is like a virtual firewall insid
 * Can be attached to multiple EC2 instances and to load balancers
 * Locked down to a region / VPC combination
 * Live outside of the EC2
-* Define one separate security group for SSH access where you can authorize only one IP@
+* Define one separate security group for SSH access where we can authorize only one IP@
 * Connect refused is an application error or the app is not launched - Spinning is an access rules error.
 * Instances with the same security group can access each other
 * Security group can reference other security groups, on IP address using CIDR in the form 192.45.23.12/32 but not any DNS server.
@@ -172,39 +173,46 @@ Each region has redundant path to transit centers, which connect to private link
 IPv4 allows 3.7 billions of different addresses. Private IP @ is for private network connections. Internet gateway has public and private connections. Public IP can be geo-located. When connected to an EC2 the prompt lists the private IP (`ec2-user@ip-172-31-18-48`). Private IP stays stable on instance restart, while public may change.
 
 With Elastic IP address, we can mask an EC2 instance failure by rapidly remapping the address to another instance. But better to use DNS.
-Elastic IP is a public IPv4 that you own as long as you want and you can attach it to one EC2 instance at a time.
+Elastic IP is a public IPv4 that we own as long as we want and we can attach it to one EC2 instance at a time. It is not free.
 
 ### Virtual Private Cloud
 
-A virtual private cloud (VPC) is a virtual network dedicated to your AWS account. All new accounts have a default VPC. 
-It is logically isolated from other virtual networks in the AWS Cloud. You can launch your AWS resources, such as Amazon EC2 instances, within your VPC. New EC2 instances are launched into the default VPC if no subnet is specified. You can specify an IP address range, add subnets, associate security groups, ACL, and configure route tables.
+A virtual private cloud (VPC) is a virtual network dedicated to our AWS account. All new accounts have a default VPC. 
+It is logically isolated from other virtual networks in the AWS Cloud. We can launch our AWS resources, such as Amazon EC2 instances, within our VPC. New EC2 instances are launched into the default VPC if no subnet is specified. 
 
-VPC Helps to:
-
-* Assign static IP addresses, potentially multiple addresses for the same EC2 instance.
-* Change security group membership for your instances while they're running.
-* Control the outbound traffic from your instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering).
-
-* We can have multiple VPCs per region (max to 5 but this is a soft limit). % maximum CIDR per VPC. 
-* The IP range is min /28 and max /16. The following figure 
+When defining new VPC, we can specify CIDR, add subnets, associate security groups, ACL, and configure route tables.
 
 ![](./images/default-vpc.png)
 
 **Figure 4: VPC**
 
-* Default VPC includes an **Internet Gateway**. Internet gateway is a managed service and automatically scales, redundant and highly available.
-* Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets with which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
+By default, AWS creates a VPC with default public subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
 
-* By default, AWS creates a VPC with default subnets, one per AZs, which each one is a public subnet, because the main route table sends the subnet's traffic that is destined for the internet to the internet gateway.
-* AWS reserves five IP addresses in each subnet. These IP addresses are used for routing, Domain Name System (DNS), and network management.
+VPC Helps to:
 
-The following diagram illustrates classical VPC, as defined years ago, with one vpc, 2 availability zones, 2 subnets with EC2 instances within those subnets and AZs. An internet gateway connected to a router. Subnets are defined within a VPC and an availability zone. It defines an IP CIDR range: you should have less IP on public subnet as they are used for ELB.
+* Assign static IP addresses, potentially multiple addresses for the same EC2 instance.
+* Change security group membership for our instances while they're running.
+* Control the outbound traffic from our instances (egress filtering) in addition to controlling the inbound traffic to them (ingress filtering).
+* We can have multiple VPCs per region (max to 5 but this is a soft limit). 5 maximum CIDR per VPC. 
+* The IP range is min /28 and max /16. 
+
+Default VPC includes an **Internet Gateway**. Internet gateway is a managed service and automatically scales, redundant and highly available.
+
+Network Access Control List can be defined at the VPC level, so will be shared between subnets. The default network ACL is configured to allow all traffic to flow in and out of the subnets which it is associated. Each network ACL also includes a rule whose rule number is an asterisk. This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
+
+The following diagram illustrates classical VPC, as defined years ago, with one vpc, 2 availability zones, 2 subnets with EC2 instances within those subnets and AZs. An internet gateway connected to a router. Subnets are defined within a VPC and in one availability zone. It defines an IP CIDR range: we should have less IP on public subnet as they are used for ELB.
 
 ![](./images/vpc.png){ width="600" }
 
 **Figure 5: EC2s in public subnets**
 
-*A subnet is assigned a /24 CIDR block, which means 8 bits encoding (32-24), but AWS uses 5 IP address for gateway, LB,... so the number of available addresses is 256 - 5 = 251. To identify a single 32 bit IPv4 address, you can use /32 CIDR convention* 
+* *A subnet is assigned a /24 CIDR block, which means 8 bits encoding (32-24), but AWS uses 5 IP addresses in each subnet for gateway, LB,... so the number of available addresses is 256 - 5 = 251. To identify a single 32 bit IPv4 address, we can use /32 CIDR convention* 
+* Internet Gateway needs to be defined to new created VPC to get internet hosts being able to access EC2s in it. And Route Tables need to be defined: one public associated with the public subnets and one private associated with private subnets.
+* Non-default subnet has a private IPv4 address, but no public IPv4.
+* We can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the Internet Gateway.
+* EC2 Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway. The figure 5 above illustrates a route coming from any IP @ (0.0.0.0/0) goes to the internet gateway (`igw-id`). Any host in the private network 172.31.0.0/16 can communicate with other hosts in the local network.
+* Route tables defines `172.31` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
+* Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](https://jbcodeforce.github.io/architecture/tcpip))
 
 #### Hands-on work
 
@@ -214,34 +222,30 @@ The CDK example in [the ec2-vpc folder](https://github.com/jbcodeforce/aws-studi
 
 **Figure 6: More classical VPC**
 
-* Non-default subnet has a private IPv4 address, but no public IPv4.
-* You can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing table. Instances should have either public IP or elastic IP and subnet must have a route to the internet gateway. The figure above illustrates a route coming from any IP @ (0.0.0.0/0) goes to the internet gateway. Any host in the private network 172.31.0.0/16 can communicate with other hosts in the local network.
-* You can make a default subnet into a private subnet by removing the route from the destination 0.0.0.0/0 to the Internet Gateway.
-* Alternatively, to allow an instance in your VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, you can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
-* IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, you can use a NAT instance or NAT Gateway
+* We can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing tables for each subnets. 
+
+* Alternatively, to allow an instance in our VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, we can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
+* IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, we can use a NAT instance or NAT Gateway
 * A NAT device has an Elastic IP address and is connected to the internet through an internet gateway.
-* NAT gateway is deployed inside a subnet and it can scale only inside that subnet. For fault tolerance, it is recommended that you deploy one NAT gateway per availability zone
-
-Route tables defines `172.31` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
+* NAT gateway is deployed inside a subnet and it can scale only inside that subnet. For fault tolerance, it is recommended that we deploy one NAT gateway per availability zone
 
 
 
-Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](https://jbcodeforce.github.io/architecture/tcpip))
 
 ![](./images/vpc-anim.gif)
 
 ** figure: Full VPC diagram**
 
-You can have [VPC endpoint service]() to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in your VPC. You need to ensure there is one interface endpoint for each availability zone. You need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
+We can have [VPC endpoint service]() to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in our VPC. We need to ensure there is one interface endpoint for each availability zone. We need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
 
 TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) establishes private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
 
 CIDR Blocks should not overlap between VPCs for setting up a peering connection. Peering connection is allowed within a region, across regions, across different accounts
 
-You can optionally connect your VPC to your own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of your data center. A VPN connection consists of a virtual private gateway (VGW) attached to your VPC and a customer gateway located in your data center. 
+We can optionally connect our VPC to our own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of our data center. A VPN connection consists of a virtual private gateway (VGW) attached to our VPC and a customer gateway located in our data center. 
 
 A virtual private gateway is the VPN concentrator on the Amazon side of the VPN connection. 
-A customer gateway is a physical device or software appliance on your side of the VPN connection.
+A customer gateway is a physical device or software appliance on our side of the VPN connection.
 
 The last elements are the Routing tables. As illustrated in the following diagram, main routing table addresses internal to the VPC traffic, while custom tables define how inbound and outbound traffic can be structured within a subnet. 
 
@@ -249,7 +253,7 @@ The last elements are the Routing tables. As illustrated in the following diagra
 
 Security group policies are at the EC2 instance, and define firewall configuration.
 
-As seen in "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect your virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, you can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
+As seen in "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
 
 #### Deeper Dive
 
@@ -265,7 +269,7 @@ ENI is a logical component in a VPC that represents a virtual network card. It h
 * One or more security groups
 * A MAC address
 * We can create ENI independently and attach them on the fly (move them) on EC2 instances for failover 
-* Bound to a specific availability zone (AZ), you cannot attach ENI to an EC2 instance in a different AZ. 
+* Bound to a specific availability zone (AZ), We cannot attach ENI to an EC2 instance in a different AZ. 
 
 [New ENI doc.](https://aws.amazon.com/blogs/aws/new-elastic-network-interfaces-in-the-virtual-private-cloud/)
 
@@ -276,9 +280,9 @@ Security group of the EC2 instance allows the SG of the bastion host to accept c
 
 ### [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
 
-Use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
+Use a NAT gateway so that instances in a private subnet can connect to services outside our VPC but external services cannot initiate a connection with those instances.
 
-Charged for each hour that your NAT gateway is available and each Gigabyte of data that it processes.
+Charged for each hour that our NAT gateway is available and each Gigabyte of data that it processes.
 
 It is created in a specified AZ and uses an Elastic IP and can only be used by EC2 in other subnets. The route is from the private subnet to the NATGW to the IGW. To get HA we need one NATG per AZ. 
 
@@ -286,7 +290,7 @@ The bandwidth is from 5 Gbps to  automatic scale up 45Gbps.
 
 ## Elastic Load balancers
 
-Route traffic into the different EC2 instances. Elastic Load Balancing scales your load balancer capacity automatically in response to changes in incoming traffic. It is a managed service!
+Route traffic into the different EC2 instances. Elastic Load Balancing scales our load balancer capacity automatically in response to changes in incoming traffic. It is a managed service!
 
 It also exposes a single point of access (DNS) to the deployed applications. In case of EC2 failure, it can route to a new instance, transparently and across multiple AZs. It uses health check (/health on the app called the `ping path`) to assess instance availability. It also provides SSL termination. It supports to separate private (internal) to public (external) traffic.
 
@@ -294,7 +298,7 @@ It also exposes a single point of access (DNS) to the deployed applications. In 
 
 Need to enable availability zone to be able to route traffic between target groups in different AZs.
 
-When you create a load balancer, you must choose whether to make it an internal load balancer or an internet-facing load balancer. 
+When We create a load balancer, We must choose whether to make it an internal load balancer or an internet-facing load balancer. 
 Internet-facing load balancer have public IP addresses. The DNS name of an internet-facing load balancer is publicly resolvable to the public IP addresses of the nodes. Internal load balancer have only private IP addresses.  Internal load balancers can only route requests from clients with access to the VPC of the load balancer.
 
 ![2](./images/elb-scheme.png)
@@ -339,7 +343,7 @@ Four types of ELB supported:
     * also use target groups.
     * use the Geneve protocol (support network virtualization use cases for data center ) on port 6081 
 
-To route traffic, first the DNS name of the load balancer is resolved. (They are part of the `amazaonaws.com` domain). 1 to many IP Addresses are sent back to the client. With NLBs, Elastic Load Balancing creates a network interface for each Availability Zone that you enable. Each load balancer node in the Availability Zone uses this network interface to get a static IP address. ELB scales your load balancer and updates the DNS entry. The time to live is set to 60s. 
+To route traffic, first the DNS name of the load balancer is resolved. (They are part of the `amazaonaws.com` domain). 1 to many IP Addresses are sent back to the client. With NLBs, Elastic Load Balancing creates a network interface for each Availability Zone that We enable. Each load balancer node in the Availability Zone uses this network interface to get a static IP address. ELB scales our load balancer and updates the DNS entry. The time to live is set to 60s. 
 
 To control that only the load balancer is sending traffic to the application, we need to set up an application **security group** on HTTP, and HTTPS with the source being the security group id of the ELB. LBs can scale but need to engage AWS operational team.
 
@@ -351,7 +355,7 @@ Example of listener rule for an ALB:
 
  ![3](./images/ALB-listener-rules.png)
 
-ALB and Classic can use [HTTP connection multiplexing](https://www.haproxy.com/blog/http-keep-alive-pipelining-multiplexing-and-connection-pooling/) to keep one connection with the backend application. Connection multiplexing improves latency and reduces the load on your applications.
+ALB and Classic can use [HTTP connection multiplexing](https://www.haproxy.com/blog/http-keep-alive-pipelining-multiplexing-and-connection-pooling/) to keep one connection with the backend application. Connection multiplexing improves latency and reduces the load on our applications.
 
 ### Load balancer stickiness
 
@@ -373,7 +377,7 @@ Each load balancer instance distributes traffic evenly across all registered ins
 An SSL/TLS Certificate allows traffic between clients and load balancer to be encrypted in transit (in-flight encryption).
 
 * Load balancer uses an X.509 certificate (SSL/TLS server certificate). 
-* Manage your own certificates using ACM (AWS Certificate Manager)
+* Manage our own certificates using ACM (AWS Certificate Manager)
 * When defining a HTTPS listener in a LB, we must specify a default certificate for the HTTPS protocol, while defining the routing rule to a given target group. Need multiple certs to support multiple domains. 
 * Clients can use SNI (Server Name Indication) to specify the hostname they want to reach. The ALB or NLB will get the certificates for each host to support the TLS handshake. 
 
@@ -406,7 +410,7 @@ Automatically Register new instances to a load balancer.
  ![4](./images/ASG-1.png)
 
 * when creating scaling policies, **CloudWatch** alarms are created. Ex: "Create an alarm if: CPUUtilization < 36 for 15 data points within 15 minutes".
-* Target tracking scaling: you want average CPU to be under 40%
+* Target tracking scaling: we want average CPU to be under 40%
 * Scheduled action: increase capacity after 5 PM
 * Predictive scaling by looking at historical behavior to build forecast rules
 * ASG tries to balance the number of instances across AZs by default, and then delete based on the age of the launch configuration
@@ -426,14 +430,14 @@ For EC2 instance, the security group needs to accept traffic from edge location 
 
 It is possible to control with geographic restriction using whitelist or blacklist.
 
-It also supports the concept of signed URL. When you want to distribute content to different user groups over the world, attach a policy with:
+It also supports the concept of signed URL. When we want to distribute content to different user groups over the world, attach a policy with:
 
 * URL expiration
 * IP range to access the data from
 * Trusted signers (which AWS accounts can create signed URLs)
 * How long should the URL be valid for?
 * Shared content (movie, music): make it short (a few minutes)
-* Private content (private to the user): you can make it last for years
+* Private content (private to the user): we can make it last for years
 * Signed URL = access to individual files (one signed URL per file)
 * Signed Cookies = access to multiple files (one signed cookie for many files)
 

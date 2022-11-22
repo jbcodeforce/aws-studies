@@ -74,7 +74,7 @@ There are 3 ways  to define scaling rules:
 
 ## Fargate
 
-When running ECS and EKS on EC2, you are still responsible for maintaining the underlying EC2 instances. With Fargates we do no have to manage EC2 instances.
+When running ECS and EKS on EC2, we are still responsible for maintaining the underlying EC2 instances. With Fargates we do no have to manage EC2 instances.
 
 AWS Fargate is a purpose-built serverless compute engine for containers. Fargate scales and manages the infrastructure, it removes the need to provision and manage servers, let you specify and pay for resources per application, and improves security through application isolation by design.
 

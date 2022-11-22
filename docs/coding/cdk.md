@@ -75,7 +75,7 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 
 | Folder | Description |
 | --- | --- |
-| [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and subnet |
+| [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and public & private subnets, NAT, IGW |
 | [labs/cdk/cdk_workhop](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/cdk_workshop) | Lambda functions in python with an API gateway and TableViewer.|
 
 ## Useful commands
@@ -87,6 +87,11 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
  * `cdk docs`        open CDK documentation
  * `cdk watch`       monitors your code and assets for changes and attempts to perform a deployment automatically when a change is detected
  * `cdk destroy`    remove all the resources/stacks. Most resources will get deleted upon stack deletion. CloudWatch logs that are permanently retained
+
+## [CDK Blueprint for EKS](https://aws.github.io/aws-eks-best-practices/)
+
+* [Blog introduction EKS blueprint](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/)
+* [AWS CDK EKS blueprint git repo](https://aws-quickstart.github.io/cdk-eks-blueprints/)
 
 ## Other tools - samples
 

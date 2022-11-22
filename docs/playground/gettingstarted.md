@@ -2,12 +2,10 @@
 
 ## Defined users and groups with IAM
 
-See [summary on IAM](../../#iam-identity-and-access-management)
+See [summary on IAM](../../infra/security/#iam-identity-and-access-management)
 
-* Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: `aws-jb`
-* Search for IAM and then...
-* (With personal account )login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
-* Create groups (Developers), define basic policies.
+* Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: `aws-jb`. (With personal account )login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
+* * In the IAM service, create groups (Developers), define basic policies.
 * Add users (mathieu) assign him to a group
 
 ### Define security policies
@@ -45,7 +43,7 @@ Also within a EC2 instance, it is possible to use the URL http://169.254.169.254
 
 ## Deploying Apache HTTP on EC2
 
-Create a EC2 t2.micro instance with AWS Linux, a public IP address, a security group with SSH enabled and HTTP on port 80. Under the `Advanced details` section, add the following `bash` script in the `User Data` field:
+Create a EC2 t2.micro instance with AWS Linux, a public IP address, a security group with SSH enabled from anywhere and HTTP on port 80 accessible from the internet. Associate the EC2 with a Key Pair  so we can do SSH on the instance (and download the .pem file). The free tier is elligible to 30 GB of disk. Under the `Advanced details` section, add the following `bash` script in the `User Data` field:
 
 ```shell
 #!/bin/bash
@@ -66,13 +64,13 @@ echo "<h1>Hello from $(hostname -f)</h1>" > /var/www/html/index.html
 echo "<h3>Hello World from $(hostname -f) in AZ= $EC2_AZ </h3>" > /var/www/html/index.html
 ```
 
-Once launched, get the DNS name and try a curl or web browser to that HTTP address (not https).
+Once launched, from the console, get the DNS name or the public IP address and try a curl or use your web browser to that HTTP address (not https).
 
 ### Troubleshooting
 
-* Connection timeout: Any timeout (not just for SSH) is related to security groups or a firewall. This may also means a corporate firewall or a personal firewall is blocking the connection.
+* Connection timeout: Any timeout (not just for SSH) is related to security groups or a firewall rule. This may also mean a corporate firewall or a personal firewall is blocking the connection. Go to the security group and look at inbound rules.
 * `Permission denied (publickey,gssapi-keyex,gssapi-with-mic)`: You are using the wrong security key or not using a security key. 
-* "Able to connect yesterday, but not today": When you restart a EC2 instance, the public IP of your EC2 instance will change. 
+* "Able to connect yesterday, but not today": When you restart a EC2 instance, the public IP of your EC2 instance will change, so prefer to use the DNS name and not the IP @. 
 
 
 ### SSH to EC2
@@ -107,6 +105,17 @@ It comes with the `aws cli`. Never enter any account id inside `aws configure` i
 
 For example to access another service (like IAM), we need an IAM Role added to the EC2 instance: go to the EC2 instance, `Action > Security > Modify IAM Roles` add `DemoEC2Role` for example. We should be able to do `aws iam list-users` command.
 
+### Access to service within the EC2
+
+To access to external AWS service we need to use IAM role. So define a Role in IAM 
+
+![](./images/iam-role.png)
+
+with the Permission Policy linked to the resource you try to access, for example select on S3 policies to be able to access S3 bucket. 
+
+![](./images/s3-policies.png)
+
+On an existing EC2 we can use the menu `Actions > Security > Modify IAM Roles`.   
 
 ## A High availability WebApp deployment summary
 
@@ -121,8 +130,8 @@ Based on the AWS essential training, here is a quick summary of the things to do
 
     ![](./images/vpc-result.png)
 
-1. Verify routing table for public subnet and private subnets. 
-1. Add security group to the VPC using HTTP and HTTPS to the internet gateway
+1. Verify routing table for public and private subnets. 
+1. Add security group to the VPC using HTTP and HTTPS to the internet gateway.
 1. Start EC2 to one of the public subnet and define user data to start your app. Here is an example
 
     ```sh
