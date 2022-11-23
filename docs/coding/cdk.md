@@ -46,7 +46,7 @@ The first time you deploy an AWS CDK app into an environment (account/region), y
 
 ## CDK Python for an EC2
 
-Summary of the actions to jumpstart a CDK sample app in python
+* Summary of the actions to jumpstart a CDK sample app in python
 
 ```shell
 # Create a python CDK project under a new created folder. The name of the folder defines the name of the app.
@@ -59,6 +59,38 @@ python3 -m venv .venv
 source .venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
+```
+
+* Then develop the CDK class to define the configuration like a simple EC2:
+
+```python
+from aws_cdk import (
+    Stack,
+    aws_ec2 as ec2)
+
+amzn_linux = ec2.MachineImage.latest_amazon_linux(
+    generation=ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
+    edition=ec2.AmazonLinuxEdition.STANDARD,
+    virtualization=ec2.AmazonLinuxVirt.HVM,
+    storage=ec2.AmazonLinuxStorage.GENERAL_PURPOSE
+)
+with open("./user_data/user_data.sh") as f:
+    user_data = f.read()
+
+class Ec2Stack(Stack):
+    self.instance = ec2.Instance(self, "myHttpdEC2",
+                                instance_type=ec2.InstanceType("t2.micro"),
+                                instance_name="mySimpleHTTPserver",
+                                machine_image=amzn_linux,
+                                user_data=ec2.UserData.custom(user_data),
+                                )
+```
+
+See more [information on the Instance API](https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_ec2/Instance.html).
+
+* Run the generation of the CD and then deploy to your account / region
+
+```sh
 # Synthesize the Cloud Formation template 
 cdk synth
 # The first time bootstrap the stack - which will create a CF CDKToolkit
@@ -70,7 +102,7 @@ cdk deploy --hotswap
 
 ```
 
-Then go to the CloudFormation console and look at the deployed stack, and resources.
+* Then go to the CloudFormation console and look at the deployed stack, and resources.
 
 See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk) folder for some examples of CDK stack definitions: 
 
@@ -78,6 +110,7 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 | --- | --- |
 | [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and public & private subnets, NAT, IGW, Bastion Host |
 | [labs/cdk/cdk_workhop](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/cdk_workshop) | Lambda functions in python with an API gateway and TableViewer.|
+| [labs ECS fargate Flask App](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ecs-fargate-flask) | VPC with ECS fargate for a Flask APP where container is created during deployment | 
 
 ## Useful commands
 
@@ -96,7 +129,8 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 
 ## Other tools - samples
 
+* [CDK API v2 for Python](https://docs.aws.amazon.com/cdk/api/v2/python/)
 * [cdk-dynamo-table-viewer](https://pypi.org/project/cdk-dynamo-table-view/) An AWS CDK construct which exposes a public HTTP endpoint which displays an HTML page with the contents of a DynamoDB table in your stack.
-* [CDK samples in Python](https://github.com/aws-samples/aws-cdk-examples/tree/master/python)
+* [AWS CDK samples in Python](https://github.com/aws-samples/aws-cdk-examples/tree/master/python)
 * [Constructs HUB](https://constructs.dev/)
 * [A Flask app for orders management with DynamoDB as persistence - ECR - CDK](https://github.com/jbcodeforce/python-code/tree/master/aws/dynamoDB)

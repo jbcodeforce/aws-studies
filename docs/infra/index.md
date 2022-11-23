@@ -282,20 +282,13 @@ The CDK example in [the ec2-vpc folder](https://github.com/jbcodeforce/aws-studi
 
 * A NAT device has an Elastic IP address and is connected to the internet through an internet gateway.
 
-#### Network ACLs
 
-Define traffic rule at the subnet level
-
-![](./images/nacl-default.png)
-
-Here is a complete figure to explain the process: A client app is initiating a connection to a DB and with a ephemeral port to receive the response.
-
-![](./diagrams/nacl.drawio.png)
 
 
 #### Deeper Dive
 
 * [VPC FAQs](https://aws.amazon.com/vpc/faqs/)
+* [NAT gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
 
 ### Elastic Network Insterfaces
 
@@ -325,6 +318,26 @@ Charged for each hour that our NAT gateway is available and each Gigabyte of dat
 It is created in a specified AZ and uses an Elastic IP and can only be used by EC2 in other subnets. The route is from the private subnet to the NATGW to the IGW. To get HA we need one NATG per AZ. 
 
 The bandwidth is from 5 Gbps to  automatic scale up 45Gbps.
+
+### Network ACLs
+
+Define traffic rule at the subnet level. One NACL per subnet. A NACL specifies rules with number that defines evaluation priority. The last rule is an asterisk and denies a request in case of no rule matches.  
+
+![](./images/nacl-default.png)
+
+It is used to block a specific IP address at the subnet level.
+
+Here is a complete figure to explain the process: A client app is initiating a connection to a DB and with a ephemeral port to receive the response.
+
+![](./diagrams/nacl.drawio.png)
+
+### VPC peering
+
+The goal of VPC peering is to connect two VPCs using AWS network and let them behave as if they were in the same network. The CICDs do not overlap. 
+
+It could be used to connect VPC cross Regions and event cross Accounts.
+
+Once the VPC peering connection is defined, we still need to specify the route to the CIDR to reach the VPC peering created.
 
 ## Elastic Load balancers
 
