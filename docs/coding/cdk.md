@@ -42,6 +42,7 @@ The first time you deploy an AWS CDK app into an environment (account/region), y
 ![](./images/cdk-toolkit-cf.png)
 
 * See [CDK workshops](https://cdkworkshop.com/)
+* [CDK for Python API](https://docs.aws.amazon.com/cdk/api/v2/python/index.html)
 
 ## CDK Python for an EC2
 
@@ -75,7 +76,7 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 
 | Folder | Description |
 | --- | --- |
-| [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and public & private subnets, NAT, IGW |
+| [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and public & private subnets, NAT, IGW, Bastion Host |
 | [labs/cdk/cdk_workhop](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/cdk_workshop) | Lambda functions in python with an API gateway and TableViewer.|
 
 ## Useful commands

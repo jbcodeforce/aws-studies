@@ -1,6 +1,6 @@
 # [AWS studies](https://jbcodeforce.github.io/aws-studies)
 
-
+Read from [book view](https://jbcodeforce.github.io/aws-studies)
 
 ## Building this booklet locally
 

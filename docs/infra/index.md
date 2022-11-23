@@ -214,31 +214,16 @@ The following diagram illustrates classical VPC, as defined years ago, with one 
 * Route tables defines `172.31` as local with `/20` CIDR address range, internal to the VPC. Default route to internet goes to the IGW, which has an elastic IP address assigned to it.
 * Because the VPC is cross AZs, we need a router to route between subnets. (See [TCP/IP summary](https://jbcodeforce.github.io/architecture/tcpip))
 
-#### Hands-on work
 
-The CDK example in [the ec2-vpc folder](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) supports the following diagram:
-
-![](./diagrams/hands-on-vpc.drawio.svg)
-
-**Figure 6: More classical VPC**
-
-* We can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing tables for each subnets. 
-
-* Alternatively, to allow an instance in our VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, we can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
-* IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, we can use a NAT instance or NAT Gateway
-* A NAT device has an Elastic IP address and is connected to the internet through an internet gateway.
-* NAT gateway is deployed inside a subnet and it can scale only inside that subnet. For fault tolerance, it is recommended that we deploy one NAT gateway per availability zone
-
-
-
+#### Extended picture
 
 ![](./images/vpc-anim.gif)
 
-** figure: Full VPC diagram**
+**Figure 6: Full VPC diagram**
 
-We can have [VPC endpoint service]() to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in our VPC. We need to ensure there is one interface endpoint for each availability zone. We need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
+We need to have [VPC endpoint service](https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.vpc-endpoint.en.html) to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in our VPC. We need to ensure there is one interface endpoint for each availability zone. We need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
 
-TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) establishes private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
+TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) to establish private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
 
 CIDR Blocks should not overlap between VPCs for setting up a peering connection. Peering connection is allowed within a region, across regions, across different accounts
 
@@ -247,13 +232,66 @@ We can optionally connect our VPC to our own corporate data center using an IPse
 A virtual private gateway is the VPN concentrator on the Amazon side of the VPN connection. 
 A customer gateway is a physical device or software appliance on our side of the VPN connection.
 
+As seen in Figure 6 "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
+
+#### Routing Tables
+
 The last elements are the Routing tables. As illustrated in the following diagram, main routing table addresses internal to the VPC traffic, while custom tables define how inbound and outbound traffic can be structured within a subnet. 
 
 ![](./images/vpc-vpn.png)
 
-Security group policies are at the EC2 instance, and define firewall configuration.
+**Figure 7: Routing tables**
 
-As seen in "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
+Security group policies are at the EC2 instance level, and define firewall configuration.
+
+#### Hands-on work
+
+The CDK example in [the ec2-vpc folder](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) supports the following diagram:
+
+![](./diagrams/hands-on-vpc.drawio.svg)
+
+**Figure 6: More classical VPC**
+
+* We can enable internet access for an EC2 instance launched into a non-default subnet by attaching an internet gateway to its VPC and configure routing tables for each subnets. The routes needs to define that traffic from internet goes to the IGW. The following route is associated to the public subnet-1:
+
+    ![](./images/route-to-igw.png)
+
+* Alternatively, to allow an instance in our VPC to initiate outbound connections to the internet but prevents unsolicited inbound connections from the internet, we can use a network address translation (NAT) service for IPv4 traffic. NAT maps multiple private IPv4 addresses to a single public IPv4 address. 
+* In the private subnet, outbound to reach the internet has to go to the NAT Gateway, while traffic from machines in the subnets stays local.
+
+    ![](./images/route-to-nat.png)
+
+* To use the **Bastion Host**, we attach a security group to authorize SSH and outbound HTTP traffic. CDK creates this SG automatically. So we can Instance Connect to this instance, and within the termnal a ping to amazon.com will work. The bastion has a public IP address, and the VPC has a IGW with a route table.
+
+    ![](./images/bastion-SG.png)
+
+* In the EC2 instance running in the private network, we need to add a Security Group with an inbound rule to specify SSH trafic from the SG of the Bastion. With this settings a SSH to the Bastion, then a copy of the pem file in the bastion host and a command like: `ssh ec2-user@10.10.2.239 -i ec2.pem` on the private IP @ of the EC2 instance (10.10.2.239) will make the connection from Bastion to EC2.
+
+    ![](./images/ec2-sg-private.png)
+
+* IPv6 uses Egress only Internet Gateway for outbound requests from a private Subnet. For IPv4 oubtound internet traffic from a private subnet, we can use a NAT instance or NAT Gateway.
+* NAT gateway is deployed inside a subnet and it can scale only inside that subnet. For fault tolerance, it is recommended that we deploy one NAT gateway per availability zone.
+* As we have set up a NAT Gateway in each public subnet, and the route in the private network route all IP to the NAT gateway, we can ping from the EC2 running in the private subnet to the internet:
+
+    ![](./images/private-route-to-nat.png)
+
+* Here is the two NAT gateways:
+
+    ![](./images/nat-gtws.png)
+
+
+* A NAT device has an Elastic IP address and is connected to the internet through an internet gateway.
+
+#### Network ACLs
+
+Define traffic rule at the subnet level
+
+![](./images/nacl-default.png)
+
+Here is a complete figure to explain the process: A client app is initiating a connection to a DB and with a ephemeral port to receive the response.
+
+![](./diagrams/nacl.drawio.png)
+
 
 #### Deeper Dive
 

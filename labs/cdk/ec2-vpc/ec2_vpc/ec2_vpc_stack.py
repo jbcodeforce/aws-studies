@@ -40,21 +40,14 @@ class Ec2VpcStack(Stack):
                                    subnet_type=ec2.SubnetType.PUBLIC,
                                    cidr_mask=24),
                                ec2.SubnetConfiguration(
-                                   subnet_type=ec2.SubnetType.PRIVATE_ISOLATED,
+                                   subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS,
                                    name="private",
                                    cidr_mask=24) # could be /16 to have more instances, but this is a demo scope.
                            ]
                            )
-
-        # Instance Role and SSM Managed Policy
-        self.role = iam.Role(
-            self, "InstanceSSM", assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
-
-        self.role.add_managed_policy(
-            iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"))
-
-        # Create Bastion Host
-        self.bastion = ec2.BastionHostLinux(self, "myBastion",
+     
+        # Create Bastion Host, and authorize SSH to it
+        self.bastion = ec2.BastionHostLinux(self, "myBastionHost",
                                             vpc=self.vpc,
                                             subnet_selection=ec2.SubnetSelection(
                                                 subnet_type=ec2.SubnetType.PUBLIC),
@@ -65,30 +58,31 @@ class Ec2VpcStack(Stack):
 
         self.bastion.connections.allow_from_any_ipv4(ec2.Port.tcp(22), "Internet access SSH")
 
-        self.ec2_security_group = ec2.SecurityGroup(self, "SecurityGroup",
+        
+        # Define a security group 
+        self.ec2_security_group = ec2.SecurityGroup(self, "EC2privateSG",
                                                   vpc=self.vpc,
                                                   description="SecurityGroup for EC2 in private subnet",
-                                                  security_group_name="CDK SecurityGroup",
+                                                  security_group_name="EC2privateSG",
                                                   allow_all_outbound=True,
                                                   )
 
         self.ec2_security_group.add_ingress_rule(ec2.Peer.ipv4(cidr), ec2.Port.tcp(22), "allow ssh access from the VPC")
-        # Instance with user data
+        self.ec2_security_group.add_ingress_rule(ec2.Peer.ipv4(cidr), ec2.Port.tcp(80), "allow HTTP access from the VPC")
+
+         # EC2 Instance with user data
         self.instance = ec2.Instance(self, "myHttpdEC2",
                                      instance_type=ec2.InstanceType("t2.micro"),
                                      instance_name="mySimpleHTTPserver",
                                      machine_image=amzn_linux,
                                      vpc=self.vpc,
-                                     role=self.role,
                                      key_name=key_name,
-                                     vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE),
+                                     vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
                                      security_group=self.ec2_security_group,
                                      user_data=ec2.UserData.custom(user_data),
                                      )
-        self.instance.connections.allow_from_any_ipv4(ec2.Port.tcp(80), "allow http from world")
-        self.instance.connections.allow_from_any_ipv4(ec2.Port.tcp(443), "allow https from world")
+
         
         CfnOutput(self, "VPCid", value=self.vpc.vpc_id)
         CfnOutput(self, "BastionHost_information", value=self.bastion.instance_public_ip, description="BastionHost's Public IP")
-        CfnOutput(self, "WebHost_information", value=self.instance.instance_public_ip, description="Web server's Public IP")
-
+       

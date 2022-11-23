@@ -5,7 +5,10 @@ The Cloud Formation created from this cdk includes:
 
 * One VPC.
 * One public subnet and one private subnet.
+* One Bastion Host deployed in Public subnet with pem associated to an existing key-pair
+* An EC2 instance in the private subnet, with a security group to get SSH from 
 
+The goal is to demonstrate SSH to the EC2 instance via the Bastion Host.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
@@ -42,5 +45,5 @@ command.
  * `cdk deploy`      deploy this stack to your default AWS account/region
  * `cdk diff`        compare deployed stack with current state
  * `cdk docs`        open CDK documentation
-
-Enjoy!
+ * `cdk destroy`     remove all the resources/stacks. 
+ * `cdk metadata Ec2VpcStack` to see all created resources.
