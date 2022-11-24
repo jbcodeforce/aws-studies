@@ -152,8 +152,7 @@ Based on the AWS essential training, here is a quick summary of the things to do
 
 ## Create a EC2 instance with Terraform
 
-* Build a main.tf (/Code/Studies/terraform/learn-terraform-aws-instance/main.tf) like below, which uses the aws provider
-to provision a micro EC2 instance:
+* Build a main.tf [labs/terraform-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/terraform-vpc), which uses the aws provider to provision a micro EC2 instance:
 
     ```json
     terraform {
@@ -168,17 +167,17 @@ to provision a micro EC2 instance:
     }
 
     provider "aws" {
-    profile = "default"
-    region  = "us-west-2"
+        profile = "default"
+        region  = "us-west-2"
     }
 
     resource "aws_instance" "app_server" {
-    ami           = "ami-830c94e3"
-    instance_type = "t2.micro"
+        ami           = "ami-830c94e3"
+        instance_type = "t2.micro"
 
-    tags = {
-        Name = "ExampleAppServerInstance"
-    }
+        tags = {
+            Name = "ExampleAppServerInstance"
+        }
     }
 
     ```

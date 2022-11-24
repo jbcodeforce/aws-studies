@@ -51,3 +51,12 @@
    allocation_id = aws_eip.nateIP.id
    subnet_id = aws_subnet.publicsubnets.id
  }
+
+  resource "aws_instance" "app_server" {
+      ami           = "ami-830c94e3"
+      instance_type = "t2.micro"
+
+      tags = {
+          Name = "ExampleAppServerInstance"
+      }
+  }
