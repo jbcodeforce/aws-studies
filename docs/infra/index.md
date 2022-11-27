@@ -222,7 +222,7 @@ When the backend content is modified, CloudFront will not get it until its TTL h
 
 ## Global Accelerator
 
-The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS network endpoint (Edge location) and use AWS backbone.
+The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS network endpoint (Edge location) and use the AWS private network backbone.
 
 With Anycast IP a client is routed to the nearest server. All servers hold the same IP address. So for each application, we create 2 Anycast IP, and the traffic is sent to the edge locations.
 

@@ -157,14 +157,33 @@ Once the VPC peering connection is defined, we still need to specify the route t
 
 An interface VPC endpoint allows you to privately connect your Amazon VPC to supported AWS services. Interface VPC endpoints also connect to endpoint services hosted by other AWS customers and partners and AWS Marketplace partner services.
 
-VPC Endpoints remove the need of IGW, NATGW to access AWS Services. The service is redudant and scale horizontally. 
+VPC Endpoints remove the need of IGW, NATGW to access AWS Services. The service is redundant and scale horizontally. 
 
 Two types of endpoint:
 
-* Interface endpoints powered by PrivateLink: it provisions an ENI in our VPC, with a security group. Pay per hour and GB of data transfer
-* Gateway endpoints: provision a GTW and setup routes in route tables. Used for S3 and DynamoDB. Free. 
+* **Interface endpoints** powered by PrivateLink: it provisions an ENI in our VPC, with a security group. Pay per hour and GB of data transfer
+* **Gateway endpoints**: provision a GTW and setup routes in route tables. Used for S3 and DynamoDB. Free. 
+
+## VPC Flow Logs
+
+Capture IP traffic at th ENI, VPC, subnet level. This is used to monitor and troubleshoot connectivity issues. Can be save in S3 and CloudWatch logs.
+It can work on managed service like ELB, RDS, ElastiCache, RedShift, NATGW, Transit Gateway.
+
+The log includes src and destination addresses, port numbr and action done (REJECT/ ACCEPT).
+
+When a inboud is rejected it could be a NACL or SG issue, while if the inbound is accepted but outbound reject it is only a NACL issue. 
+
+it is defined within the VPC:
+
+![](./images/vpc-flow-logs.png)
+
+The Flow can target S3, Firehouse or cloudWatch
+
+![](./images/vpc-flow-create.png)
 
 ## Extended picture
+
+The following aninmation is presenting external integration to on-premises servers to AWS services and VPCs via site to sire VPN, Private Gateway, Customer Gateway.
 
 ![](./images/vpc-anim.gif)
 
@@ -178,11 +197,42 @@ CIDR Blocks should not overlap between VPCs for setting up a peering connection.
 
 We can optionally connect our VPC to our own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of our data center. A VPN connection consists of a virtual private gateway (VGW) attached to our VPC and a customer gateway located in our data center. 
 
-A virtual private gateway is the VPN concentrator on the Amazon side of the VPN connection. 
-A customer gateway is a physical device or software appliance on our side of the VPN connection.
+A Virtual Private Gateway is the VPN concentrator on the Amazon side of the VPN connection. 
+A customer gateway is a physical device or software appliance on our side of the VPN connection. We need to create a Site-to-site VPN connection between the CP GTW and Customer GTW.
 
 As seen in Figure 6 "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
 
+AWS VPN CloudHub allows you to securely communicate with multiple sites using AWS VPN. It operates on a simple hub-and-spoke model that you can use with or without a VPC.
+
+## [Direct Connect](https://aws.amazon.com/directconnect/)
+
+It provides a dedicated connection from a remote network to the VPC bypassing public internet. Need to setup a Virtual Private GTW. It is a private connection so it supports better bandwidth throughput at lower cost.
+
+![](./diagrams/direct-conn.drawio.png)
+
+Get a direct connection setup can take more than a month. If we need to access two VPC in two different regions from the corporate data center then we need an Direct Connect Gateway.
+
+To get reliability we can setup a VPN site to site connection in parallel to the direct connect link. For maximum resiliency for critical workloads, it is  recommended to have double connection per data center.
+
+![](./diagrams/direct-conn-ha.drawio.png)
+
+Hosted Direct Connect connection supports 50Mbps, 500Mbps, up to 10Gbps, while Dedicated offers higher bandwidth.
+
+
+## [Transit Gateway](https://aws.amazon.com/transit-gateway/)
+
+This service aims to reduce complexity of interconnecting VPCs, it provides transitive peering between thousands of VPCs and on-premises, hub and spoke connection. It runs on the AWS global private network. 
+
+Transit Gateway acts as a highly scalable cloud router—each new connection is made only once.
+
+It is a regional resource and it can run cross-region. It is also possible to share it across accounts using Resource Access Manager.
+
+Control the connection vias Route Tables. This is also the only service supporting IP multicast. 
+
+To increase the bandwidth of the connection to VPC, there is the site to site VPN ECMP (Equal-cost multi-path routing) feature, which is a routing strategy to forward packet over multiple best paths. The VPCs can be from different accounts.
+![](./diagrams/tg-ecmp.drawio.png)
+
+VPN connection to the Transit gateway with ECMP double the troughtput as it used double tunnels.
 
 ## Elastic Load balancers
 

@@ -8,6 +8,7 @@ nav:
       - Security: infra/security.md
       - S3-Storage: infra/storage.md
       - Route 53: infra/route53.md
+      - Monitoring: infra/monitoring.md
       - Messaging: infra/messaging.md
       - Streams-Firehose: kinesis/index.md
   - Architecture:
