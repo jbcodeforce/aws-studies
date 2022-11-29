@@ -6,6 +6,21 @@ Build with high-level constructs that automatically provide sensible, secure def
 
 It uses AWS CloudFormation to perform infrastructure deployments predictably and repeatedly, with rollback on error. The output of an AWS CDK program is an AWS CloudFormation template.
 
+## Install
+
+A docker file exists under the labs folder to get an environment with nodes, python 3.9, AWS CLI, CDK CLI...
+
+```sh
+# build the docker
+docker build -t jbcodeforce/aws-python .
+# Start the env
+./startPythonDocker.sh
+# verify installation
+aws s3 ls
+cdk --version
+```
+## Concepts
+
 A CDK app defines one or more Stacks (= CloudFormation stack). A Stack includes Constructs. Each construct defines one or more concrete AWS resources.
 Constructs (and also stacks and apps) are represented as classes (types) in your programming language of choice. You instantiate constructs within a stack to declare them to AWS, and connect them to each other using well-defined interfaces.
 

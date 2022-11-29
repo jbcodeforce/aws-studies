@@ -19,7 +19,7 @@ executable in your path with access to the `venv`
 package. If for any reason the automatic creation of the virtualenv fails,
 you can create the virtualenv manually.
 
-To manually create a virtualenv on MacOS and Linux:
+To manually create a virtualenv on MacOS and Linux or within the docker container:
 
 ```sh
 python3 -m venv .venv
@@ -28,15 +28,25 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-At this point you can now synthesize the CloudFormation template for this code.
+Synthesize the CloudFormation template for this code.
 
 ```
 $ cdk synth
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+## Demonstration script
+
+* From this `ec2-vpc` folder deploy with `cdk deploy` and wait at least 250 s
+* Go to the EC2 instances, select the simpleHTTPserver to display that it does not have a public IP address, but a Security Group with an inbound rule for SSH from internal subnet.
+* In EC2 instance list, select the Bastion Host, open connect terminal on it.
+* Get the .pem file for the key-pair used to define the EC2 instance of the HTTP Server, an create a file in the bastion host to keep this client certificate (file `key.pem`)
+* Then ssh to this host:
+
+```sh
+ssh ec2-user@10.10.2.253 -i key.pem
+```
+* In the HTTP server host, we can do `curl localhost` to see the HTTP page served by httpd.
+* Terminate with `cdk destroy`
 
 ## Useful commands
 

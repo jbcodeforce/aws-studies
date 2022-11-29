@@ -93,7 +93,7 @@ Data volumes (EBS, EFS, FSx) are defined with StorageClass and they need to have
 
     ```sh
     kubectl get nodes -o wide
-    # 
+    # across namespaces
     kubectl get pods --all-namespaces -o wide
     ```
 
@@ -170,6 +170,7 @@ This is a summary of the steps to get a running demonstration of creating EKS an
         sudo reboot
     fi
     ```
+    
 * Update the CDK to be version 2.5
 
     ```sh
@@ -177,6 +178,7 @@ This is a summary of the steps to get a running demonstration of creating EKS an
     npm install -g aws-cdk@2.50.0
     cdk --version
     ```
+
 * Install kubectl and AWS CLI
 
     ```sh
@@ -218,6 +220,7 @@ This is a summary of the steps to get a running demonstration of creating EKS an
     # validate that the Cloud9 IDE is using the correct IAM role
     aws sts get-caller-identity --query Arn | grep eks-blueprints-cdk-workshop-admin -q && echo "IAM role valid" || echo "IAM role NOT valid"
     ```
+
 * bootstrap CDK is not done before. (the following command is to bootstrap CDK in 3 regions)
 
     ```sh
@@ -225,6 +228,7 @@ This is a summary of the steps to get a running demonstration of creating EKS an
       --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess \
         aws://$ACCOUNT_ID/$AWS_REGION aws://$ACCOUNT_ID/us-east-2 aws://$ACCOUNT_ID/us-east-1
     ```
+    
 * To use GitOps approach create a `CodeCommit` Repository. If using GitHub, needs to set Personal Access Token
 
     ```sh

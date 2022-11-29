@@ -8,7 +8,7 @@ nav:
       - Security: infra/security.md
       - S3-Storage: infra/storage.md
       - Route 53: infra/route53.md
-      - Monitoring: infra/monitoring.md
+      - Monitoring: monitoring/monitoring.md
       - Messaging: infra/messaging.md
       - Streams-Firehose: kinesis/index.md
   - Architecture:
@@ -32,6 +32,7 @@ nav:
       - Getting Started IAM-EC2: playground/gettingstarted.md
       - RDS: playground/rds.md
       - Data processing: playground/rt-data-processing.md
+      - Analytics on EMR: playground/spark-emr.md
   - Coding:
       - Practices: coding/index.md
       - CloudFormation: coding/cloudFormation.md
@@ -55,8 +56,6 @@ theme:
   social:
     - type: 'github'
       link: 'https://github.com/jbcodeforce'
-    - type: 'twitter'
-      link: 'https://twitter.com/agileitarch'
     - type: 'linkedin'
       link: 'https://linkedin.com/in/jeromeboyer'
 extra_css: ["extra.css"]
