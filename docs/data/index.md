@@ -2,32 +2,35 @@
 
 ## [Relational Database Service - RDS](https://docs.aws.amazon.com/rds/index.html)
 
-Managed service for SQL based database (MariaDB, MySQL, Postgresql, SQL server, Oracle, Amazon Aurora).  AWS maintains instance AMI, OS patching... 
+Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora).  This is used for On Line Transaction Processing (OLTP). AWS maintains instance AMI, OS patching... 
 
 * HA support with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations and they are asynchronously replicated. Resources aren't replicated across AWS Regions unless you do so specifically.
 
 ![](./diagrams/rds-multi-AZ.drawio.svg){ width=600 }
 
 * Support multi AZs for Reliability Availability with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. 
-* It uses gp2 or io1 EBS. 
+* It uses gp2 or io1 EBS for persistence. 
 * Transaction logs are backed-up every 5 minutes. Support user triggered snapshot.
 * Supports **Storage Auto Scaling** to increase storage dynamically with automatic detections of running out of free storage and scale it. (Free storage < 10%, low storeage last at least 5 minutes, 6 hours have passed since last notification)
-* Installed in private subnet in a VPC. No public IP address. 
+* Installed in private subnet in a VPC. No public IP address (avoid it at least). 
 * For Oracle and MS SQL it is possible to setup a RDS custom. where you have access to OS and Database.
 
 From a solution architecture point of view:
 
-* **Operations**:  small downtime when failover happens. For maintenance, scaling in read replicas, updating underlying ec2 instance, or restore EBS, there will be manual intervention.
-* **Security**: AWS is responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
-* **Reliability**: Multi AZ feature helps to address it, with failover mechanism in case of failures
+* **Operations**:  small downtime when failover happens. For maintenance, scaling with read replicas, updating underlying EC2 instance, or restore EBS, there will be manual interventions.
+* **Security**: AWS is responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing user accesses to the DB, and enforcing SSL.
+* **Reliability**: Multi AZ feature helps to address reliability, with automatic failover to the standby instance in case of failures.
 * **Performance**: depends on EC2 instance type, EBS volume type, ability to add Read Replicas. Doesn’t auto-scale, adapt to workload manually. 
+* **Fit for purpose**: for OLAP prefer Redshift.
 
 ### Multi AZ DB Cluster - Read Replicas
 
-Read replicas helps to scale the read operations. Can create up to 5 read-replicas within a AZ, cross AZ and cross regions. Replication is asynch (eventually consistent). Use cases include, adding reporting, analytics on existing DB, or develop a ML model.
+Read replicas helps to scale the read operations. Can create up to 5 read-replicas within a AZ, across AZ and across regions. Replication is asynch (eventually consistent). Use cases include, reporting, analytics on existing DB, or develop a ML model.
 The application which needs to access a read-replica DB needs to change the connection parameters.
 
 AWS charges for network when for example data goes from one AZ to another. Replicas in the same region in RDS managed services are for free, cross regions has a network cost.
+
+Read replica is great for read-heavy workloads and takes the load off the primary database (BI jobs). 
 
 ### DR - Multi AZ DB instance
 
@@ -94,12 +97,12 @@ See [Playground RDS](../playground/rds.md)
 
 ## Aurora
 
-Proprietary SQL database storage engine, works using **Postgresql** and **mysql** drivers. 
+Proprietary SQL database storage engine, works using **PostgreSQL** and **mySQL** drivers. 
 
-* **Operations**:  less operation, auto scaling storage: it can grow up by increment of 10GB to 128 TB. 
+* **Operations**:  less operation, auto scaling storage: it can grow up by increment of 10GB from 10GB to 128 TB. 
 * **Security**: AWS responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing users in DB, enforcing SSL.
-* **Reliability**: Multi AZ, HA
-* **Performance**: Sub 10ms replica lag, up to 15 replicas (MySQL has only 5 replicas). It costs 20% more than RDS. 5x performance improvement over mySQL on RDS, and 3x for Postgresql.
+* **Reliability**: Multi AZ, HA with minimum of 3 AZs, with 2 copies of the data in each AZ. 6 copies overall.
+* **Performance**: Sub 10ms replica lag, up to 15 replicas (MySQL has only 5 replicas). It costs 20% more than RDS. 5x performance improvement over mySQL on RDS, and 3x for PostgreSQL. The compute resources can scale up to 96 vCPUs and 768 GB of memory.
 
 ### HA and Read Scaling
 
@@ -121,9 +124,9 @@ It also supports one write with multiple readers and parallel query, multiple wr
 
 With Aurora Global Database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
 
-* Serverless: automated database instantiation with auto scaling based on actual usage. This is a good approach for infrequent or impredictable usage. 
+* **Serverless**: automated database instantiation with auto scaling based on actual usage. This is a good approach for infrequent or impredictable usage. 
 * Multi-master, to protect on write node failure. Every node supports read and write operations. The client has multiple DB connection definitions for failover.
-* **Global Aurora**: cross region replicas, or use Global Database with one primary region for R/W and up to 5 secondary regions (Read-only), with a replica lag < 1s and up to 16 read replicas per secondary region. Promoting a region for DR should lead to a RTO < 1 mn. It takes less than a second to do replicas cross region. 
+* **Global Aurora**: across region replicas, or use Global Database with one primary region for R/W and up to 5 secondary regions (Read-only), with a replica lag < 1s and up to 16 read replicas per secondary region. Promoting a region for DR should lead to a RTO < 1 mn. It takes less than a second to do replicas cross region. 
 * Aurora has integration with ML services like SageMaker and Comprehend. 
 
 ### Backup
@@ -131,6 +134,8 @@ With Aurora Global Database, one primary region is used for write and then up to
 Could not be disabled, and automatic is up to 35 days retention.
 
 It is possible to clone an existing Aurora DB, which is fast and cost-effective. For example to create a 'Staging' DB from production one. 
+
+We can share snapshot with other AWS accounts.
 
 ### Code examples
 

@@ -1,6 +1,7 @@
 from aws_cdk import (
     # Duration,
     Stack,
+    Aws,
     aws_emr as emr,
     aws_iam as iam,
     aws_ec2 as ec2,
@@ -21,7 +22,7 @@ class EmrAnalyticsStack(Stack):
         # VPC
         vpc = ec2.Vpc(
             self,
-            "vpc",
+            "vpc4emr",
             nat_gateways=0,
             subnet_configuration=[
                 ec2.SubnetConfiguration(
@@ -39,7 +40,7 @@ class EmrAnalyticsStack(Stack):
         read_scripts_document = iam.PolicyDocument()
         read_scripts_document.add_statements(read_scripts_policy)
 
-        # emr service role
+        # emr service IAM role
         emr_service_role = iam.Role(
             self,
             "emr_service_role",
@@ -81,7 +82,7 @@ class EmrAnalyticsStack(Stack):
             "emr_cluster",
             instances=emr.CfnCluster.JobFlowInstancesConfigProperty(
                 core_instance_group=emr.CfnCluster.InstanceGroupConfigProperty(
-                    instance_count=3, instance_type="m4.large", market="SPOT"
+                    instance_count=1, instance_type="m4.large", market="RESERVED"
                 ),
                 ec2_subnet_id=vpc.public_subnets[0].subnet_id,
                 hadoop_version="Amazon",
@@ -124,7 +125,7 @@ class EmrAnalyticsStack(Stack):
                 ),
             ],
             log_uri=f"s3://{s3_log_bucket}/{Aws.REGION}/elasticmapreduce/",
-            release_label="emr-6.0.0",
+            release_label="emr-6.9.0",
             visible_to_all_users=False,
             # the job to be done
             steps=[
@@ -142,4 +143,4 @@ class EmrAnalyticsStack(Stack):
                     action_on_failure="CONTINUE",
                 ),
             ],
-        )
+        ) # end of cluster definition

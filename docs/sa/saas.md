@@ -6,13 +6,13 @@ A licensing and delivery model whereby software is centrally managed and hosted 
 
 Everything done in SaaS is about multi-tenancy, data isolation and sharing resources like compute, networking and storage as part of the infrastructure. 
 
-![](./diagrams/saas-core.drawio.png){ width=500 }
+![](./diagrams/saas/saas-core.drawio.png){ width=500 }
 
 **Figure 1**
 
 As illustrated in the figure above an onboarding / shared service component is needed to manage the multi-tenant platform. Any software vendor is bringing their own solution and it is highlighted as application specific domain. If we take a big data platform provider such application domain may look like the following architecture, which supports a map/reduce job execution environment with data ingestion, transformation and persistence:
 
-![](./diagrams/big-data-isv-starting.drawio.png)
+![](./diagrams/saas/big-data-isv-starting.drawio.png)
 
 **Figure 2**
 
@@ -26,7 +26,7 @@ For the application domain, new features are deployed to all tenants, more quick
 
 There are multiple patterns for multi-tenancy, some linked to business requirements and sometime technical reasons: 
 
-![](./diagrams/saas-tenant-patterns.drawio.png)
+![](./diagrams/saas/saas-tenant-patterns.drawio.png)
 
 **Figure 3**
 
@@ -66,7 +66,7 @@ There are a set of shared services that we will find in any SaaS solution which 
 
 The figure below illustrates the integration of those services within the landscape:
 
-![](./diagrams/saas-services.drawio.png)
+![](./diagrams/saas/saas-services.drawio.png)
 
 **Figure 4**
 
@@ -78,7 +78,7 @@ The shared services can be developed using a serverless / container approach or 
 
 The shared services deployment on EKS will look like in the following diagram within the VPC of the software vendor (not all services are presented):
 
-![](./diagrams/saas-sharedserv-eks.drawio.svg)
+![](./diagrams/saas/saas-sharedserv-eks.drawio.svg)
 
 **Figure 5**
 
@@ -88,13 +88,13 @@ Bridge or Pool runs in the SaaS vendor VPC, and Web and App tiers are shared and
 
 Now on the SaaS provider's customer side we may use kubernetes namespace to deliver tenant isolation. The SaaS control plane runs and the customers own use of the solution runs in the same k8s cluster. Dedicated worker nodes can be used. In the figure 6, the ISV solution is instantiated as pods in different namespaces (gree, purple, red colors) for each tenant. The control plane, shared services run in the same cluster. All the solution is managed inside of this unique k8s cluster. 
 
-![](./diagrams/saas-eks-tenant.drawio.png)
+![](./diagrams/saas/saas-eks-tenant.drawio.png)
 
 **Figure 6**
 
 Silo Isolation model may be achieve with VPC per tenant. Therefore the supporting approach will be to deploy the solution in dedicated EKS cluster in the customers VPC.
 
-![](./diagrams/saas-eks-cluster-tenant.drawio.png)
+![](./diagrams/saas/saas-eks-cluster-tenant.drawio.png)
 
 **Figure 7**
 
@@ -102,17 +102,17 @@ Registering a tenant generates Terraform scripts to create the needed infrastruc
 
 Coming back to the big-data processing platform example, we also need to consider **data and storage partitioning**, how to isolate data for each tenant. Long term persistence of object can be done in S3, now buckets can be defined in the VPC of the SaaS provider or in the customer's VPC. All the metadata about customer's interactions with the platform, the jaob execution can be ingected back to the ISV platform and then analytics can be used to do product and features usage assessment.
 
-![](./diagrams/saas-analytics.drawio.png)
+![](./diagrams/saas/saas-analytics.drawio.png)
 
 As mentioned before the solution could also being deployed on EC2s which may looks like:
 
-![](./diagrams/saas-conceptual.drawio.svg){ width=600 }
+![](./diagrams/saas/saas-conceptual.drawio.svg){ width=600 }
 
 
 
 Which maps to the following provisionned environment with classical HA deployment within a region / VPC, two AZs, private and public subnets and gateway & application load balancer. 
 
-![](./diagrams/saas-env.drawio.svg){ width=600 }
+![](./diagrams/saas/saas-env.drawio.svg){ width=600 }
 
 
 IAM roles and policies are used to support isolation. 
@@ -134,7 +134,7 @@ For SaaS, we need to focusing on monitoring the environments and applications he
 
 Those numbers are very important to get how the revenue are coming from and the cost too. The figure below illustrates a classical e-commerce market place use case where basic tier customers are using a lot of resources and do not generate a lot of revenue, as they are trying product features and no more, while advanced tier better target their usage and own sell operation and therefore are generating bigger revenue. 
 
-![](./images/saas-metrics.png)
+![](./images/saas/saas-metrics.png)
 
 
 What to measure when focusing on consumption? request count, execution time (latency of a function), CPU impact, Memory impact?

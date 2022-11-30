@@ -52,9 +52,41 @@
 
 ## [Elastic MapReduce - EMR](https://aws.amazon.com/emr)
 
-It helps creating an Hadoop cluster (HPFS) to process big data. The cluster can have hundred of EC2 instances. 
+[EMR is a cluster](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-overview.html) of EC2 instances which are nodes in Hadoop. There are three node types:
 
-It comes bundled with Spark, HBase, Presto, Flink. For auto scaling of the task nodes, it uses Spot instances. Master node should be reserved instance.
+* **Master node**: coordinates cluster, and distribution of data and tasks among other nodes. 
+* **Core node**: run tasks and store data in the Hadoop Distributed File System (HDFS) 
+* **Task node**: (optional)  runs tasks and does not store data in HDFS
+
+It comes bundled with Spark, HBase, Presto, Flink... 
+When launching a cluster, it performs bootstrap actions to install custom software and applications. When the cluster is in running state, we can submit work to it. Work includes a set of steps. The cluster can auto terminate at the end of the last step.
+
+You can submit one or more ordered steps to an Amazon EMR cluster. Each step is a unit of work that contains instructions to manipulate data for processing by software installed on the cluster.
+
+For auto scaling of the task nodes, it uses Spot instances. Master node should be Reserved instance.
+
+[Getting started tutorial](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-gs.html) with Spark, Pyspark script stored in S3. The steps are summarized below and python and data are in the folder: [labs/analytics/emr-starting](https://github.com/jbcodeforce/aws-studies/tree/main/labs/analytics/emr-starting). The goal is to process food establishment inspection data.
+
+* Create a cluster using the script `create-cluster.sh`
+* In the console, once the cluster is in waiting mode, add a step with Spark Application, in cluster deployment mode, 
+
+    ![](./images/emr-spark-app.png)
+
+    Or run `deploy-app.sh`.
+
+* The results looks like
+
+    ```csv
+    name,total_red_violations
+    SUBWAY,322
+    T-MOBILE PARK,315
+    WHOLE FOODS MARKET,299
+    ...
+    ```
+
+for another example see [the playground](../playground/spark-emr.md).
+
+See [Pricing](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-gs.html) based on EC2 type and region.
 
 ### [EMR on EKS](https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/emr-eks.html)
 

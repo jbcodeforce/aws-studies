@@ -57,10 +57,10 @@ sudo mount  /dev/xvdb /data
 
 When creating EC2 instances, you can only use the following EBS volume types as boot volumes: gp2, gp3, io1, io2, and Magnetic (Standard)
 
-* **gp2 or gp3**: SSD, used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000)
-* **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T
-* **st 1**: HDD. Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing. Up to 16 TiB.
-* **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data.
+* **gp2 or gp3**: SSD, used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000).
+* **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T. 99.9% durability and 99.999% for io2.
+* **st 1**: HDD. Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing. Up to 16 TiB. 99.9% durability.
+* **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data. 99.9% durability.
 
 Encryption has a minimum impact on latency. It encrypts data at rest and during snapshots.
 * Provisioned IOPS (PIOPS) SSD: used for critical apps with sustained IOPS performance, even more than 16k IOPS. 
@@ -75,8 +75,8 @@ If we need to run a high-performance database that requires an IOPS of 210,000 f
 
 
 EBS snapshots are incremental backups that only save the blocks on the volume that have changed after your most recent snapshot.
-Used to backup disk at any point of time of a volume and store it on S3.
-Snapshot Lifecycle policies helps to create snapshot with scheduling it by defining policies.
+Used to backup disk at any point of time of a volume and stores it on S3.
+**Snapshot Lifecycle policy** helps to create snapshot with scheduling it by defining policies.
 To move a volume to another AZ or data center we can create a volume from a snapshot.
 
 EBS snapshots can be used to create multiple new volumes, whether they’re in the same Availability Zone or a different one
@@ -306,7 +306,7 @@ Three gateway types:
 * **tape**: same approach but with virtual tape library. Can go to S3 and Glacier. Works with existing tape software.
 * Hardware appliance to run a Storage gateway in the on-premises data center. 
 
-## [Tranfer Family](https://docs.aws.amazon.com/transfer/latest/userguide)
+## [Transfer Family](https://docs.aws.amazon.com/transfer/latest/userguide)
 
 To transfer data with FTP, FTPS, SFTP protocols to AWS Storage services like S3, EFS
 
@@ -333,13 +333,13 @@ One agent task can get 10 GB/s
 
 * S3: Object Storage.
 * Glacier: Object Archival.
-* EFS: Network File System for Linux instances, POSIX filesystem.
-* FSx for Windows: Network File System for Windows servers.
-* FSx for Lustre: High Performance Computing Linux file system.
+* EFS: When we need distributed, highly resilient storage, using Network File System for Linux instances, POSIX filesystem. Across multiple AZs.
+* FSx for Windows: Network File System for Windows servers. Central storage for Windows based applications.
+* FSx for Lustre: High Performance Computing (HPC) Linux file system. It can store data directly to S3 too.
 * FSx for NetApp: High OS compatibility.
 * FSx for OpenZFS: for ZFS compatibility.
 * EBS volumes: Network storage for one EC2 instance at a time.
-* Instance Storage: Physical storage for your EC2 instance (high IOPS).
+* Instance Storage: Physical storage for your EC2 instance (high IOPS). But Ephemeral.
 * Storage Gateway: File Gateway, Volume Gateway (cache & stored), Tape Gateway.
 * Snowcone, Snowball / Snowmobile: to move large amount of data to the cloud, physically.
 * Database: for specific workloads, usually with indexing and querying.

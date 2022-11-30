@@ -135,13 +135,11 @@ We can test Policies with the [policy simulator](https://policysim.aws.amazon.co
 * Maintaining roles is more efficient than maintaining users.  When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes to 36 hours.
 * IAM role does not create static access key, so no risk to have the key stolen.
 
-* When connected to an EC2 machine via ssh or using EC2 Instance Connect tool, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached.
-
-For example, the `DemoEC2Role` role is defined to access EC2 in read only:
+* When connected to an EC2 machine via ssh or using EC2 Instance Connect tool, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached. For example, the `DemoEC2Role` role is defined to let IAM access in read only:
 
 ![](./images/aws-iam-role.png)
 
-This role is then defined in the EC2 / Security  > attach IAM role.
+This role is then defined in the EC2 / Security  > attach IAM role, and now read-only commands with `aws iam` will work.
 
 When user, application or service assumes a role, it takes the permissions assigned to the role, and loose its original permissions. While when we use resource-based policy, the principal doesn't have to give up his permissions. For example if a user in Account A need to scan DynamoDB table in account A and dumpt it in S3 bucket in account B, then it is important to use resource-based policy for S3 bucket, so user does not loose its access to dynamoDB.
 

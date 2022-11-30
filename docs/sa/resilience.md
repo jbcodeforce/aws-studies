@@ -7,7 +7,7 @@ Apply the sharing responsibility of resiliency.
 ## Fault isolation concepts
 
 * Control plane is a complex orchestration with many dependencies so are more difficult to make them resilient. But the lower level of APIs makes it less risky. Still they will fail more often. Latency is not a strong requirement, 100s ms.   
-* Do not rely on Auto scaling group for EC2 in case of AZ failure, but plan for overcapacity to support the load after AZ failure.
+* Do not rely on Auto Scaling Group for EC2 in case of AZ failure, but plan for overcapacity to support the load after AZ failure.
 * Examples of control plan and data plane
 
     | Service | Control plane | Data plane |
@@ -99,6 +99,57 @@ Detection tools:
 * cloudwatch contributor insights. 
 
 ## Disaster recovery
+
+[Review the core principles of DR](https://jbcodeforce.github.io/architecture/DR/) and then the [AWS options whitepaper](https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html).
+
+
+### [Data Migration Service](https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html)
+
+As a managed service, AWS DMS is a server (EC2) in the AWS Cloud that runs replication software, to move data from one database to another running in AWS. Schema transformation can be performed using Schema Conversion Tool (SCT). SCT can run on-premises. 
+
+Sources can be on-premises DBs, and the targets can still be on-premises DBs but really a lot of AWS data store like RDS, Redshift, DynamoDB, S3, Elasticache, Kinesis data streams, DocumentDB... 
+
+We can use continuous replication with DMS:
+
+![](./diagrams/DR/cont-replication.drawio.png)
+
+Example of configuration, with EC2 instance type, engine version, allocated storage space for the replication instance, network connectivity...
+
+![](./images/DR/dms-1.png)
+
+Once server is defined, we need to define data provider to specify source and target endpoints and create a migration project to do schema conversion (from Oracle or SQL server to MySQL or PostgreSQL as target). 
+
+### Replication to Aurora
+
+For MySQL engine we have different options:
+
+* Use RDS DB snapshot from RDS and restore it in Aurora
+* Create an Autora read replica from the RDS MySQL source, when replication lag is 0, we can then promote Aurora as Write and Read.
+* For external MySQL, use XtraBackup to create a file backup, upload it to S3 and import the file into Aurora from S3. Or use `mysqldump` utility to move to Aurora MySQL DB.
+* Use DMS if both DBs run in parallel
+
+### [AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html)
+
+Fully-managed service that makes it easy to centralize and automate data protection across AWS services, in the cloud, and on premises. It supports cross-region backups and in multiple AWS accounts across the entire AWS Organization. 
+Src: EC2, EBS, EFS, Amazon FSx for windows, Lustre, and Storage Gateway, RDS, DynamoDB..
+
+Target is S3 bucket or Vault Lock.
+
+Vault lock is used for Write Once Read Many state. It is to defend on malicious delete as backup cannot be deleted. 
+
+We can create automated backup schedules and retention policies, lifecycle policies to expire unncecessary backups after a period of time.
+
+AWS Backup helps to support the regulatory compliance or business policies for data protection.
+
+### [Application Discovery Service](https://docs.aws.amazon.com/application-discovery/latest/userguide/what-is-appdiscovery.html)
+
+
+Managed service to help plan the migration to the AWS cloud by collecting usage and configuration data about the on-premises servers. It is integrated with AWS Migration Hub, which simplifies your migration tracking as it aggregates your migration status information into a single console.
+
+It offers two ways of performing discovery: 
+
+* Agentless: work on VM inventory, configuration, and performance history
+* Agent-based: by deploying AD Agent on each of your VMs and physical servers, it collects static configuration data, detailed time-series system-performance information, inbound and outbound network connections, and processes that are running.
 
 ## Resilience Patterns
 
