@@ -28,6 +28,7 @@ nav:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
       - EKS: serverless/eks.md
+      - EventBridge: serverless/eventbridge.md
   - Playground: 
       - Getting Started IAM-EC2: playground/gettingstarted.md
       - RDS: playground/rds.md

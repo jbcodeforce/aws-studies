@@ -17,11 +17,30 @@ Fine-grain identity and access controls combined with continuous monitoring for 
 
 ## Encryption
 
-Encryption is widely available through a lot of services and features on top of the platform. We will be able to develop application that can encrypt data at rest, or in transit as it flows over the network between services. S3 storage or EBS block attached storage, has single click option to do encryption at rest with keys (using KMS).
+Encryption is widely available through a lot of services and features on top of the platform. We will be able to develop application that can encrypt data at rest, or in transit as it flows over the network between services. S3 storage or EBS block attached storage. Those services have a single click option to do encryption at rest with keys (using KMS).
 
 ![](./images/EBS-encryption-rest.png)
 
 The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), helps centrally managing our own keys. It is integrated into a lot of services and the keys never leave AWS [FIPS 140-validated](https://en.wikipedia.org/wiki/FIPS_140-2) Hardware Security Modules unencrypted. User controls access and usage of the keys.
+
+With client side encryption, the data are encrypted by the client, and never decrypted by the Server. Only client with the data key can decrypt the data.
+
+### [KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
+
+Managed service to help us create and control the cryptographic keys that are used to protect our data. 
+
+![](./images/kms-1.png)
+
+* Integrated with IAM and most AWS services (EBS,S3, RDS, SSM...)
+* Audit KMS Key usage using CloudTrail
+* Two types of KMS Keys
+    
+    * Symmetric (AES 265 bits) is a single key used to encrypt and decrypt data. Must call KMS API to use it.
+    * Asymmetrics (RSA, ECC key pairs) - Public key to encrypt and private key to decrypt. Used to encrypt outside of AWS, with no KMS API access.
+
+* For AWS managed keys, they are automatically rotated every year.
+* KMS Keys are per region. But when doing snapshot of a EBS volume and moving it to another region, AWS will reencrypt the data with a KMS key from the target region automatically. 
+* KMS Key policies help to control who (users, roles ) can access the KMS keys. Used to do cross account access: the copy of a snapshot done from origin account to the target account will use this policy to access the key to decrypt the snapshot, and then encrypt the copy with a new private key within the target account.
 
 ## Organizations
 
@@ -77,9 +96,7 @@ The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), 
 * Assign users to groups (`admin` and `developers`) and assign policies to groups and not to individual user.
 * Groups can only contain users, not other groups.
 * Users can belong to multiple groups.
-* AWS Account has a unique ID but can be set with an alias (e.g.`jbcodeforce` or `boyerje`). The console URL includes the user 
-[https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console)
-or [https://boyerje.signin.aws.amazon.com/console](https://boyerje.signin.aws.amazon.com/console) use `aws-jb`.
+* AWS Account has a unique ID but can be set with an alias. The console URL includes the user alias.
 
 * Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
 * It must define an ID, a version and statement(s):

@@ -214,14 +214,6 @@ The easiest solution is to create AMI containing OS, dependencies and app binary
 
 
 
-## EventBridge
-
-[EventBridge](https://aws.amazon.com/eventbridge/) is a serverless event bus that makes it easier to 
-build event-driven applications at scale using events generated from your applications, integrated Software-as-a-Service (SaaS) applications, and AWS services.
-
-You can ingest, filter, transform and deliver events without writing custom code. 
-
-Integrate schema registry stores a collection of easy-to-find event schemas and enables you to download code bindings for those schemas in your IDE so you can represent events as a strongly-typed objects in your code
 
 ## Serverless 
 
