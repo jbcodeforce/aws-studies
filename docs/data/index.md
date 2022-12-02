@@ -2,22 +2,25 @@
 
 ## [Relational Database Service - RDS](https://docs.aws.amazon.com/rds/index.html)
 
-Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora).  This is used for On Line Transaction Processing (OLTP). AWS maintains instance AMI, OS patching... 
+Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora), the only things customers do is to define their schema and optimize their queries, AWS manages scaling, HA, backups, software patching, server maintenance...  RDS is used for On Line Transaction Processing (OLTP).
 
-* HA support with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations and they are asynchronously replicated. Resources aren't replicated across AWS Regions unless you do so specifically.
+* A DB instance provides a network address called an *endpoint*.
+* When deployed in own VPC, be sure to have at least two subnets, each in a separate Availability Zone. [See VPC and RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html). Prefer installation in private subnet with no public IP address (avoid it at least). 
+* It uses general purpose SSD (gp2, gp3), provisioned IOPS (io1) or magnetic storage (magnetic storages do not have consistent performance). [See instance storage](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html). Amazon RDS volumes are built using Amazon EBS volumes.
+* HA supported with Primary, in-synch replication to secondary instance. Read replicas can be used to scale reading operations and they are asynchronously replicated. Resources aren't replicated across AWS Regions unless you do so specifically.
 
 ![](./diagrams/rds-multi-AZ.drawio.svg){ width=600 }
 
 * Support multi AZs for Reliability Availability with automatic failover to standby, app uses one unique DNS name. Continuous backup and restore to specific point of time restore. 
-* It uses gp2 or io1 EBS for persistence. 
+
 * Transaction logs are backed-up every 5 minutes. Support user triggered snapshot.
-* Supports **Storage Auto Scaling** to increase storage dynamically with automatic detections of running out of free storage and scale it. (Free storage < 10%, low storeage last at least 5 minutes, 6 hours have passed since last notification)
-* Installed in private subnet in a VPC. No public IP address (avoid it at least). 
-* For Oracle and MS SQL it is possible to setup a RDS custom. where you have access to OS and Database.
+* Supports **Storage Auto Scaling** to increase storage dynamically with automatic detections of running out of free storage and scale it. (Free storage < 10%, low storage last at least 5 minutes, 6 hours have passed since last notification)
+
+* For Oracle and MS SQL it is possible to setup a RDS custom. Where you have access to OS and Database.
 
 From a solution architecture point of view:
 
-* **Operations**:  small downtime when failover happens. For maintenance, scaling with read replicas, updating underlying EC2 instance, or restore EBS, there will be manual interventions.
+* **Operations**:  small downtime when failover happens. For maintenance, scaling with read replicas, updating underlying EC2 instances, or restore EBS, there will be manual interventions.
 * **Security**: AWS is responsible for OS security, we are responsible for setting up KMS, security groups, IAM policies, authorizing user accesses to the DB, and enforcing SSL.
 * **Reliability**: Multi AZ feature helps to address reliability, with automatic failover to the standby instance in case of failures.
 * **Performance**: depends on EC2 instance type, EBS volume type, ability to add Read Replicas. Doesn’t auto-scale, adapt to workload manually. 
@@ -95,6 +98,15 @@ See [Playground RDS](../playground/rds.md)
 
 * [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride) uses PostgreSQL in RDS and quarkus app.
 
+### Deeper dive
+
+* [Burst vs Baseline with RDS and GP2](https://aws.amazon.com/blogs/database/understanding-burst-vs-baseline-performance-with-amazon-rds-and-gp2/):
+
+    * dimensions that matter are the size, latency, throughput, and IOPS of the volume.
+    * with gp2, IOPS is a function of the size of the volume: 3x GiB with a min of 100 IOPS and a max of 10k IOPS
+    * Starting with I/O credit at 3000 IOPS, it can be consumed at burst and replinished at the rate of 3 IOPS per GiB per s.
+    * With disk above 1TB, the baseline performance > burst perf.
+
 ## Aurora
 
 Proprietary SQL database storage engine, works using **PostgreSQL** and **mySQL** drivers. 
@@ -140,6 +152,12 @@ We can share snapshot with other AWS accounts.
 ### Code examples
 
 * [Building serverless applications with Amazon Aurora Serverless](https://aws.amazon.com/getting-started/hands-on/building-serverless-applications-with-amazon-aurora-serverless/)
+
+## Fit for purpose
+
+| Needs | Considerations | 
+| --- | --- |
+| Single digit latency | DynamoDB |
 
 ## ElastiCache
 

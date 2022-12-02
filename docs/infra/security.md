@@ -19,7 +19,7 @@ Fine-grain identity and access controls combined with continuous monitoring for 
 
 Encryption is widely available through a lot of services and features on top of the platform. We will be able to develop application that can encrypt data at rest, or in transit as it flows over the network between services. S3 storage or EBS block attached storage. Those services have a single click option to do encryption at rest with keys (using KMS).
 
-![](./images/EBS-encryption-rest.png)
+![](./images/security/EBS-encryption-rest.png)
 
 The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), helps centrally managing our own keys. It is integrated into a lot of services and the keys never leave AWS [FIPS 140-validated](https://en.wikipedia.org/wiki/FIPS_140-2) Hardware Security Modules unencrypted. User controls access and usage of the keys.
 
@@ -29,7 +29,7 @@ With client side encryption, the data are encrypted by the client, and never dec
 
 Managed service to help us create and control the cryptographic keys that are used to protect our data. 
 
-![](./images/kms-1.png)
+![](./images/security/kms-1.png)
 
 * Integrated with IAM and most AWS services (EBS,S3, RDS, SSM...)
 * Audit KMS Key usage using CloudTrail
@@ -40,7 +40,50 @@ Managed service to help us create and control the cryptographic keys that are us
 
 * For AWS managed keys, they are automatically rotated every year.
 * KMS Keys are per region. But when doing snapshot of a EBS volume and moving it to another region, AWS will reencrypt the data with a KMS key from the target region automatically. 
-* KMS Key policies help to control who (users, roles ) can access the KMS keys. Used to do cross account access: the copy of a snapshot done from origin account to the target account will use this policy to access the key to decrypt the snapshot, and then encrypt the copy with a new private key within the target account.
+* KMS Key policies help to control who (users, roles ) can access the KMS keys. Used to do cross account access: the copy of a encrypted snapshot done from origin account to the target account will use this policy to access the key to decrypt the snapshot, and then encrypt the copy with a new private key within the target account.
+
+![](./images/security/kms-2.png)
+
+* To encrypt a local file using a symmetric Key in KMS, we can use the CLI like:
+
+    ```sh
+    aws kms encrypt --key-id alias/jb-key --plaintext fileb://ExampleSecretFile.txt --output text --query CiphertextBlob  --region eu-west-2 > ExampleSecretFileEncrypted.base64
+    ```
+
+* To share the encrypted file, we can do: 
+
+    ```sh
+    cat ExampleSecretFileEncrypted.base64 | base64 --decode > ExampleSecretFileEncrypted
+    ```
+
+* Then to decrypt this file using KMS:
+
+    ```sh
+    aws kms decrypt --ciphertext-blob fileb://ExampleSecretFileEncrypted   --output text --query Plaintext > ExampleFileDecrypted.base64  --region eu-west-2
+    # back to the text version
+    cat ExampleFileDecrypted.base64 | base64 --decode > ExampleFileDecrypted.txt
+    ```
+
+KMS supports also Multi-Region Keys, where primary key from one region is replicated to other regions. The Key ID stays the same. The idea is to be able to encrypt in one regio and decrypt in another region. A use case will be to encrypt attribute of a DynamoDB Global Table with the Primary key, and let client who has access to the replicated key can decrypt the attribute with lower latency as it is done locally.
+
+![](./diagrams/kms-dyn-gt.drawio.png)
+
+The attribute is decrypted only if the client has access to the KMS Key.
+
+### S3 considerations
+
+By default with SSE-S3 objects encrypted or not are replicated.
+
+With SSE-C, we provide the encryption key, so the encrypted objects are not replicated.
+
+With SSE-KMS then we need to specify the KMS Key to encrypt the object in target bucket, adapt the KMS policy so the key is accessible in another region, and in the IAM role, be sure `kms:Decrypt` is enabled for the source key and `kms:Encrypt` for the target KMS Key.
+
+### Encrypted AMI sharing process
+
+* AMI in source account is encrypted with KMS Key form source account
+* AMI image should authorize the Launch permission for the target account
+* Define IAM role for the target account to use, and share KMS key accesses (DescribeKey, ReEncrypted, CreateGrant, Decrypt) via the role
+* When launching EC2 instance from this AMI in the target account, it is possible to use a new, local KMS key to re-encrypt the volumes.
 
 ## Organizations
 
@@ -55,7 +98,7 @@ Managed service to help us create and control the cryptographic keys that are us
 * The `root` user is a single sign-in identity that has complete access to all AWS services and resources in any accounts.
 * Organization unit (OU) contains AWS Accounts or other OUs. It can have only one parent.
 
-![](./images/organization.png)
+![](./images/security/organization.png)
 
 * OU can be per team, per line of business.
 * AWS Organizations uses [IAM service-linked roles](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html#orgs_integrate_services-using_slrs) to enable trusted services to perform tasks on your behalf in your organization's member accounts.
@@ -72,7 +115,7 @@ Managed service to help us create and control the cryptographic keys that are us
 * Enable CloudTrail for all accounts and get report in S3.
 * Can define service control policies (SCP) as IAM policies applied to OU or Accounts to restric Users and Roles. Explicit allow. The root OU will have `FullAWSAccess` SCP. 
 
-![](./images/org-policies.png)
+![](./images/security/org-policies.png)
 
 ### Deeper Dive
 
@@ -84,12 +127,12 @@ Managed service to help us create and control the cryptographic keys that are us
 
 * Helps to control access to AWS services.
 
-![](./images/iam-authentication.png)
+![](./images/security/iam-authentication.png)
 
 * This is a global service, defined at the account level, cross regions.
 * IAM helps us to define users (physical person), groups and roles, and permissions (policies).
 
-![](./images/iam-groups.png)
+![](./images/security/iam-groups.png)
 
 * Do not use root user, but create user and always use them when login. `jerome`, `aws-jb`  and `mathieu` are users.
 * Administrator users are part of an admin group with admin priviledges, like `AdministratorAccess`.
@@ -118,7 +161,7 @@ Managed service to help us create and control the cryptographic keys that are us
 
     Another example to control access to IAM:
 
-    ![](./images/aws-policy.png)
+    ![](./images/security/aws-policy.png)
 
 * Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**.
 * Use the `Least privilege permission` approach: Give users the minimal amount of permissions they need to do their job.
@@ -147,14 +190,14 @@ We can test Policies with the [policy simulator](https://policysim.aws.amazon.co
 
 * To get AWS services doing work on other service, we need to use IAM Role. Roles are assigned per application, or per EC2 or lambda function...
 
-![](./images/iam-roles.png)
+![](./images/security/iam-roles.png)
 
 * Maintaining roles is more efficient than maintaining users.  When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes to 36 hours.
 * IAM role does not create static access key, so no risk to have the key stolen.
 
 * When connected to an EC2 machine via ssh or using EC2 Instance Connect tool, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached. For example, the `DemoEC2Role` role is defined to let IAM access in read only:
 
-![](./images/aws-iam-role.png)
+![](./images/security/aws-iam-role.png)
 
 This role is then defined in the EC2 / Security  > attach IAM role, and now read-only commands with `aws iam` will work.
 
@@ -209,10 +252,78 @@ Amazon Cognito offers Authentication and Authorization features, it has **User p
 
 * Configure how user login:
 
-![](./images/cognito-conf-1.png)
+![](./images/security/cognito-conf-1.png)
 
 * Then define if you want to use MFA, get an option to reset password..
 * Configure sign-up and message delivery. We can disable auto sign-up and sending email.
+
+## [System management parameter store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+
+Managed services, serverless, it is a secure storage for configuration and secrets. 
+
+![](./images/security/ssm-parameter.png)
+
+SSM Parameters Store has built-in version tracking capability. Each time we edit the value of a parameter, SSM Parameter Store creates a new version of the parameter and retains the previous versions.
+
+It stores data in a hierarchical tree. For example  
+
+```sh
+aws ssm get-parameters-by-path --path /an-app/dev/
+```
+
+## [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)
+
+Keep secret information, with automatic rotation enforced, with integration with RDS, Redshift, DocumentDB. Secrets can be replicated between regions. 
+
+## [ACM - Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
+
+Manage and deploy TLS certificates. Supports public and private certificates. Automatic renewal.
+
+Free of charge for public certificates. 
+
+Integrated with ELBs, Cloudfront, APIs on API gateway. Cannot use ACM with EC2.
+
+## [WAF Web Application Firewall](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html)
+
+User to monitor the HTTP(S) requests that are forwarded to your protected (Layer 7) web application resources. 
+It is deployed on ALB, API Gateway, CloudFront, AppSync GraphQL API, Cognito User Pool.
+
+Rules are defined in Wev Access Control List: they can apply to IP@, HTTP headers, body, URI strings, Cross-site Scripting... We can define size constraints, geographic matches, or rate-based rules for DDoS protection.
+
+WebACL is regional except for CloudFront.
+
+### [Firewall manager](https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html)
+
+Firewall manager simplifies your administration and maintenance tasks across multiple accounts (across WAS Organizations) and resources for a variety of protections, including AWS WAF, AWS Shield Advanced, Amazon VPC security groups, AWS Network Firewall, and Amazon Route 53 Resolver DNS Firewall. 
+
+## [Shield]()
+
+To protect against DDoS attack.
+
+## [GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
+
+Security monitoring service that analyzes and processes data sources such as:
+
+* AWS CloudTrail data events for Amazon S3 logs, 
+* CloudTrail management event logs, 
+* DNS logs, 
+* Amazon EBS volume data, 
+* Kubernetes audit logs, 
+* Amazon VPC flow logs
+* RDS login activity
+
+It uses ML/AI model.
+
+GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin
+
+## [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html)
+
+vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure
+
+## Macie
+
+Amazon Macie is a fully managed data security service that uses Machine Learning to discover and protect your sensitive data stored in S3 buckets. It automatically provides an inventory of S3 buckets including a list of unencrypted buckets, publicly accessible buckets, and buckets shared with other AWS accounts. It allows you to identify and alert you to sensitive data, such as Personally Identifiable Information (PII).
+
 
 ## [IAM Identity Center](https://docs.aws.amazon.com/singlesignon/index.html)
 

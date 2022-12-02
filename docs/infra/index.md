@@ -220,9 +220,11 @@ It also supports the concept of signed URL. When we want to distribute content t
 
 When the backend content is modified, CloudFront will not get it until its TTL has expired. But we can force an entire cache refresh with CloudFront Invalidation.
 
-## Global Accelerator
+## [Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html)
 
-The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS network endpoint (Edge location) and use the AWS private network backbone.
+The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
+
+By default, Global Accelerator provides with static IP addresses that we associate with our accelerator.
 
 With Anycast IP a client is routed to the nearest server. All servers hold the same IP address. So for each application, we create 2 Anycast IP, and the traffic is sent to the edge locations.
 
