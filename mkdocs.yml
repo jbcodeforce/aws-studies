@@ -24,6 +24,7 @@ nav:
       - DynamoDB: data/dynamodb.md
       - Data Lake: data/data-lake.md
       - RedShift: data/redshift.md
+  - AI-ML: ai-ml/index.md
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
