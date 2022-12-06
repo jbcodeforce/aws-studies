@@ -1,38 +1,41 @@
 # Software as a Service
 
-A licensing and delivery model whereby software is centrally managed and hosted by a provider and available to customers on a subsciption or pay-per-user basis.
+A licensing and delivery model whereby software is centrally managed and hosted by a provider and available to customers on a subsciption fee, or pay-per-user basis, or pay per usage basis.
 
 ## Concepts
 
-Everything done in SaaS is about multi-tenancy, data isolation and sharing resources like compute, networking and storage as part of the infrastructure. 
+Everything done in SaaS is about multi-tenancy, data isolation and sharing resources like compute, networking and storage as part of the infrastructure to optimize cost of running the business. 
 
 ![](./diagrams/saas/saas-core.drawio.png){ width=500 }
 
 **Figure 1**
 
-As illustrated in the figure above an onboarding / shared service component is needed to manage the multi-tenant platform. Any software vendor is bringing their own solution and it is highlighted as application specific domain. If we take a big data platform provider such application domain may look like the following architecture, which supports a map/reduce job execution environment with data ingestion, transformation and persistence:
+As illustrated in the figure above an *onboarding / shared service component* is needed to manage the multi-tenant platform. Any software vendor is bringing their own solution and it is highlighted as application specific domain. As an example, if we take a big data platform provider such application domain may look like in the following architecture diagram, which supports a map/reduce job execution environment with data ingestion, transformation and persistence:
 
 ![](./diagrams/saas/big-data-isv-starting.drawio.png)
 
 **Figure 2**
 
+A control plane manages cluster of worker nodes. Each worker node runs an executor that executes jobs. Jobs are the custom piece of code in Python, Scala, Java which performs the data ingestion, data transformation & enrichment, MAP/Reduce logic and persists the results to distributed storage.
+
 Footprint scales dynamically based on aggregate load of all tenants. All tenants are managed via a single operational control plane or lens.
 
-The Analytic component is very important to understand how the vendor's customers are using the platform, and how to optimize the usage of the platform.
+The Analytic component is very important to help marketing team to understand how the customers are using the platform, and how to optimize the usage of the platform.
 
-For the application domain, new features are deployed to all tenants, more quickly via DevOps adoption. 
+For the application domain, new features are deployed to all tenants, more quickly via DevOps practices. 
 
 ### Multi tenancy support approaches
 
-There are multiple patterns for multi-tenancy, some linked to business requirements and sometime technical reasons: 
+There are multiple patterns for multi-tenancy, some linked to business requirements and sometime to technical reasons: 
 
 ![](./diagrams/saas/saas-tenant-patterns.drawio.png)
 
 **Figure 3**
 
 * **Silo**: Each tenant gets unique set of infrastructure resources. As environments are partitioned, there is no cross-tenant impacts. Agility is compromised. Needed for strong regulatory and compliance. We can tune the configuration per tenant and get specific SLAs. It costs more and operations are more complex. The analytics services need to aggregate from those silos. Tenant may be mapped to AWS Account and a linked account to aggregate billing. Or based in VPC.
-* **Bridge**: a mix of silo and pool. Can be applied to the different level of the solution architecture, for example, web and data tier can be pool, and app layer in silo.
-* **Pool**: shared resources, centralized management, simplified deployment. Compliance is a challenge and cross-tenant impacts with a all or nothing availability. The advantages are cost optimization and operation. 
+* **Pool**: Shared resources, centralized management, simplified deployment. Compliance is a challenge and cross-tenant impacts with a all or nothing availability. The advantages are cost optimization and operation. 
+* **Bridge**: A mix of silo and pool. Can be applied to the different level of the solution architecture, for example, web and data tier can be pool, and app layer in silo.
+
 
 It is important to decide what approach the SaaS architecture needs to support.
 
@@ -41,7 +44,7 @@ It is important to decide what approach the SaaS architecture needs to support.
 Agility is the major requirements to go to SaaS, which means:
 
 * On-boarding without friction: including environment provisioning.
-* Frequent feature release: get to customer's hands as quick as possible. Release on daily release may be possible.
+* Frequent feature release: get to customer's hands as quick as possible. Release on daily frequency should be possible.
 * Rapid market response, to pivot to a new direction.
 * Instant customer feedback: with metrics on feature adoption.
 
@@ -56,13 +59,13 @@ The important metrics to consider:
 There are a set of shared services that we will find in any SaaS solution which supports the high level view introduced in figure 1. Those services are:
 
 * **Admin Console**: SaaS provider administrative application. It may include a landing web app to get tenant registering. The administration services are supporting the SaaS business. 
-* **On-Boarding**: complex solution to provision all the environment.
-* **Identity**: identity is a very important element of SaaS. Connect users to tenant.
-* **Tenant management**: as a multi-tenancy platform, tenant is a main business entities.
+* **On-Boarding**: Complex solution to provision all the environment.
+* **Identity**: Identity is a very important element of SaaS. Connect users to tenant.
+* **Tenant management**: As a multi-tenancy platform, `tenant` is a main business entity.
 * **User management**: Each tenant has one to many users of the vendor software.
-* **Metering and billing**: how to get tenant metrics and how to isolate billing.
-* **Analytics**: service responsible to gather usage metrics, and open new use case of cost optimization, customer churn assessment...
-* **Monitoring and infrastructure management:** for integrating into the cloud provider and manage compute, storage, networking resources.
+* **Metering and billing**: How to get tenant metrics and how to isolate billing.
+* **Analytics**: Service responsible to gather usage metrics, and drive new use case of cost optimization, customer churn assessment...
+* **Monitoring and infrastructure management:** For integrating into the cloud provider and manage compute, storage, networking resources.
 
 The figure below illustrates the integration of those services within the landscape:
 
@@ -83,6 +86,8 @@ The shared services deployment on EKS will look like in the following diagram wi
 **Figure 5**
 
 Some of those services will use AWS managed services like DynamoDB to persist tenant and user data, Cognito for authentication to their platform, EFS for sharing file, S3...
+
+The figure above demonstrates that the control-plane services are replicated into different availability zone, inside of the same EKS cluster.
 
 Bridge or Pool runs in the SaaS vendor VPC, and Web and App tiers are shared and persist data in same DB (may be different schema or a dedicated tenantID column in tables). 
 

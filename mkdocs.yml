@@ -35,6 +35,7 @@ nav:
       - RDS: playground/rds.md
       - Data processing: playground/rt-data-processing.md
       - Analytics on EMR: playground/spark-emr.md
+      - ECS: playground/ecs.md
   - Coding:
       - Practices: coding/index.md
       - CloudFormation: coding/cloudFormation.md

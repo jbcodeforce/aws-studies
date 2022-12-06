@@ -28,6 +28,16 @@ When architecting technology solutions, never neglect the six pillars of:
 * **Drive architectures using data**: In the cloud, you can collect data on how your architectural choices affect the behavior of your workload. This lets you make fact-based decisions on how to improve your workload.
 * **Improve through game days** to simulate events in production. This will help you understand where improvements can be made and can help develop organizational experience in dealing with events.
 
+### Jumpstart an assessment
+
+In AWS console, search for `well architected`.
+
+![](./images/well-archi-1.png)
+
+With Lenses to define a set of question to ask.
+
+![](./images/well-arch-lenses.png)
+
 ### Operational Excellence
 
 Support development and run workloads effectively, gain insight into their operations, and to continuously improve supporting processes and procedures. 
@@ -91,7 +101,7 @@ Emcompass the ability to protect data, systems and assets by controlling access 
 | How do you classify your data? |
 | How do you protect your data at rest? |
 | How do you protect your data in transit? |
-|  How do you anticipate, respond to, and recover from incidents? |
+| How do you anticipate, respond to, and recover from incidents? |
 
 CloudTrail logs, AWS API calls, and CloudWatch provide monitoring of metrics with alarming, and AWS Config provides configuration history. 
 
@@ -110,7 +120,7 @@ The ability of a workload to perform its intended function correctly and *consis
     * Manage change in automation
 
 
-Before architecting any system, foundational requirements that influence reliability should be in place.
+Before architecting any system, define foundational requirements that influence reliability:
 
 | Questions to assess| Comments |
 | --- | --- |
@@ -119,10 +129,10 @@ Before architecting any system, foundational requirements that influence reliabi
 | How do you design your workload service architecture? | |
 | How do you design interactions in a distributed system to prevent failures? | Search to improve mean time between failures (MTBF) |
 | How do you design interactions in a distributed system to mitigate or withstand failures? | Look to improve mean time to recovery (MTTR) |
-|  How do you monitor workload resources? | Monitor Logs and metrics |
+| How do you monitor workload resources? | Monitor Logs and metrics |
 | How do you design your workload to adapt to changes in demand? |  Add or remove resources automatically to adapt to the demand |
 | How do you implement change? |  Controlled changes to deploy new feature, patched or replaced in a predictable manner | 
-| How do you back up data? | Helps to addres [RTO and RPO](https://jbcodeforce.github.io/architecture/DR/#concepts) |
+| How do you back up data? | Helps to address [RTO and RPO](https://jbcodeforce.github.io/architecture/DR/#concepts) |
 | How do you use fault isolation to protect your workload? | Components outside of the boundary should not be affected by the failure. |
 | How do you design your workload to withstand component failures? | | 
 | How do you test reliability? | testing is the only way to ensure that it will operate as designed |
