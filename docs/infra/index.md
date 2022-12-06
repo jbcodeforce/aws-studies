@@ -220,12 +220,16 @@ It also supports the concept of signed URL. When we want to distribute content t
 
 When the backend content is modified, CloudFront will not get it until its TTL has expired. But we can force an entire cache refresh with CloudFront Invalidation.
 
-## [Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html)
+## [AWS Outposts](https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html)
 
-The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
+Outpost is fully managed service that extends AWS infrastructure, services, APIs, and tools to customer premises. It is a Rack with n server blades installed by AWS team, on site, and then maintained by AWS. 
 
-By default, Global Accelerator provides with static IP addresses that we associate with our accelerator.
+![](https://docs.aws.amazon.com/images/outposts/latest/userguide/images/outposts-form-factors.png)
 
-With Anycast IP a client is routed to the nearest server. All servers hold the same IP address. So for each application, we create 2 Anycast IP, and the traffic is sent to the edge locations.
+An Outpost is a pool of AWS compute and storage capacity deployed at a customer site. It extends a VPC from one AWS region, it is owned by one AZ and you can use it for increasing resilience.
 
-Improves performance for wide range of applications TCP or UDP.
+![](https://docs.aws.amazon.com/images/outposts/latest/userguide/images/outpost-networking-components.png)
+
+
+See [pricing for rack](https://aws.amazon.com/outposts/rack/pricing/)
+

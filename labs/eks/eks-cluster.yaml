@@ -1,0 +1,24 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: myeks-jb
+  region: us-west-2
+  version: "1.23"
+
+availabilityZones: ["us-west-2a", "us-west-2b", "us-west-2c"]
+
+managedNodeGroups:
+- name: nodegroup
+  desiredCapacity: 3
+  instanceType: t3.small
+  ssh:
+    enableSsm: true
+
+# To enable all of the control plane logs, uncomment below:
+# cloudWatch:
+#  clusterLogging:
+#    enableTypes: ["*"]
+
+secretsEncryption:
+  keyARN: arn:aws:kms:us-west-2:403993201276:key/536bce0f-32a2-4f8b-b269-ce21e3c0a3e6

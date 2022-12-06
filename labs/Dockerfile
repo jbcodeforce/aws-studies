@@ -20,9 +20,9 @@ RUN npm update -g
 
 # Install AWSCLI
 RUN pip install --upgrade pip && \
-    pip install --upgrade awscli aws-cdk
+    pip install --upgrade awscli aws-cdk-lib pipenv
 
 # Install Serverless Framework
-RUN npm install -g serverless
+RUN npm install -g serverless aws-cdk
 
-WORKDIR /usr/src/app
+WORKDIR /app

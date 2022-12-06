@@ -8,7 +8,13 @@ It uses AWS CloudFormation to perform infrastructure deployments predictably and
 
 ## Install
 
-A docker file exists under the labs folder to get an environment with nodes, python 3.9, AWS CLI, CDK CLI...
+The CDK cli is packaged as nodejs app.
+
+```sh
+npm install -g aws-cdk 
+```
+
+A docker file exists under the `labs` folder to get an environment with nodes, python 3.9, AWS CLI, CDK CLI...
 
 ```sh
 # build the docker
@@ -18,7 +24,10 @@ docker build -t jbcodeforce/aws-python .
 # verify installation
 aws s3 ls
 cdk --version
+# In app folder and where the cdk.json file is, do
+cdk synth
 ```
+
 ## Concepts
 
 A CDK app defines one or more Stacks (= CloudFormation stack). A Stack includes Constructs. Each construct defines one or more concrete AWS resources.
@@ -110,6 +119,8 @@ See more [information on the Instance API](https://docs.aws.amazon.com/cdk/api/v
 cdk synth
 # The first time bootstrap the stack - which will create a CF CDKToolkit
 cdk bootstrap
+# or using account and region
+cdk bootstrap aws://4....../us-west-2
 # Deploy the stack
 cdk deploy
 # Update the code and do a partial (hotswappable) deployment
@@ -125,7 +136,8 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 | --- | --- |
 | [labs/cdk/ec2-vpc](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ec2-vpc) | EC2 with VPC and public & private subnets, NAT, IGW, Bastion Host |
 | [labs/cdk/cdk_workhop](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/cdk_workshop) | Lambda functions in python with an API gateway and TableViewer.|
-| [labs ECS fargate Flask App](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ecs-fargate-flask) | VPC with ECS fargate for a Flask APP where container is created during deployment | 
+| [lab ECS fargate Flask App](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk/ecs-fargate-flask) | VPC with ECS fargate for a Flask APP where container is created during deployment | 
+| [lab EKS](https://github.com/jbcodeforce/aws-studies/tree/main/labs/eks//eks-cdk/) | VPC with EKS cluster deployment | 
 
 ## Useful commands
 

@@ -332,3 +332,13 @@ An SSL/TLS Certificate allows traffic between clients and load balancer to be en
 This is a setting to control connection timeout and reconnect when an instance is not responding. It is to set up the time to complete “in-flight requests”. When an instance is "draining", ELB stops sending new requests to the instance. The time out can be adjusted, depending of the application, from 1 to 3600 seconds, default is 300 seconds, or disabled (set value to 0).
 
 It is called `Deregistration Delay` in NLB & ALB.
+
+## [Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html)
+
+The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
+
+By default, Global Accelerator provides with static IP addresses that we associate with our accelerator.
+
+With Anycast IP a client is routed to the nearest server. All servers hold the same IP address. So for each application, we create 2 Anycast IP, and the traffic is sent to the edge locations.
+
+Improves performance for wide range of applications TCP or UDP.
