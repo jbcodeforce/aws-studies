@@ -327,7 +327,7 @@ Amazon Macie is a fully managed data security service that uses Machine Learning
 
 ## [IAM Identity Center](https://docs.aws.amazon.com/singlesignon/index.html)
 
-Single sign-on for all AWS accounts within AWS Organizations, cloud applications, SAML2.0-enabled applications, EC2 Windows instances. 
+Single sign-on managed services for all AWS accounts within AWS Organizations, cloud applications, SAML2.0-enabled applications, EC2 Windows instances. 
 
 The identity provider can be an identity store in IAM Identity center or an Active Directory, OneLogin, Okta...
 
