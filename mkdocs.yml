@@ -56,6 +56,7 @@ theme:
       # - navigation.expand
       - navigation.tabs.sticky
       # - navigation.top
+
   social:
     - type: 'github'
       link: 'https://github.com/jbcodeforce'
@@ -84,3 +85,5 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true

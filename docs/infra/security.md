@@ -378,6 +378,32 @@ The identity provider can be an identity store in IAM Identity center or an Acti
 ???- "Is serverless secured?"
     Roles are defined to define who can push code, access it, and fine grained control of the serverless execution. All serverless managed services inherit from the underlying platform security control. As an example, Lambda execution are authenticated, authorized and are made visible to the SREs via the commong logging mechanism.
 
+## Solution Design
+
+### Blocking IP address
+
+* At the VPC level, the best approach is to use Network ACL, when EC2 is expose via public IP address, as illustrasted in the diagram below:
+
+    ![](./diagrams/security/sa-sol-1.drawio.png)
+
+    Use a denial rule in NACL on specific IP address. Security group inbound rule specifies allowed only IP range, which should work, but then it blocks larger set of clients, so it will not be a solution for global application. Running a firewall on the EC2 will help, but it is more complex to administer.  
+
+* If an ALB is in the middle, then security group will specify the SG of the ALB, and still using NACL. 
+
+    ![](./diagrams/security/sa-sol-2.drawio.png)
+
+    ALB does connection termination, so client will not be able to attack EC2.
+
+    To add more control we can add a Web Application Firewall to add complex filtering on the IP @.
+
+* Using a NLB, there will be no security group at the network load balancer, so traffic reaches EC2s. In this case only the NACL rules will help to protect. 
+
+* When using CloudFront, we need to add WAF as NACL at the VPC level will not work, the ALB being connected to the cloudFront IP address, only (via security group).
+
+    ![](./diagrams/security/sa-sol-3.drawio.png)
+
+    Geo restriction can be defined at the cloud front level, to deny a complete country for example.
+
 ## Learn more
 
 * [Data Safe cloud checklist](https://aws.amazon.com/campaigns/cloud-security/data-safe-cloud-checklist/)

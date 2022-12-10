@@ -42,13 +42,21 @@
     LOCATION 's3://url-to-bucket'
     ```
 
-* 
+### Lambda example
+
+It is possible to run Athena query from Lambda function and get the result pushed in an output S3 bucket or in another place.
+
+See the lambda code in the [labs/lambdas/s3-aurora folder](https://github.com/jbcodeforce/aws-studies/tree/main/labs/lambdas/s3-aurora).
+
+See [boto3 Athena API.](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/athena.html)
 
 ### Deeper dive
 
 * [Product documentation](https://docs.aws.amazon.com/athena/latest/ug/what-is.html)
 * [Getting started](https://docs.aws.amazon.com/athena/latest/ug/getting-started.html)
 * [How do I analyze my Amazon S3 server access logs using Athena?](https://aws.amazon.com/premiumsupport/knowledge-center/analyze-logs-athena/)
+* [See also code sample](https://docs.aws.amazon.com/athena/latest/ug/code-samples.html).
+* [Calling SageMaker function from an Athena Query to do ML](https://docs.aws.amazon.com/athena/latest/ug/querying-mlmodel.html).
 
 ## [Elastic MapReduce - EMR](https://aws.amazon.com/emr)
 
@@ -115,15 +123,45 @@ Advantages:
 
 * [](https://www.eksworkshop.com/advanced/430_emr_on_eks/)
 
-## [QuickSight](https://aws.amazon.com/quicksight)
+## [QuickSight](https://docs.aws.amazon.com/quicksight/latest/user/welcome.html)
 
 Dashboard tool, serverless, machine learning powered BI service.
 
 Integrated with RDS, Aurora, Athena, S3, RedShift, OpenSearch, Timestream, with Saleforce, Jira... It can integrate to any JDBC compliant database. It can import CSV, XLSX, JSON, TSV files and log files.
 
-If data is imported inside QuickSight, it uses in memory computation using SPICE engine.
+If data is imported inside QuickSight, it uses in memory computation using SPICE (Super-fast, Parallel, In-memory Calculation Engine) engine.
 
-With enterprise edition we can define groups of users.
+The development process is described in the figure below (link to AWS doc)
+
+![](https://docs.aws.amazon.com/images/quicksight/latest/user/images/quicksight-workflow-overview.png)
+
+* Defining a dataset and then working in removing column, applying filters, changing field names or data types, adding calculated fields, or use SQL to joins between tables.
+
+Here is an example of integration with a table in Aurora
+
+![](./images/qs-dataset.png)
+
+* Add Visual. A Visual can include multiple sheets. An Interactive Sheet is a collection of data expressed in visuals that users can interact with when the sheet is published to a dashboard. A Paginated Report is a collection of tables, charts, and visuals that are used to convey business critical information. 
+* Create Dashboard
+* Share dashboard so it can be seen by end users.
+
+With enterprise edition we can define groups of users, and share dataset, visual and dashboard with group or individual user.
+
+The dataset can be shared between users so they can develop their own analysis. Visualizations can also be shared during development, then the readonly dashboard is shared for end users.
+
+To get input data for a dashboard we can define parameters
+
+### Some how to
+
+* Invite user using the right top menu (human icon), and Manage QuickSight, then invite people by email. Create Group, and then add users. The 3 letters to search really need to be the first 3 letters.
+* Once data are in SPICE, they need to be refreshed to get the last records.
+
+### Deeper Dive
+
+* [youtube channel for QuickSight.](https://www.youtube.com/c/AmazonQuickSight)
+* [Demo Central - learning](https://democentral.learnquicksight.online/#)
+* [Embedding Amazon QuickSight dashboards in your applications.](https://www.youtube.com/watch?v=8ZzS48whR78) 
+* [Embedding Analytics dashboard in application.](https://www.developer.quicksight.aws/home)
 
 ## [Glue](https://aws.amazon.com/glue)
 

@@ -1,7 +1,7 @@
 # Hands-on RDS
 
 
-## Create with Console
+## Create RDS Postgresql with Console
 
 * Be sure to define a _security group_ in your VPC with a Inbound rules for the expected port number and MyIP address so you can run your app locally on your laptop and access RDS PostgreSQL DB.
 
@@ -37,6 +37,28 @@ Some remarks from the AWS tutorial:
 * Verify the Monitoring panel to see the traffic you may have generated (see next sections)
 * To delete the DB using the list of DB panel and `Actions > Delete`. In case of modify the RDS database configuration to authorize deletion.
 
+### Modify an existing instance to be public
+
+* Choose Databases, and then select the Aurora DB instance in the Aurora Cluster that you want to modify.
+* Choose Modify.
+* From the Modify DB instance page, under Connectivity, expand the Additional Configuration section. Set Public access to Yes or No.
+* Choose Continue, and check the summary of modifications.
+* To apply the changes immediately, select Apply immediately. Changing this setting on the existing DB instance in the cluster affects the network connectivity.
+
+* [See this note for more detail.](https://aws.amazon.com/premiumsupport/knowledge-center/aurora-private-public-endpoints/)
+
+## Create an Aurora Serverless instance
+
+The difference with previous step is the Aurora database, with a postgresql driver, 
+
+![](./images/rds-aurora.png)
+
+and then serverless option. 
+
+![](./images/aurora-serverless.png)
+
+This will be a better solution for demonstration and to have access to an SQL editor inside AWS RDS console webapp, if not we need an external tool like pgadmin remotely connected.
+
 ## Quarkus App Client
 
 See the repository [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride) which uses Quarkus, Panache, and CarRide entity. The repository includes a docker file to start local postgresql and pgadmin containers.
@@ -54,3 +76,16 @@ Adding a `new server` definition in the PGADMIN tool, with the RDS URL, user and
 The URL for the quarkus app can be overwritten by environment variable: `QUARKUS_DATASOURCE_JDBC_URL`
 
 ## Python Client
+
+* Need to install boto3 wiht pip. [Bot3 RDS API documentation.](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/rds.html#client)
+
+```python
+import boto3
+
+client = boto3.client('rds')
+
+response = client.describe_db_instances(
+    DBInstanceIdentifier='customer-action-instance-1',
+)
+print(response)
+```
