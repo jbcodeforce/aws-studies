@@ -8,6 +8,8 @@ IPv4 allows 3.7 billions of different addresses. Private IP @ is for private net
 With Elastic IP address, we can mask an EC2 instance failure by rapidly remapping the address to another instance. But better to use DNS.
 Elastic IP is a public IPv4 that we own as long as we want and we can attach it to one EC2 instance at a time. It is not free.
 
+In the context of High Performance Computing (HPC) and ML applications, or OS-bypass, we can use EFA.
+
 ## Virtual Private Cloud
 
 A virtual private cloud (VPC) is a virtual network dedicated to our AWS account. All new accounts have a default VPC. 
@@ -147,11 +149,14 @@ Here is a complete figure to explain the process: A client app is initiating a c
 
 ## VPC peering
 
-The goal of VPC peering is to connect two VPCs using AWS network and let them behave as if they were in the same network. The CICDs do not overlap. 
+The goal of VPC peering is to connect two VPCs using AWS network and let them behave as if they were in the same network. The CICDs should not overlap. 
 
 It could be used to connect VPC cross Regions and event cross Accounts.
 
 Once the VPC peering connection is defined, we still need to specify the route to the CIDR to reach the VPC peering created.
+
+VPC sharing (part of Resource Access Manager) allows multiple AWS accounts to create their application resources such as EC2 instances, RDS databases, Redshift clusters, and Lambda functions, into shared and centrally-managed Amazon Virtual Private Clouds (VPCs). To set this up, the account that owns the VPC (owner) shares one or more subnets with other accounts (participants) that belong to the same organization from AWS Organizations.
+After a subnet is shared, the participants can view, create, modify, and delete their application resources in the subnets shared with them. Participants cannot view, modify, or delete resources that belong to other participants or the VPC owner.
 
 ## [VPC Endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html)
 
@@ -161,8 +166,8 @@ VPC Endpoints remove the need of IGW, NATGW to access AWS Services. The service 
 
 Two types of endpoint:
 
-* **Interface endpoints** powered by PrivateLink: it provisions an ENI in our VPC, with a security group. Pay per hour and GB of data transfer
-* **Gateway endpoints**: provision a GTW and setup routes in route tables. Used for S3 and DynamoDB. Free. 
+* **Interface endpoints** powered by PrivateLink: it provisions an ENI in our VPC, with a security group. Pay per hour and GB of data transfer. Can access AWS services such as Simple Queue Service (SQS), Simple Notification Service (SNS), Amazon Kinesis.
+* **Gateway endpoints**: provision a GTW and setup routes in route tables. Used for **S3 and DynamoDB** only. Free. 
 
 ## VPC Flow Logs
 
@@ -210,14 +215,15 @@ It provides a dedicated connection from a remote network to the VPC bypassing pu
 
 ![](./diagrams/direct-conn.drawio.png)
 
-Get a direct connection setup can take more than a month. If we need to access two VPC in two different regions from the corporate data center then we need an Direct Connect Gateway.
+Get a direct connection setup can take more than a month. If we need to access two VPC in two different regions from the corporate data center then we need a Direct Connect Gateway.
 
-To get reliability we can setup a VPN site to site connection in parallel to the direct connect link. For maximum resiliency for critical workloads, it is  recommended to have double connection per data center.
+To get reliability we can setup a VPN site to site connection in parallel to the Direct Connect link. For maximum resiliency for critical workloads, it is  recommended to have double connections per data center.
 
 ![](./diagrams/direct-conn-ha.drawio.png)
 
 Hosted Direct Connect connection supports 50Mbps, 500Mbps, up to 10Gbps, while Dedicated offers higher bandwidth.
 
+The main pricing parameter while using the Direct Connect connection is the Data Transfer Out (DTO) from AWS to the on-premises data center. DTO refers to the cumulative network traffic that is sent through AWS Direct Connect to destinations outside of AWS. This is charged per gigabyte (GB), and unlike capacity measurements, DTO refers to the amount of data transferred, not the speed.
 
 ## [Transit Gateway](https://aws.amazon.com/transit-gateway/)
 

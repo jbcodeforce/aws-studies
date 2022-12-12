@@ -20,13 +20,14 @@ Distributed data stream into Shards for parallel processing. Producer sends mess
 * Message in a shard, can share partition key, and keep ordering.
 * Producer can use SDK, or Kinesis Producer Library (KPL) or being a Kinesis agent.
 * Consumer may use SDK and Kinesis Client Library (KCL), or being one of the managed services like: Lambda, Kinesis Data Firehose, Kinesis Data Analytics
-* For consuming side, each Shard gets 2MB/s out
-* Pricing is per Shard provisioned per hour
+* For consuming side, each Shard gets 2MB/s out.
+* Use enhanced fan-out if we have multiple consumers retrieving data from a stream in parallel. This throughput automatically scales with the number of shards in a stream.
+* Pricing is per Shard provisioned per hour.
 * The capacity limits of a Kinesis data stream are defined by the number of shards within the data stream. The limits can be exceeded by either data throughput or the number of reading data calls. Each shard allows for 1 MB/s incoming data and 2 MB/s outgoing data. You should increase the number of shards within your data stream to provide enough capacity.
 
 There is an On-demand mode, pay as you go, with a default capacity of 4MB/s or 4000mg/s. Pricing per stream, per hour and data in/out per GB. 
 
-captured Metrics are: # of incoming/outgoing bytes, # incoming/outgoing records, Write / read provisioned throughput exceeded, and iterator age ms.
+Captured Metrics are: # of incoming/outgoing bytes, # incoming/outgoing records, Write / read provisioned throughput exceeded, and iterator age ms.
 
 ### Producer
 

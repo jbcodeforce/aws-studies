@@ -19,7 +19,7 @@ Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon L
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
 The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 and HTTP on port 80.
-Get the public ssh key, and when the instance is started, use: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. The `.pem` file need to be restricted with `chmod 0400`
+Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. The `.pem` file needs to be restricted with `chmod 0400`
 
 We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
 
@@ -30,6 +30,8 @@ See [this EC2 playground for demonstrating the deployment of a HTTP server.](../
 1. When we launch an instance, it enters in the `pending` state. Billing is not started.
 1. During rebooting, instance remains on the same host computer, and maintains its public and private IP address, in addition to any data on its instance store.
 1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged.
+
+When we launch a new EC2 instance, the EC2 service attempts to place the instance in such a way that all of our instances are spread out across underlying hardware to minimize correlated failures. We may use placement groups to influence the placement of a group of interdependent instances to meet the needs of our workload.
 
 ### EC2 types
 
@@ -59,7 +61,7 @@ vCPU represents thread running on core CPU. We can optimize vCPU allocation on t
 * **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. We can buy and sell it in the marketplace.
 * **Convertible reserved** instance for changing resource capacity over time.
 * **Scheduled reserved** instance for job based workload.
-* **Dedicated hosts** to book entire physical server and control instance placement. # years. BYOL. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where we deploy a database technology on an EC2 instance and the vendor license bills we based on the physical cores.
+* **Dedicated hosts** to book entire physical server and control instance placement. # years. **BYOL**. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where we deploy a database technology on an EC2 instance and the vendor license bills we based on the physical cores. Baremetal is part of this option.
 * **Capacity reservations**: reserve capacity in a specific AZ for any duration
 * **Spot instance** for very short - 90% discount on on-demand - used for work resilient to failure like batch job, data analysis, image processing, stateless, containerized...
 
@@ -186,14 +188,15 @@ Automatically Register new instances to a load balancer.
 
  ![4](./images/ASG-1.png)
 
-* when creating scaling policies, **CloudWatch** alarms are created. Ex: "Create an alarm if: CPUUtilization < 36 for 15 data points within 15 minutes".
-* Target tracking scaling: we want average CPU to be under 40%
-* Scheduled action: increase capacity after 5 PM
-* Predictive scaling by looking at historical behavior to build forecast rules
-* ASG tries to balance the number of instances across AZs by default, and then delete based on the age of the launch configuration
-* The capacity of our ASG cannot go over the maximum capacity we have allocated during scale out events
+* It is not possible to modify a launch configuration once it is created. If we need to change the EC2 instance type for example, we need to create a new launch configuration to use the correct instance type. Modify the Auto Scaling group to use this new launch configuration. Delete the old launch configuration as it is no longer needed.
+* When creating scaling policies, **CloudWatch** alarms are created. Ex: "Create an alarm if: CPUUtilization < 36 for 15 data points within 15 minutes".
+* Target tracking scaling: we want average CPU to be under 40%.
+* Scheduled action: increase capacity after 5 PM.
+* Predictive scaling by looking at historical behavior to build forecast rules.
+* ASG tries to balance the number of instances across AZs by default, and then delete based on the age of the launch configuration.
+* The capacity of our ASG cannot go over the maximum capacity we have allocated during scale out events.
 * Cool down period is set to 5 mn and will not change the number of instance until this period.
-* when an ALB validates an health check issue it terminates the EC2 instance.
+* When an ALB validates an health check issue it terminates the EC2 instance.
 
 ## [CloudFront](https://aws.amazon.com/cloudfront/)
 
@@ -233,3 +236,54 @@ An Outpost is a pool of AWS compute and storage capacity deployed at a customer 
 
 See [pricing for rack](https://aws.amazon.com/outposts/rack/pricing/)
 
+## High Performance Computing (HCP)
+
+The services that helps to desing HPC solutions are:
+
+* For data management and transfer:
+
+    * [Direct Connect](./networking.md/#direct-connect): move GB of data over private secure network
+    * [Snowball and & snowmobile]() at PB data level
+    * [DataSync]() move large dataset between on-premises and S3, FSx for Windows, EFS
+
+* Computation and network:
+
+    * EC2 instance type using CPU or GPU optimized.
+    * Spot fleet and spot instances for cost savings and using Auto Scaling Group.
+    * Cluster Placement groups in same rack and AZ to get best network performance.
+    * Enhanced Networking (SR-IOV): with high bandwidth, higher PPS, lower latency. 
+    * Elastic Network Adapter (ENA) is up to 100 Gbps.
+    * Intel 82599 VF up to 10 Gbps (more legacy solution).
+    * Elastic Fabric Adapter (EFA), dedicated ENA for HPC, only for Linux. Improve inter-node communication, for tightly coupled workload. It leverages Message Passing Interface standard to bypass the Linux kernel to provide low-latency transport.
+
+* Storage:
+
+    * Instance storage with EBS scale to 256k IOPS with io2 Block Express or instance store to scale to millions of IOPS.
+    * Metwork storage: S3, EFS and FSx for Lustre
+
+* Automate and orchestrate
+
+    * AWS Batch to support multi-node parallel jobs. Easily schedule jobs and launch EC2 instance accordingly.
+    * ParallelCluster: open source project for cluster management, using infrastructure as code, and EFA
+
+## Simple Email Service - SES
+
+Fully managed service to send and receive emails. Used to send email from applications using API, SMTP or AWS console.
+
+## [Amazon PinPoint](https://docs.aws.amazon.com/pinpoint/latest/userguide/welcome.html)
+
+Marketing communication services, SMS, email, push, voice, and in-app messaging. It supports customer segmentation and personalized messages. 
+
+## [Systems Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html)
+
+Ability to control AWS infrastructure like EC2, with an unified user's experience. It includes a set of services like Session Manager, Patch Manager, Run Commands, or define maintenance windows.  
+
+Automation is a why to simplfy maintenance and deployment tasks of EC2 instances, like automating runbooks.
+
+## [Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html)
+
+Tool to view and analyze our costs and usage.
+
+## [Trusted Advisor](https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html)
+
+Trusted Advisor inspects your AWS environment, and then makes recommendations when opportunities exist to save money, improve system availability and performance, or help close security gaps.

@@ -124,7 +124,7 @@ Within the S3 console we will see all buckets in one view (its is a global servi
     ![](./images/s3-block-access.png)
 
 * To control access with policies we need to disable this, and then define Bucket policy.
-* **S3 Bucket Policy**: is security policy defined in S3 console, and also allows cross-account access control. Can be set at the bucket or object level.
+* **S3 Bucket Policy**: is security policy defined in S3 console, and also allows cross-account access control. Can be set at the bucket or object level. Policies can be attached to users, groups, or Amazon S3 buckets, enabling centralized management of permissions. With bucket policies, you can grant users within your AWS Account or other AWS Accounts access to your Amazon S3 resources.
 * Explicit DENY in an IAM policy will take precedence over a [bucket policy permission](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html).
 * Define policies from [examples](https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html) or using [policy generator tool](https://awspolicygen.s3.amazonaws.com/policygen.html).
 

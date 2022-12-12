@@ -19,3 +19,4 @@ The cluster architecture is based on a leader node to support query planning and
 
 ![](./diagrams/redshift-spectrum-arch.drawio.png)
 
+* Redshift Spectrum pushes many compute-intensive tasks, such as predicate filtering and aggregation, down to the Redshift Spectrum layer. Thus, Redshift Spectrum queries use much less of your cluster's processing capacity than other queries. 

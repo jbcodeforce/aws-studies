@@ -173,8 +173,10 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * Inline policy can be defined at the user level, but it is recommended to use Group and Group level policies. As user can be part of multi groups, she/he will heritate to the different policies of those groups.
 * IAM is not used for website authentication and authorization.
 * For identity federation, use SAML standard.
+* We can test Policies with the [policy simulator](https://policysim.aws.amazon.com/home/index.jsp?#).
+* We can update a policy attached to a role and it takes immediate effect.
+* We can attach & detach roles to running EC2, without having to stop and restart it.
 
-We can test Policies with the [policy simulator](https://policysim.aws.amazon.com/home/index.jsp?#).
 
 ### Multi Factor Authentication - MFA
 
@@ -207,7 +209,7 @@ This is also used for EventBridge to access lambda, SNS, SQS, cloudWatch logs, A
 
 ### Permissions boundary
 
-Set a permissions boundary to control the maximum permissions this user can have. This is at user's or role level, and we define policy for example to authorize him to do anything on EC2, CloudWatch or S3. 
+Set a permissions boundary to control the maximum permissions a user can have. This is defined at user's or role level, and we define policy for example to authorize the user to do anything on EC2, CloudWatch or S3. 
 
 The effective permission of a user is the join between Organization SCP, Permissions Boundary, and identity based policies.
 
@@ -215,9 +217,9 @@ The effective permission of a user is the join between Organization SCP, Permiss
 
 This is used to:
 
-* Delegate responsibilities to non-admin within their permission boundaries to create specific resources, like IAM user
+* Delegate responsibilities to non-admin within their permission boundaries to create specific resources, like IAM user.
 * Allow developers to self-assign policies and manage their own permissions, while makine sre they can increase their privileges.
-* Restrict one user
+* Restrict one user.
 
 ### Security tools
 
