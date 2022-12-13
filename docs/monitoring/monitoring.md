@@ -57,6 +57,8 @@ Alarms are used to trigger notification from any metrics. The states of an alarm
 
 The target of the alarm may be to stop, reboot, terminate, recover of an EC2 instance, trigger an Auto Scaling Action for EC2, or send notification to SNS.
 
+You can use the stop or terminate actions to help you save money when you no longer need an instance to be running. You can create an Amazon CloudWatch alarm that monitors an Amazon EC2 instance and automatically reboots the instance. The reboot alarm action is recommended for Instance Health Check failures.
+
 ## CloudWatch Event 
 
 Is now [EventBridge](../serverless/eventbridge.md), a more generic event-driven, serverless managed service.

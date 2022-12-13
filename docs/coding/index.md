@@ -32,6 +32,8 @@ It defines two preconfigured environments:
 
 It uses [CloudFormation](#cloudformation) to deploy the application and the environment.
 
+* A custom AMI can improve provisioning times when instances are launched in your environment if you need to install a lot of software that isn't included in the standard AMIs.
+
 ## [Elastic Container Registry](https://docs.aws.amazon.com/ecr/)
 
 AWS managed container image registry service that is secure, scalable, and reliable. 

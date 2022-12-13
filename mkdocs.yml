@@ -3,7 +3,7 @@ repo_url: https://github.com/jbcodeforce/aws-studies.git
 nav:
   - Introduction: index.md
   - Infrastructure: 
-      - EC2-ASG: infra/index.md
+      - EC2-others: infra/index.md
       - Network: infra/networking.md
       - Security: infra/security.md
       - S3-Storage: infra/storage.md

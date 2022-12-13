@@ -188,30 +188,30 @@ The Flow can target S3, Firehouse or cloudWatch
 
 ## Extended picture
 
-The following aninmation is presenting external integration to on-premises servers to AWS services and VPCs via site to sire VPN, Private Gateway, Customer Gateway.
+The following animation is presenting external integration to on-premises servers to AWS services and VPCs via site to site VPN, Private Gateway, Customer Gateway.
 
 ![](./images/vpc-anim.gif)
 
 **Figure 6: Full VPC diagram**
 
-We need to have [VPC endpoint service](https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.vpc-endpoint.en.html) to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in our VPC. We need to ensure there is one interface endpoint for each availability zone. We need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
+* We need to have [VPC endpoint service](https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.vpc-endpoint.en.html) to access a [lot of AWS services](https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html), like S3, privately as those services will be in our VPC. 
+* We need to ensure there is one interface endpoint for each availability zone. 
+* We need to pick a subnet in each AZ and add an interface endpoint to that subnet. 
+* TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) to establish private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
 
-TCP traffic is isolated. It is part of a larger offering called [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) to establish private connectivity between VPCs and services hosted on AWS or on-premises, without exposing data to the internet (No internet gateway, no NAT, no public IP @).
+* CIDR Blocks should not overlap between VPCs for setting up a peering connection. Peering connection is allowed within a region, across regions, across different accounts
 
-CIDR Blocks should not overlap between VPCs for setting up a peering connection. Peering connection is allowed within a region, across regions, across different accounts
+* We can optionally connect our VPC to our own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of our data center. A VPN connection consists of a virtual private gateway (VGW) attached to our VPC and a customer gateway located in our data center. 
+* A Virtual Private Gateway is the VPN concentrator on the Amazon side of the VPN connection. 
+* A customer gateway is a physical device or software appliance on our side of the VPN connection. We need to create a Site-to-site VPN connection between the CP GTW and Customer GTW.
 
-We can optionally connect our VPC to our own corporate data center using an IPsec AWS managed VPN connection, making the AWS Cloud an extension of our data center. A VPN connection consists of a virtual private gateway (VGW) attached to our VPC and a customer gateway located in our data center. 
-
-A Virtual Private Gateway is the VPN concentrator on the Amazon side of the VPN connection. 
-A customer gateway is a physical device or software appliance on our side of the VPN connection. We need to create a Site-to-site VPN connection between the CP GTW and Customer GTW.
-
-As seen in Figure 6 "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
-
-AWS VPN CloudHub allows you to securely communicate with multiple sites using AWS VPN. It operates on a simple hub-and-spoke model that you can use with or without a VPC.
+* As seen in Figure 6 "Full VPC diagram", the `VPC peering` helps to connect between VPCs in different region, or within the same region. And [Transit GTW](https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html) is used to interconnect our virtual private clouds (VPCs) and on-premises networks. In fact Transit Gateway is a more modern and easier approach to link VPCs. Using Transit Gateway route tables, We can control the traffic flow between VPCs. The peering connection would work; however, it requires a lot of point-to-point connections.
+* If we have multiple AWS Site-to-Site VPN connections, we can provide secure communication between sites using the [AWS VPN CloudHub](https://docs.aws.amazon.com/vpn/latest/s2svpn/VPN_CloudHub.html). This enables our remote sites to communicate with each other, and not just with the VPC. 
+* AWS VPN CloudHub operates on a simple hub-and-spoke model that we can use with or without a VPC.
 
 ## [Direct Connect](https://aws.amazon.com/directconnect/)
 
-It provides a dedicated connection from a remote network to the VPC bypassing public internet. Need to setup a Virtual Private GTW. It is a private connection so it supports better bandwidth throughput at lower cost.
+It provides a dedicated connection from a remote network to the VPC bypassing public internet. Need to setup a Virtual Private GTW. It is a private connection so it supports better bandwidth throughput at lower cost. It is not encrypted by default.
 
 ![](./diagrams/direct-conn.drawio.png)
 
@@ -341,10 +341,14 @@ It is called `Deregistration Delay` in NLB & ALB.
 
 ## [Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html)
 
-The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
+AWS Global Accelerator is a network layer service that directs traffic to optimal endpoints over the AWS global network, this improves the availability and performance of your internet applications. 
 
-By default, Global Accelerator provides with static IP addresses that we associate with our accelerator.
+t provides two static anycast IP addresses that act as a fixed entry point to your application endpoints in a single or multiple AWS Regions, such as your Application Load Balancers, Network Load Balancers, Elastic IP addresses or Amazon EC2 instances, in a single or in multiple AWS regions.
+
+The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
 
 With Anycast IP a client is routed to the nearest server. All servers hold the same IP address. So for each application, we create 2 Anycast IP, and the traffic is sent to the edge locations.
 
-Improves performance for wide range of applications TCP or UDP.
+AWS Global Accelerator uses endpoint weights to determine the proportion of traffic that is directed to endpoints in an endpoint group, and traffic dials to control the percentage of traffic that is directed to an endpoint group
+
+Global Accelerator is a good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP.

@@ -29,6 +29,8 @@ With Fargate, as a serverless approach, only specifying container configuration,
 
 It is possible to have Fargate and EC2 auto scaling group inside your ECS cluster.
 
+ECS with EC2 launch type is charged based on EC2 instances and EBS volumes used. ECS with Fargate launch type is charged based on vCPU and memory resources that the containerized application requests.
+
 The container is run by defining Task and Service. Here is task definition example, which includes capacity and the docker image reference:
 
 ![](./images/ecs-task-1.png)

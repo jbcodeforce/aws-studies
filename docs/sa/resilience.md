@@ -113,11 +113,18 @@ We can use continuous replication with DMS:
 
 ![](./diagrams/DR/cont-replication.drawio.png)
 
+First (1) use the AWS Schema Conversion Tool to convert the source schema and code to match that of the target database, then (2) use the AWS Database Migration Service to migrate data from the source database to the target database.
+
 Example of configuration, with EC2 instance type, engine version, allocated storage space for the replication instance, network connectivity...
 
 ![](./images/DR/dms-1.png)
 
 Once server is defined, we need to define data provider to specify source and target endpoints and create a migration project to do schema conversion (from Oracle or SQL server to MySQL or PostgreSQL as target). 
+
+It is possible to leverage AWS Database Migration Service (AWS DMS) as a bridge between Amazon S3 and Amazon Kinesis Data Streams as an easier way to do so: See [Streaming Data from S3 to Kinesis using DMS](https://aws.amazon.com/blogs/big-data/streaming-data-from-amazon-s3-to-amazon-kinesis-data-streams-using-aws-dms/). AWS DMS allows migration of full and change data capture (CDC) files to these services.
+
+
+* [DMS FAQ](https://aws.amazon.com/dms/faqs/)
 
 ### Replication to Aurora
 

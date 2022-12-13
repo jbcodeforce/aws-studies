@@ -223,6 +223,10 @@ It also supports the concept of signed URL. When we want to distribute content t
 
 When the backend content is modified, CloudFront will not get it until its TTL has expired. But we can force an entire cache refresh with CloudFront Invalidation.
 
+CloudFront supports HTTP/RTMP protocol based requests only.
+
+* [FAQs](https://aws.amazon.com/cloudfront/faqs/)
+
 ## [AWS Outposts](https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html)
 
 Outpost is fully managed service that extends AWS infrastructure, services, APIs, and tools to customer premises. It is a Rack with n server blades installed by AWS team, on site, and then maintained by AWS. 

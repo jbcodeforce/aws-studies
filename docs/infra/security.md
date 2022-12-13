@@ -298,11 +298,13 @@ WebACL is regional except for CloudFront.
 
 Firewall manager simplifies your administration and maintenance tasks across multiple accounts (across WAS Organizations) and resources for a variety of protections, including AWS WAF, AWS Shield Advanced, Amazon VPC security groups, AWS Network Firewall, and Amazon Route 53 Resolver DNS Firewall. 
 
-## [Shield]()
+## [Shield](https://aws.amazon.com/shield/)
 
 To protect against DDoS attack.
 
 ## [GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
+
+Amazon GuardDuty is a threat detection service that continuously monitors for malicious activity and unauthorized behavior to protect your AWS accounts, workloads, and data stored in Amazon S3.
 
 Security monitoring service that analyzes and processes data sources such as:
 
@@ -314,9 +316,11 @@ Security monitoring service that analyzes and processes data sources such as:
 * Amazon VPC flow logs
 * RDS login activity
 
-It uses ML/AI model.
+It uses ML/AI model, anomaly detection, and integrated threat intelligence to identify and prioritize potential threats..
 
-GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin
+GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin.
+
+By integrating with Amazon EventBridge Events, GuardDuty alerts are actionable, easy to aggregate across multiple accounts, and straightforward to push into existing event management and workflow systems.
 
 ## [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html)
 

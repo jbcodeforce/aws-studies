@@ -185,8 +185,11 @@ http://jbcodeforce-aws-studies.s3-website-us-west-2.amazonaws.com
 Once versioning enabled on source and target, a bucket can be replicated in the same region (SRR) or cross regions (CRR). S3 replication is done on at least 3 AZs. One DC down does not impact S3 availability. The replication is done asynchronously. SRR is for log aggregation for example or live replication between production and test, while CRR is used for compliance and DR or replication across AWS accounts. Delete operations are not replicated.
 
 Must give proper IAM permissions to S3. When replication is set, only new objects are replicated. To replicate exiting objects use S3 Batch Replication.
+**S3 Batch Replication** provides you a way to replicate objects that existed before a replication configuration was in place, objects that have previously been replicated, and objects that have failed replication
 
 By default delete markers are not replicated by with the advanced options we can enable it.
+
+The **AWS S3 sync** command uses the CopyObject APIs to copy objects between S3 buckets in same region. The sync command lists the source and target buckets to identify objects that are in the source bucket but that aren't in the target bucket. The command also identifies objects in the source bucket that have different LastModified dates than the objects that are in the target bucket. The sync command on a versioned bucket copies only the current version of the object—previous versions aren't copied
 
 ### S3 Storage classes
 
@@ -223,6 +226,7 @@ To improve performance, a big file can be split and then uploaded with local con
 
 * **Secure FTP**: server to let you send file via SFTP.
 * **Requester Pay**: The requester (AWS authenticated) of the data pay for the cost of the request and the data download from the bucket, not the owner. 
+* **Amazon S3 Transfer Acceleration** enables fast, easy, and secure transfers of files over long distances between your client and an S3 bucket. Transfer Acceleration takes advantage of Amazon CloudFront’s globally distributed edge locations. As the data arrives at an edge location, data is routed to Amazon S3 over an optimized network path.
 * **Pre-signed URL**: share object with URL with temporary access. Can be done with the command: `aws s3 presign`. Up to 168 hours valid.
 * **S3 Select and Glacier Select**: to retrieve a smaller set of data from an object using server-side SQL. Can filter by rows and columns. 80% cheaper and 400% faster as it uses less network transfer and less CPU on client side.
 * **Event Notifications**: on actions like S3:ObjectCreated, S3:ObjectRemoved, S3:ObjectRestore. Can be combined with name filtering. Events may be sent to SNS, SQS, Lambda function, and EventBridge.
@@ -244,7 +248,7 @@ To improve performance, a big file can be split and then uploaded with local con
     The S3 Intelligent Tiering automatically changes storage class depending on usage to optimize cost. S3 lifecycle is based on age and can be defined with rules.
 
 ???- "Expected performance?"
-    S3 automatically scales to high request rates and latency around 100 tp 200ms. 5500 HET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
+    S3 automatically scales to high request rates and latency around 100 to 200ms. 5500 HET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
 
 ## Elastic File System (EFS)
 
@@ -266,11 +270,13 @@ Fully managed NFS file system. [FAQ](https://aws.amazon.com/efs/faq/) for multi 
 
 ## [Snowball](https://aws.amazon.com/snowball/)
 
-Move TB of data in and out AWS using physical device to ship data as doing over network will take a lot of time ,and may fail. 
+Move TB to PB of data in and out AWS using physical device to ship data as doing over network will take a lot of time, and may fail. 
 
-* The Snowball Edge has 100TB and compute power to do some local processing on data.  With Compute Optimized version there are 52 vCPUs, 200GB of RAM, optional GPU, 42TB. And for Storage Optimized version, 40 vCPUs,, 80 GB RAM, and object storage clustering.
-* Snowcone: smaller portable, secured, rugged, for harsh environments. Limited to 8TB. We can use AWS DataSync to sned data. 2 CPUs, 4GB of mem. 
-* SnowMobile is a truck with 100 PB capacity. Once on site, it is transferred to S3.
+* The **Snowball Edge** device has 100TB and compute power to do some local processing on data.  With Compute Optimized version there are 52 vCPUs, 200GB of RAM, optional GPU, 42TB. And for Storage Optimized version, 40 vCPUs,, 80 GB RAM, and object storage clustering.
+You can use Snowball Edge Storage Optimized if you have a large backlog of data to transfer or if you frequently collect data that needs to be transferred to AWS and your storage is in an area where high-bandwidth internet connections are not available or cost-prohibitive.
+
+* **Snowcone**: smaller portable, secured, rugged, for harsh environments. Limited to 8TB. We can use AWS DataSync to sned data. 2 CPUs, 4GB of mem. 
+* **SnowMobile** is a truck with 100 PB capacity. Once on site, it is transferred to S3.
 
 Can be used for Edge Computing when there is no internet access.
 
@@ -317,14 +323,16 @@ To transfer data with FTP, FTPS, SFTP protocols to AWS Storage services like S3,
 
 ## [DataSync](https://docs.aws.amazon.com/datasync/latest/userguide/)
 
+AWS DataSync is an online data transfer service that simplifies, automates, and accelerates copying large amounts of data between on-premises storage systems and AWS Storage services, as well as between AWS Storage services.
+
 Move a large amount of data to and from on-premises (using agent) to AWS, or to AWS to AWS different storage services.
 
 Can be used for:
 
-* Data Migration with automatic encryption and data integrity validation
-* Archive cold data
-* Data protection
-* Data movement for timely in-cloud processing
+* Data Migration with automatic encryption and data integrity validation.
+* Archive cold data.
+* Data protection.
+* Data movement for timely in-cloud processing.
 
 Replication tasks can be scheduled.
 
@@ -333,6 +341,14 @@ It keeps the metadata and permissions about the file.
 One agent task can get 10 GB/s
 
 ![](./diagrams/datasync.drawio.png)
+
+As an example to support the above architecture, we cancConfigure an AWS DataSync agent on the on-premises server that has access to the NFS file system. Transfer data over the Direct Connect connection to an AWS PrivateLink interface VPC endpoint for Amazon EFS by using a private Virtual InterFace (VIF). Set up a DataSync scheduled task to send the video files to the EFS file system every 24 hours.
+
+The DataSync agent is deployed as a virtual machine that should be deployed on-premises in the same LAN as your source storage to minimize the distance traveled.
+
+* [Transferring files from on-premises to AWS and back without leaving your VPC using AWS DataSync](https://aws.amazon.com/blogs/storage/transferring-files-from-on-premises-to-aws-and-back-without-leaving-your-vpc-using-aws-datasync/).
+* [DatSynch FAQ](https://aws.amazon.com/datasync/faqs/).
+* [Public and Private interface](https://aws.amazon.com/premiumsupport/knowledge-center/public-private-interface-dx/).
 
 ## Storage comparison
 

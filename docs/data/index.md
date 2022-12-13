@@ -2,7 +2,7 @@
 
 ## [Relational Database Service - RDS](https://docs.aws.amazon.com/rds/index.html)
 
-Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora), the only things customers do is to define their schema and optimize their queries, AWS manages scaling, HA, backups, software patching, server maintenance...  RDS is used for On Line Transaction Processing (OLTP).
+Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora), the only things customers do is to define their schema and optimize their queries, AWS manages scaling, HA, backups, software patching, server maintenance...  RDS is used for On Line Transaction Processing (OLTP). As an exception, RDS Custom for Oracle (or MSSQL) allows SRE to access and customize the database server host and operating system.
 
 * A DB instance provides a network address called an *endpoint*.
 * When deployed in own VPC, be sure to have at least two subnets, each in a separate Availability Zone. [See VPC and RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html). Prefer installation in private subnet with no public IP address (avoid it at least). 
@@ -167,6 +167,8 @@ It can be used for user session store so user interaction can go to different ap
 
 **Redis** is a multi AZ with Auto-Failover, supports read replicas to scale on the read operations and to have high availability. It has data durability using AOF persistence, and has backup and restore features.
 
+Redis authentication tokens enable Redis to require a token (password) before allowing clients to execute commands, thereby improving data security. IAM Auth is not supported by ElastiCache.
+
 **Memcached** is a multi-node for partitioning of data (sharding), and no persistence, no backup and restore, not HA via replication. It is based on a multi-threaded architecture.
 
 
@@ -193,7 +195,15 @@ There is the Redis Sorted Sets to guarantee both uniqueness and element ordering
 
 ## DocumentDB
 
-## Neptune - GraphDB
+Amazon DocumentDB is a fast, scalable, highly available, and fully managed document database service that supports MongoDB workloads. As a document database, Amazon DocumentDB makes it easy to store, query, and index JSON data.
+
+## [Neptune - GraphDB](https://docs.aws.amazon.com/neptune/latest/userguide/intro.html)
+
+Fully managed graph database service that makes it easy to build and run applications that work with highly connected datasets. 
+
+The core of Amazon Neptune is a purpose-built, high-performance graph database engine optimized for storing billions of relationships and querying the graph with milliseconds latency.
+
+Neptune powers graph use cases such as recommendation engines, fraud detection, knowledge graphs, drug discovery, and network security.
 
 ## Amazon QLDB
 
