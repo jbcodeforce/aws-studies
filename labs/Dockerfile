@@ -12,15 +12,15 @@ RUN apk update && apk add --update --no-cache \
     wget \
     curl
 
-RUN apk --no-cache add --virtual builds-deps build-base python3
+RUN apk --no-cache add --virtual builds-deps build-base 
 
 # Update NPM
 RUN npm config set unsafe-perm true
-RUN npm update -g
+RUN npm update
 
 # Install AWSCLI
 RUN pip install --upgrade pip && \
-    pip install --upgrade awscli aws-cdk-lib pipenv
+    pip install --upgrade awscli aws-cdk-lib pipenv boto3  psycopg2-binary
 
 # Install Serverless Framework
 RUN npm install -g serverless aws-cdk

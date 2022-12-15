@@ -1,0 +1,33 @@
+{
+    "jobRun": {
+        "applicationId": "00f6b0eou5biqd0l",
+        "jobRunId": "00f6b0klmgomip0l",
+        "name": "My_First-Spark-Job",
+        "arn": "arn:aws:emr-serverless:us-west-2:403993201276:/applications/00f6b0eou5biqd0l/jobruns/00f6b0klmgomip0l",
+        "createdBy": "arn:aws:sts::403993201276:assumed-role/admin/boyerje-Isengard",
+        "createdAt": "2022-12-14T17:09:28.962000-08:00",
+        "updatedAt": "2022-12-14T17:12:06.970000-08:00",
+        "executionRole": "arn:aws:iam::403993201276:role/EMRServerlessS3RuntimeRole",
+        "state": "SUCCESS",
+        "stateDetails": "",
+        "releaseLabel": "emr-6.8.0",
+        "configurationOverrides": {
+            "applicationConfiguration": []
+        },
+        "jobDriver": {
+            "sparkSubmit": {
+                "entryPoint": "s3://jb-data-set/scripts/wordcount.py",
+                "entryPointArguments": [
+                    "s3://jb-data-set/emr-serverless-spark/output"
+                ],
+                "sparkSubmitParameters": "--conf spark.executor.cores=1 --conf spark.executor.memory=4g --conf spark.driver.cores=1 --conf spark.driver.memory=4g --conf spark.executor.instances=1 --conf spark.hadoop.hive.metastore.client.factory.class=com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
+            }
+        },
+        "tags": {},
+        "totalResourceUtilization": {
+            "vCPUHour": 0.168,
+            "memoryGBHour": 0.671,
+            "storageGBHour": 0.839
+        }
+    }
+}

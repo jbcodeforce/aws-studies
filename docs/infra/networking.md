@@ -143,6 +143,8 @@ Define traffic rule at the subnet level. One NACL per subnet. A NACL specifies r
 
 It is used to block a specific IP address at the subnet level.
 
+The VPC automatically comes with a modifiable default network ACL. By default, it allows all inbound and outbound IPv4 traffic and, if applicable, IPv6 traffic. We can create a custom network ACL and associate it with a subnet. By default, each custom network ACL denies all inbound and outbound traffic until we add rules.
+
 Here is a complete figure to explain the process: A client app is initiating a connection to a DB and with a ephemeral port to receive the response.
 
 ![](./diagrams/nacl.drawio.png)
@@ -160,7 +162,7 @@ After a subnet is shared, the participants can view, create, modify, and delete 
 
 ## [VPC Endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html)
 
-An interface VPC endpoint allows you to privately connect your Amazon VPC to supported AWS services. Interface VPC endpoints also connect to endpoint services hosted by other AWS customers and partners and AWS Marketplace partner services.
+An interface VPC endpoint allows us to privately connect our Amazon VPC to supported AWS services. Interface VPC endpoints also connect to endpoint services hosted by other AWS customers and partners and AWS Marketplace partner services.
 
 VPC Endpoints remove the need of IGW, NATGW to access AWS Services. The service is redundant and scale horizontally. 
 
@@ -341,9 +343,9 @@ It is called `Deregistration Delay` in NLB & ALB.
 
 ## [Global Accelerator](https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html)
 
-AWS Global Accelerator is a network layer service that directs traffic to optimal endpoints over the AWS global network, this improves the availability and performance of your internet applications. 
+AWS Global Accelerator is a network layer service that directs traffic to optimal endpoints over the AWS global network, this improves the availability and performance of Iour internet applications. 
 
-t provides two static anycast IP addresses that act as a fixed entry point to your application endpoints in a single or multiple AWS Regions, such as your Application Load Balancers, Network Load Balancers, Elastic IP addresses or Amazon EC2 instances, in a single or in multiple AWS regions.
+It provides two static anycast IP addresses that act as a fixed entry point to our application endpoints in a single or multiple AWS Regions, such as our Application Load Balancers, Network Load Balancers, Elastic IP addresses or Amazon EC2 instances, in a single or in multiple AWS regions.
 
 The goal is to expose quickly an application to the WW. The problem is the number of internet hops done to access the target public ALB. The solution is to get as fast as possible to a AWS global network endpoint (Edge location), nearest region to the client. It is a global service.
 

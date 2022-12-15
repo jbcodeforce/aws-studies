@@ -4,9 +4,8 @@
 
 See [summary on IAM](../../infra/security/#iam-identity-and-access-management)
 
-* Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: `aws-jb`. (With personal account )login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`
-* * In the IAM service, create groups (Developers), define basic policies.
-* Add users (mathieu) assign him to a group
+* Access the [AWS console](https://us-west-2.console.aws.amazon.com/) from which we can login as root user or as an IAM user: `aws-jb` for AWS account. (Or using personal account login to the account [https://jbcodeforce.signin.aws.amazon.com/console](https://jbcodeforce.signin.aws.amazon.com/console]) with admin user `jerome`.
+* In the IAM service, create groups (Developers, Adminstrators), define basic policies.
 
 ### Define security policies
 
@@ -14,13 +13,12 @@ Attached to the group level.
 
 ## AWS CLI common commands
 
-We can access AWS using the CLI or the SDK which both use access keys generated from the console (> Users > jerome > Security credentials > Access Keys).
+We can access AWS using the CLI or the SDK which both user access keys generated from the console (> Users > jerome > Security credentials > Access Keys).
 
-The keys are saved in `~/.aws/credentials`
-
-
+The keys are saved in `~/.aws/credentials` in different profile
+* A named profile is a collection of settings and credentials that you can apply to a AWS CLI command. When you specify a profile to run a command, the settings and credentials are used to run that command.
 * Installation: [aws cli](https://aws.amazon.com/cli/)
-* The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key. The credentials and API key are in `~/.aws/credentials`
+* The cli needs to be configured: `aws configure` with the credential, key and region to access. Use IAM user to get a new credentials key. The credentials and API key are in `~/.aws/credentials` in default profile
 
 Test with some commands:
 
@@ -28,11 +26,13 @@ Test with some commands:
 aws --version
 # get your users
 aws iam list-users
+# For a given profile
+aws iam list-users --profile hackaton
 ```
 
 * [VPC scenario with CLI - Tutorial](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenarios-cli.html)
 * [Use CloudShell in west-2 region for using aws cli](https://us-west-2.console.aws.amazon.com/cloudshell)
-* [aws-shell] is also available to facilitate the user experience in your laptop terminal console.
+* [aws-shell]() is also available to facilitate the user experience in your laptop terminal console.
 
 
 When using CLI in a EC2 instance always use an IAM role to control security credentials. This role may come with a policy authorizing exactly what the EC2 instance should be able to do. 

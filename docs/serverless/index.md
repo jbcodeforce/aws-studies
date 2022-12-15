@@ -23,7 +23,7 @@ It is possible to run container into two modes: EC2 or Fargate. For EC2 we can c
 
 ![](./diagrams/ecs.drawio.png){ width=500 }
 
-With Fargate, as a serverless approach, only specifying container configuration, services... is needed.
+With Fargate, as a serverless approach, only specifying container configuration, services... are needed.
 
 ![](./diagrams/ecs-fargate.drawio.png){ width=500 }
 
@@ -60,9 +60,9 @@ ECS service auto scaling helps to automatically increase/decrease ECS task numbe
 
 There are 3 ways  to define scaling rules:
 
-* Target Tracking, based on value for a specific CloudWatch metric
-* Step Scaling, based on CloudWatch Alarm
-* Scheduled Scaling, based on a specified date/time
+* Target Tracking, based on value for a specific CloudWatch metric.
+* Step Scaling, based on CloudWatch Alarm.
+* Scheduled Scaling, based on a specified date/time.
 
 ### Others 
 
@@ -74,7 +74,7 @@ There are 3 ways  to define scaling rules:
 
  
 
-## Fargate
+## [Fargate](https://aws.amazon.com/fargate/)
 
 When running ECS and EKS on EC2, we are still responsible for maintaining the underlying EC2 instances. With Fargates we do no have to manage EC2 instances.
 

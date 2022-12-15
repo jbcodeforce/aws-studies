@@ -152,10 +152,10 @@ AWS infrastructure deployments that embed AWS compute and storage services withi
 
 Choose an AWS region, depending of your requirements like:
 
-* Compliance with data governance and legal requirements
-* Close to users to reduce latency
-* [Service availability within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) 
-* Pricing
+* Compliance with data governance and legal requirements.
+* Close to users to reduce latency.
+* [Service availability within a region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) .
+* Pricing.
 
 ### Availability and reliability
 

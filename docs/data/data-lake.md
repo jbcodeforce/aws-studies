@@ -7,6 +7,14 @@ Here is a mapping with AWS services to support your data strategy:
 * [Amazon Redshift](./redshift.md)
 * [S3](../../infra/storage/#s3-simple-storage-service)
 
+## Big Data
+
+The 3 V's of big data are 
+
+* Volume: we are at the terabytes and petabytes level. 
+* Variety: includes data from a wide range of sources and formats
+* Velocity: data needs to be collected, stored, processed and analyzed withn a short period of time.
+
 ## [EMR]()
 
 Created in 2009, it is a managed service to run Spark, Haddop, Hive, Presto, HBase... Per-second prcing and save 50%-80% with Amazon EC2 Spot and reserved instances.

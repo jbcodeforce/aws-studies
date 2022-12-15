@@ -139,6 +139,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * Assign users to groups (`admin` and `developers`) and assign policies to groups and not to individual user.
 * Groups can only contain users, not other groups.
 * Users can belong to multiple groups.
+* A classical use case: Create the user accounts, create a group for each department, create and attach an appropriate policy to each group, and place each user account into their department’s group. When new team members are onboarded, create their account and put them in the appropriate group. If an existing team member changes departments, move their account to their new IAM group.
 * AWS Account has a unique ID but can be set with an alias. The console URL includes the user alias.
 
 * Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
@@ -324,11 +325,13 @@ By integrating with Amazon EventBridge Events, GuardDuty alerts are actionable, 
 
 ## [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html)
 
-vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure
+vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure.
 
-## Macie
+## [Amazon Macie]()
 
 Amazon Macie is a fully managed data security service that uses Machine Learning to discover and protect your sensitive data stored in S3 buckets. It automatically provides an inventory of S3 buckets including a list of unencrypted buckets, publicly accessible buckets, and buckets shared with other AWS accounts. It allows you to identify and alert you to sensitive data, such as Personally Identifiable Information (PII).
+
+All Macie findings are sent to Amazon EventBridge and can also be published to AWS Security Hub to initiate automated remediation such as blocking public access to your S3 storage.
 
 
 ## [IAM Identity Center](https://docs.aws.amazon.com/singlesignon/index.html)
@@ -340,6 +343,28 @@ The identity provider can be an identity store in IAM Identity center or an Acti
 * [API reference](https://docs.aws.amazon.com/singlesignon/latest/APIReference/welcome.html)
 
 
+## AWS [CloudHSM](https://aws.amazon.com/cloudhsm/?nc2=type_a)
+
+[AWS CloudHSM](https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html) (Hardware Security Module) helps you meet corporate, contractual, and regulatory compliance requirements for data security.
+
+A Hardware Security Module (HSM) provides secure key storage and cryptographic operations within a tamper-resistant hardware device. HSMs are designed to securely store cryptographic key material and use the key material without exposing it outside the cryptographic boundary of the hardware.
+
+We can create a cluster that has from 1 to 28 HSMs (the default limit is 6 HSMs per AWS account per AWS Region).
+
+![](https://docs.aws.amazon.com/images/cloudhsm/latest/userguide/images/cluster-architecture.png)
+
+Example of use case is when hosted on EC2, must encrypt the data before writing this data to storage.
+
+We can also use AWS KMS if you need to encrypt data before writing it to storage when an AWS managed hardware security module for the cryptographic keys is not required.
+
+## [AWS Audit Manager](https://docs.aws.amazon.com/audit-manager/latest/userguide/what-is.html)
+
+AWS Audit Manager is an automated service to continually audit your AWS usage to simplify how you manage risk and compliance with regulations and industry standards. It eifjcbfdjifhurnicntgjklgrihfkfcdfierkgkghcdi
+produces reports specific to auditors for PCI compliance, GDPR, and more.
+
+## [AWS Security Hub](https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html)
+
+AWS Security Hub is a single place to view all your security alerts from services like Amazon GuardDuty, Amazon Inspector, Amazon Macie, and AWS Firewall Manager. It is not used for producing audit reports.
 
 ## Security FAQ
 

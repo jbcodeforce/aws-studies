@@ -232,7 +232,7 @@ To improve performance, a big file can be split and then uploaded with local con
 * **Event Notifications**: on actions like S3:ObjectCreated, S3:ObjectRemoved, S3:ObjectRestore. Can be combined with name filtering. Events may be sent to SNS, SQS, Lambda function, and EventBridge.
 * **Amazon Macie**: is a machine learning security service to discover, classify and protect sensitive data stored in S3. 
 * **S3 Object lock**: to meet regulatory requirements of write once read many storage. Use _Legal Hold_ to prevent an object or its versions from being overwritten or deleted indefinitely and gives you the ability to remove it manually.
-* **S3 Byte-Range Fetches**: parallelize GET by requesting specific byte ranges. Used to speed up download or download partial data. 
+* **S3 Byte-Range Fetches**: parallelize GET by requesting specific byte ranges. Used to speed up download or to download partial data. 
 * **S3 Batch operations**: perform bulk operations on existing S3 objects with a single request. To get the list of object, use [S3 Inventory]().
 * **Server Access Logs**: used for audit purpose to track any request made to S3 in the same region, from any account. Logs are saved in another bucket. 
 * **S3 Glacier Vault Lock**: Adopt a Write Once Read Many) model, by creating a Vault Lock Policy. Data will never be deleted.
@@ -240,8 +240,8 @@ To improve performance, a big file can be split and then uploaded with local con
 
 ### FAQ
 
-???- "The last one MB of each file in bucket contains summary information that you want to expose in a search what to use?"
-    Byte-Range fetch allows you to read only a portion of data from the object. Since the summary is a small part of each, it is efficient to directly read the summary rather than downloading an entire object from S3. 
+???- "The last one MB of each file in a bucket contains summary information that you want to expose in a search what to use?"
+    Byte-Range fetch allows you to read only a portion of data from the object. Since the summary is a small part of each object, it is efficient to directly read the summary rather than downloading an entire object from S3. 
 
 ???- "Pricing factors"
     Frequency of access, storage cost, retrieval cost and retrieval time.
@@ -249,6 +249,14 @@ To improve performance, a big file can be split and then uploaded with local con
 
 ???- "Expected performance?"
     S3 automatically scales to high request rates and latency around 100 to 200ms. 5500 HET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
+
+???- "How to be informed if an object is restored to S3 from Glacier?"
+    The Amazon S3 notification feature enables you to receive notifications when certain events happen in your bucket. To enable notifications, you must first add a notification configuration that identifies the events you want Amazon S3 to publish and the destinations where you want Amazon S3 to send the notifications.
+
+
+## [Amazon AppFlow](https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html)
+
+AppFlow offers a fully managed service for easily automating the bidirectional exchange of data to SaaS vendors from AWS services like Amazon S3. This helps avoid resource constraints.
 
 ## Elastic File System (EFS)
 

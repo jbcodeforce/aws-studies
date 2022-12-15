@@ -1,5 +1,7 @@
 # Major infrastructure services
 
+The AWS account has default quotas, formerly referred to as limits, for each AWS service. Unless otherwise noted, each quota is Region specific. We can request increases for some quotas, and other quotas cannot be increased. Each EC2 instance can have a variance of the number of vCPUs, depending on its type and configuration, so it's always wise to calculate the vCPU needs to make sure we are not going to hit quotas easily. Service Quotas is an AWS service that helps we manage our quotas for over 100 AWS services from one location. Along with looking up the quota values, we can also request a quota increase from the Service Quotas console,
+
 ## Amazon Elastic Compute Cloud - EC2 components
 
 * EC2 is a renting machine.
@@ -75,7 +77,9 @@ Use **EC2 launch templates** to automate instance launches, to simplify permissi
 
 ### Metadata
 
-When in a EC2 instance shell, we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**
+When in a EC2 instance shell, we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**. 
+
+We can also quickly review scripts used to bootstrap the instances at runtime using **http://169.254.169.254/latest/user-data/**
 
 ### AMI
 
@@ -189,6 +193,12 @@ Automatically Register new instances to a load balancer.
  ![4](./images/ASG-1.png)
 
 * It is not possible to modify a launch configuration once it is created. If we need to change the EC2 instance type for example, we need to create a new launch configuration to use the correct instance type. Modify the Auto Scaling group to use this new launch configuration. Delete the old launch configuration as it is no longer needed.
+* The Default Termination Policy is designed to help ensure that our instances span Availability Zones evenly for high availability. Determine which Availability Zones have the most instances, and at least one instance that is not protected from scale in. 
+
+    * Determine which instances to terminate so as to align the remaining instances to the allocation strategy for the on-demand or spot instance that is terminating. This only applies to an Auto Scaling Group that specifies allocation strategies. For example, after our instances launch, we change the priority order of our preferred instance types. When a scale-in event occurs, Amazon EC2 Auto Scaling tries to gradually shift the on-demand instances away from instance types that are lower priority. 
+    * Determine whether any of the instances use the oldest launch template or configuration: (For Auto Scaling Groups that use a launch template) Determine whether any of the instances use the oldest launch template unless there are instances that use a launch configuration. Amazon EC2 Auto Scaling terminates instances that use a launch configuration before instances that use a launch template. 
+    * For Auto Scaling Groups that use a launch configuration: Determine whether any of the instances use the oldest launch configuration. After applying all of the above criteria, if there are multiple unprotected instances to terminate, determine which instances are closest to the next billing hour. If there are multiple unprotected instances closest to the next billing hour, terminate one of these instances at random.
+
 * When creating scaling policies, **CloudWatch** alarms are created. Ex: "Create an alarm if: CPUUtilization < 36 for 15 data points within 15 minutes".
 * Target tracking scaling: we want average CPU to be under 40%.
 * Scheduled action: increase capacity after 5 PM.
@@ -196,7 +206,7 @@ Automatically Register new instances to a load balancer.
 * ASG tries to balance the number of instances across AZs by default, and then delete based on the age of the launch configuration.
 * The capacity of our ASG cannot go over the maximum capacity we have allocated during scale out events.
 * Cool down period is set to 5 mn and will not change the number of instance until this period.
-* When an ALB validates an health check issue it terminates the EC2 instance.
+* When an ALB validates an health check issue, ASG terminates the EC2 instance.
 
 ## [CloudFront](https://aws.amazon.com/cloudfront/)
 

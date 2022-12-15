@@ -1,0 +1,1 @@
+aws emr-serverless list-applications | jq -r '.applications[] | select(.name=="'$1'") | .id'
