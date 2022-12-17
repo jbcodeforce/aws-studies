@@ -253,6 +253,14 @@ To improve performance, a big file can be split and then uploaded with local con
 ???- "How to be informed if an object is restored to S3 from Glacier?"
     The Amazon S3 notification feature enables you to receive notifications when certain events happen in your bucket. To enable notifications, you must first add a notification configuration that identifies the events you want Amazon S3 to publish and the destinations where you want Amazon S3 to send the notifications.
 
+???- "How to upload local file to s3 bucket using CLI?"
+    We can use python and the boto3 library or `aws s3` CLI. Be sure to have a IAM user (e.g. s3admin) with `AmazonS3FullAccess` managed policy. The aws config may have added access Ky and secret, may be in a dedicated profile.
+
+    ```sh
+    aws s3 cp $PWD/companies.csv s3://jb-data-set/ --profile s3admin
+    ```
+
+    For boto3 example see code under [big-data-tenant-analytics](https://github.com/jbcodeforce/big-data-tenant-analytics) project
 
 ## [Amazon AppFlow](https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html)
 

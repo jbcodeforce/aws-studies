@@ -137,7 +137,7 @@ The bandwidth is from 5 Gbps to  automatic scale up 45Gbps.
 
 ## Network ACLs
 
-Define traffic rule at the subnet level. One NACL per subnet. A NACL specifies rules with number that defines evaluation priority. The last rule is an asterisk and denies a request in case of no rule matches.  
+Defines traffic rule at the subnet level. One NACL per subnet. A NACL specifies rules with number that defines evaluation priority. The last rule is an asterisk and denies a request in case of no rule matches.  
 
 ![](./images/nacl-default.png)
 
@@ -148,6 +148,8 @@ The VPC automatically comes with a modifiable default network ACL. By default, i
 Here is a complete figure to explain the process: A client app is initiating a connection to a DB and with a ephemeral port to receive the response.
 
 ![](./diagrams/nacl.drawio.png)
+
+Each subnet in your VPC must be associated with a network ACL. If you don't explicitly associate a subnet with a network ACL, the subnet is automatically associated with the default network ACL.
 
 ## VPC peering
 
@@ -354,3 +356,8 @@ With Anycast IP a client is routed to the nearest server. All servers hold the s
 AWS Global Accelerator uses endpoint weights to determine the proportion of traffic that is directed to endpoints in an endpoint group, and traffic dials to control the percentage of traffic that is directed to an endpoint group
 
 Global Accelerator is a good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP.
+
+## FAQs
+
+???- "What differentiates a public subnet from a private subnet?"
+    A public subnet is a subnet that's associated with a route table that has a route to an internet gateway

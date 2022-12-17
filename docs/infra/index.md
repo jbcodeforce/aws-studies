@@ -301,3 +301,14 @@ Tool to view and analyze our costs and usage.
 ## [Trusted Advisor](https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html)
 
 Trusted Advisor inspects your AWS environment, and then makes recommendations when opportunities exist to save money, improve system availability and performance, or help close security gaps.
+
+## [AWS Health](https://docs.aws.amazon.com/health/latest/ug/what-is-aws-health.html)
+
+AWS Health provides ongoing visibility into your resource performance and the availability of your AWS services and accounts. 
+
+Can be used as a way to automate the start and stop of the Amazon EC2 instance: set up an Amazon EventBridge rule that is triggered by the AWS Health event. Target a Lambda function to parse the incoming event and reference the Amazon EC2 instance, ID included. Have the function perform a stop and start of the instance.
+
+## [AWS Compute Optimizer](https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html)
+
+AWS Compute Optimizer allows you to automate the collection of metrics for underutilized and underperforming compute instances. It can then generate recommendations for you to save money.
+

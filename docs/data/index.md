@@ -39,7 +39,7 @@ Read replica is great for read-heavy workloads and takes the load off the primar
 
 RDS supports instance standby with synchronous replication from master to standby. The application talks to one DNS name, and there will be automatic failover, if connection to master RDS fails.
 
-Read-replica DB can be setup as a multi AZ for DR, but RTO is not 0.
+Read-replica DB can be setup as a multi AZ for DR, but RTO is not 0. Read replicas can be promoted to become a primary database, but this is a manual procedure.
 
 It is possible to move from a Single-AZ to a Multi-AZ with zero downtime, by changing the multi-AZ parameter in the RDS.  The internal process is creating a snapshot from master, create a DB via restore operation in target AZ and start synchronous replication from master to standby.
 
@@ -158,6 +158,8 @@ We can share snapshot with other AWS accounts.
 | Needs | Considerations | 
 | --- | --- |
 | Single digit latency | DynamoDB |
+| SQL based OLTP | RDS |
+| SQL based OLAP | RedShift |
 
 ## ElastiCache
 
@@ -204,6 +206,10 @@ Fully managed graph database service that makes it easy to build and run applica
 The core of Amazon Neptune is a purpose-built, high-performance graph database engine optimized for storing billions of relationships and querying the graph with milliseconds latency.
 
 Neptune powers graph use cases such as recommendation engines, fraud detection, knowledge graphs, drug discovery, and network security.
+
+## [AppSync](https://docs.aws.amazon.com/appsync/latest/devguide/what-is-appsync.html)
+
+AWS AppSync provides a robust, scalable GraphQL interface for application developers to combine data from multiple sources, including Amazon DynamoDB, AWS Lambda, and HTTP APIs.
 
 ## Amazon QLDB
 

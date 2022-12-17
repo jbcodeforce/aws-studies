@@ -327,7 +327,7 @@ By integrating with Amazon EventBridge Events, GuardDuty alerts are actionable, 
 
 vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure.
 
-## [Amazon Macie]()
+## [Amazon Macie](https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html)
 
 Amazon Macie is a fully managed data security service that uses Machine Learning to discover and protect your sensitive data stored in S3 buckets. It automatically provides an inventory of S3 buckets including a list of unencrypted buckets, publicly accessible buckets, and buckets shared with other AWS accounts. It allows you to identify and alert you to sensitive data, such as Personally Identifiable Information (PII).
 
@@ -429,7 +429,7 @@ AWS Security Hub is a single place to view all your security alerts from service
 
 * Using a NLB, there will be no security group at the network load balancer, so traffic reaches EC2s. In this case only the NACL rules will help to protect. 
 
-* When using CloudFront, we need to add WAF as NACL at the VPC level will not work, the ALB being connected to the cloudFront IP address, only (via security group).
+* When using CloudFront, we need to add WAF, as NACL at the VPC level will not work, the ALB being connected to the cloudFront IP address, only (via security group).
 
     ![](./diagrams/security/sa-sol-3.drawio.png)
 
