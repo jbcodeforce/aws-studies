@@ -10,7 +10,7 @@ nav:
       - Route 53: infra/route53.md
       - Monitoring: monitoring/monitoring.md
       - Messaging: infra/messaging.md
-      - Streams-Firehose: kinesis/index.md
+      - Kinesis*: kinesis/index.md
   - Architecture:
       - Well Architectured: sa/well-architectured.md
       - Solution design: sa/sol-design.md

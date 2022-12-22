@@ -193,6 +193,8 @@ Advantages:
 
 Dashboard tool, serverless, machine learning powered BI service.
 
+Two type of persona: dashboard developers and end-users (read-only on the dashboard).
+
 Integrated with RDS, Aurora, Athena, S3, RedShift, OpenSearch, Timestream, with Saleforce, Jira... It can integrate to any JDBC compliant database. It can import CSV, XLSX, JSON, TSV files and log files.
 
 If data is imported inside QuickSight, it uses in memory computation using SPICE (Super-fast, Parallel, In-memory Calculation Engine) engine.
@@ -207,13 +209,16 @@ Here is an example of integration with a table in Aurora
 
 ![](./images/qs-dataset.png)
 
-* Add Visual. A Visual can include multiple sheets. An Interactive Sheet is a collection of data expressed in visuals that users can interact with when the sheet is published to a dashboard. A Paginated Report is a collection of tables, charts, and visuals that are used to convey business critical information. 
-* Create Dashboard.
+* Add Visual. A Visual can include multiple dataset and then multiple sheets. An Interactive Sheet is a collection of data expressed in visuals that users can interact with when the sheet is published to a dashboard. A Paginated Report is a collection of tables, charts, and visuals that are used to convey business critical information. 
+
+![](./images/qs-add-visual.png)
+
+* Create Dashboard from an Analysis.
 * Share dashboard so it can be seen by end users.
 
 With enterprise edition we can define groups of users, and share dataset, visual and dashboard with group or individual user.
 
-The dataset can be shared between users so they can develop their own analysis. Visualizations can also be shared during development, then the readonly dashboard is shared for end users.
+The dataset can be shared between developers so they can develop their own analysis. Visualizations can also be shared during development, then the readonly dashboard is shared to end users.
 
 To get input data for a dashboard we can define parameters. Parameters can also be used for exchanging context between sheets.
 
@@ -222,10 +227,10 @@ QuickSight can generate smart queries that uses only required tables rather than
 ### Some how to
 
 * Invite user using the right top menu (human icon), and Manage QuickSight, then invite people by email. Create Group, and then add users. The 3 letters to search really need to be the first 3 letters.
-* Once data are in SPICE, they need to be refreshed to get the last records.
+* Once data are in SPICE, they need to be refreshed from the data source to get the last records updates. A refresh can be scheduled.
 * Add trend and add X axis variable coming from the dataset and Value for Y.
 * To add a widget to filter the data, use filter, select the column and add it to the current sheet (contextual menu)
-* Add a transition from a sheet by passing the value of the selected elements.
+* To add a transition from a sheet to another by passing the value of the selected elements.
 
 ### Deeper Dive
 

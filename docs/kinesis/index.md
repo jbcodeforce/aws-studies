@@ -1,8 +1,8 @@
 # Kinesis services
 
-Designed to process real-time data. 
+Designed to process real-time streaming data. 
 
- ![kin](./images/kinesis.png)
+ ![kin](./diagrams/kinesis.drawio.svg)
 
 Three main different components are: 
 
@@ -10,18 +10,24 @@ Three main different components are:
 * **Kinesis Analytics**: perform real-time analytics on streams using SQL. This Apache Flink as managed service.
 * **Kinesis Firehose**: load streams into S3, Redshift, ElasticSearch. No administration, auto scaling, serverless.
 
-## Data Streams
+## [Kinesis Data Streams](https://aws.amazon.com/kinesis/data-analytics/)
 
-Distributed data stream into Shards for parallel processing. Producer sends message with `Partition Key` and a throughput of 1 Mb/s or 1000 msg /s per Shard. A sequence number is added to the message to note where the message was in the Shard. 
+It is a distributed data stream into Shards for parallel processing. 
 
-* Retention from 1 to 365 days
-* Replay the messages
+![](./diagrams/kinesis-data-streams.drawio.png)
+
+/it uses a public end point and applications can authenticate using IAM role. Kinesis Data Streams is using a throughput provisining model, a shard can inject 1 Mb/s or 1000 msg /s with an egress of 2Mb/s. Adding shards help to scale the throughput. A single shard supports up to 5 messages per second, so a unique consumer gets records every 200ms. Adding more consumers on the same shard, the propagation delay increases and throughput per consumer decreases. With 5 consumers, each receives 400kB max every second.
+
+Producer sends message with `Partition Key`. A sequence number is added to the message to note where the message is in the Shard. 
+
+* Retention from 1 to 365 days.
+* Capable to replay the messages.
 * Immutable records, not deleted by applications.
 * Message in a shard, can share partition key, and keep ordering.
 * Producer can use SDK, or Kinesis Producer Library (KPL) or being a Kinesis agent.
-* Consumer may use SDK and Kinesis Client Library (KCL), or being one of the managed services like: Lambda, Kinesis Data Firehose, Kinesis Data Analytics
+* Consumer may use SDK and Kinesis Client Library (KCL), or being one of the managed services like: Lambda, Kinesis Data Firehose, Kinesis Data Analytics.
 * For consuming side, each Shard gets 2MB/s out.
-* Use enhanced fan-out if we have multiple consumers retrieving data from a stream in parallel. This throughput automatically scales with the number of shards in a stream.
+* It uses enhanced fan-out if we have multiple consumers retrieving data from a stream in parallel. This throughput automatically scales with the number of shards in a stream.
 * Pricing is per Shard provisioned per hour.
 * The capacity limits of a Kinesis data stream are defined by the number of shards within the data stream. The limits can be exceeded by either data throughput or the number of reading data calls. Each shard allows for 1 MB/s incoming data and 2 MB/s outgoing data. You should increase the number of shards within your data stream to provide enough capacity.
 
@@ -29,7 +35,31 @@ There is an On-demand mode, pay as you go, with a default capacity of 4MB/s or 4
 
 Captured Metrics are: # of incoming/outgoing bytes, # incoming/outgoing records, Write / read provisioned throughput exceeded, and iterator age ms.
 
+### Deployment
+
+Using CDK, see example in [cdk/kinesis](https://github.com/jbcodeforce/big-data-tenant-analytics/tree/main/cdk/kinesis), but can be summarized as:
+
+```python
+from aws_cdk import (
+    aws_kinesis as kinesis
+)
+
+kinesis.Stream(self, "SaaSdemoStream",
+    stream_name="bg-jobs",
+    shard_count=1,
+    retention_period=Duration.hours(24)
+)
+```
+
+Using CLI:
+
+```sh
+aws kinesis create-stream --stream-name ExampleInputStream --shard-count 1 --region us-west-2 --profile adminuser
+```
+
 ### Producer
+
+Producer applications are done using Kinesis Producer Library (KPL) and they can batch events, and perform retries. Internally KPL uses queue to bufferize messages. 
 
 #### AWS CLI
 
@@ -65,5 +95,36 @@ As a managed services it also support auto scaling.
 
 IAM role need to be referenced to write to S3.
 
-## Stream analytics
+## [Kinesis Data Analytics](https://aws.amazon.com/kinesis/data-analytics/)
+
+This is a managed service to transform and analyze streaming data in real time using Apache Flink, an open-source framework and engine for processing data streams. It can consume records from different source, and in this demonstration we use Kinesis Data Streams.
+
+![](https://d1.awsstatic.com/architecture-diagrams/Product-Page-Diagram_Amazon-Kinesis-Data-Analytics_HIW.82e3aa53a5c87db03c766218b3d51f1a110c60eb.png)
+
+The underlying architecture consists of a **Job Manager** and n **Task Managers**. 
+
+* The **JobManager** controls the execution of a single application. It receives an application for execution and builds a Task Execution Graph from the defined Job Graph. It manages job submission and the job lifecycle then allocates work to Task Managers
+* The **Resource Manager** manages Task Slots and leverages underlying orchestrator, like Kubernetes or Yarn.
+* A **Task slot** is the unit of work executed on CPU.
+* The **Task Managers** execute the actual stream processing logic. There are multiple task managers running in a cluster. 
+
+The number of slots limits the number of tasks a TaskManager can execute. After it has been started, a TaskManager registers its slots to the ResourceManager
+
+![](./diagrams/flink-arch.drawio.svg)
+
+
+### When to choose what
+
+As Apache Flink is an open-source project, it is possible to deploy it in a Kubernetes cluster, using Flink operator. This will bring you with the most flexible solution as you can select the underlying EC2 instances needed, to optimize your cost. Also you will have fine-grained control over cluster settings, debugging tools and monitoring.
+
+While Kinesis Data Analytics helps you to focus on the application logic, which is not simple programming experience, as stateful processing is challenginf, there is no management of infrastructure, monitoring, auto scaling and high availability integrated in the service.
+
+In addition to the AWS integrations, the Kinesis Data Analytics libraries include more than 10 Apache Flink connectors and the ability to build custom integrations. 
+
+
+### Considerations
+
+When connecting to Kinesis Data Streams, we need to consider the number of shards and the constraint on the throughput to desing the Flink application to avoid getting throttled. As introduced previously, with one Flink Application, we may need to pause around 200ms before doing the next GetRecords.
+
+### Deployment Flink App to Kinesis Data Analytics
 
