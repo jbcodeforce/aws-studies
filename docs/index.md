@@ -1,7 +1,7 @@
 # Amazon Web Service Studies
 
 !!! Info
-    Updated 12/20/2022
+    Updated 12/26/2022
 
 * Created in 2002, and launched as AWS in 2004 with S3, SQS as first services offering.
 

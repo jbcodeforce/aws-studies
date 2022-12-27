@@ -1,18 +1,19 @@
 # Major infrastructure services
 
-The AWS account has default quotas, formerly referred to as limits, for each AWS service. Unless otherwise noted, each quota is Region specific. We can request increases for some quotas, and other quotas cannot be increased. Each EC2 instance can have a variance of the number of vCPUs, depending on its type and configuration, so it's always wise to calculate the vCPU needs to make sure we are not going to hit quotas easily. Service Quotas is an AWS service that helps we manage our quotas for over 100 AWS services from one location. Along with looking up the quota values, we can also request a quota increase from the Service Quotas console,
+!!! Info
+    Updated 12/26/2022
 
 ## Amazon Elastic Compute Cloud - EC2 components
 
 * EC2 is a renting machine.
-* Amazon EC2 instances are a combination of virtual processors (vCPUs), memory, network, and, in some cases, instance storage and graphics processing units (GPUs).
+* Amazon EC2 instances are a combination of virtual processors (vCPUs), memory, network, graphics processing units (GPUs), and, in some cases, instance storage.
 * Only size for what we plan to use.
 * Storing data on virtual drives: [EBS](./storage/#amazon-elastic-block-storage-ebs).
 * Distribute load across machines using [ELB](#elastic-load-balancers).
 * Auto scale the service via group: [ASG](#auto-scaling-group-asg).
 
 EC2 can have MacOS, Linux or Windows OS.
-Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within our region to get what AMI could be installed.
+Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon Linux 2 for linux base image. See `AMI Catalog` within the selected region to get what AMI could be used.
 
  ![EC2 instance](./images/EC2-instance.png)
 
@@ -21,7 +22,7 @@ Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon L
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
 The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 and HTTP on port 80.
-Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. The `.pem` file needs to be restricted with `chmod 0400`
+Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. On te client side, the downloaded `.pem` file needs to be restricted with `chmod 0400`.
 
 We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
 
@@ -29,16 +30,16 @@ See [this EC2 playground for demonstrating the deployment of a HTTP server.](../
 
 ### EC2 life cycle
 
-1. When we launch an instance, it enters in the `pending` state. Billing is not started.
-1. During rebooting, instance remains on the same host computer, and maintains its public and private IP address, in addition to any data on its instance store.
-1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP address and private IP address of the machine. Storage for any Amazon EBS volumes is still charged.
+1. When we launch an instance, it enters in the `pending` state. Billing is started when in `running` state.
+1. During rebooting, instance remains on the same host computer, and maintains its public and private IP addresses, in addition to any data on its instance store.
+1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP and private IP addresses of the machine. Storage for any Amazon EBS volumes is still charged.
 
 When we launch a new EC2 instance, the EC2 service attempts to place the instance in such a way that all of our instances are spread out across underlying hardware to minimize correlated failures. We may use placement groups to influence the placement of a group of interdependent instances to meet the needs of our workload.
 
 ### EC2 types
 
 EC2 has a section to add `User data`, which could be used to define a bash script to install dependent software
- and to start some services at boot time.
+ and to start some services at boot time (like httpd).
 
 EC2 **instance types** like t2.micro or c5.2xlarge define CPU, memory... (see [ec2instances.info](https://www.ec2instances.info) or the reference [AWS ec2/instance-types](https://aws.amazon.com/ec2/instance-types/)). The first letter defines the class as:
 
@@ -60,26 +61,26 @@ vCPU represents thread running on core CPU. We can optimize vCPU allocation on t
 ### Launch types
 
 * **On demand**: short workload, predictable pricing, pay per second after first minute. No long term commitment.
-* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. We can buy and sell it in the marketplace.
+* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. Upfront cost and pay monthly. We can buy and sell it in the marketplace.
 * **Convertible reserved** instance for changing resource capacity over time.
 * **Scheduled reserved** instance for job based workload.
-* **Dedicated hosts** to book entire physical server and control instance placement. # years. **BYOL**. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use for example in the case where we deploy a database technology on an EC2 instance and the vendor license bills we based on the physical cores. Baremetal is part of this option.
-* **Capacity reservations**: reserve capacity in a specific AZ for any duration
+* **Dedicated hosts** to book entire physical server and control instance placement. # years. **BYOL**. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use it when we deploy a database technology on an EC2 instance and the vendor license bills based on the physical cores. Baremetal is part of this option.
+* **Capacity reservations**: reserve capacity in a specific AZ for any duration.
 * **Spot instance** for very short - 90% discount on on-demand - used for work resilient to failure like batch job, data analysis, image processing, stateless, containerized...
 
     * Define a **max spot price** and get the instance while the current spot price < max price wanting to pay. The hourly spot price varies based on offer and capacity. 
-    * if the current spot price > max, then instance will be stopped in a 2 minutes.
-    * with **spot block** we can define a time frame without interruptions from 1 to 6 hours.
-    * The expected state is defined in a 'spot request' which can be cancelled. One time or persistent request types are supported. Cancel a spot request does not terminate instance, but need to be the first thing to do and then terminate the instances.
+    * If the current spot price > max, then instance will be stopped in a 2 minutes.
+    * With **spot block** we can define a time frame without interruptions from 1 to 6 hours.
+    * The expected state is defined in a 'spot request' which can be cancelled. One time or persistent request types are supported. Cancel a spot request does not terminate instance, but need to be the first thing to do to avoid cost.
     * **Spot fleets** allow to automatically request spot instance and on-demand instance with the lowest price to meet the target capacity within the price constraints.
 
-Use **EC2 launch templates** to automate instance launches, to simplify permission policies, and to enforce best practices across the organization. (Look very similar to docker image)
+Use **EC2 launch templates** to automate instance launches, to simplify permission policies, and to enforce best practices across the organization. Look very similar to docker image.
 
 ### Metadata
 
 When in a EC2 instance shell, we can get access to EC2 metadata by going to the URL: **http://169.254.169.254/latest/meta-data/**. 
 
-We can also quickly review scripts used to bootstrap the instances at runtime using **http://169.254.169.254/latest/user-data/**
+We can also review scripts used to bootstrap the instances at runtime using **http://169.254.169.254/latest/user-data/**
 
 ### AMI
 
@@ -115,7 +116,7 @@ The following diagram illustrates some fault tolerance principles offered by the
 * Elastic Load Balancer balances traffic among servers in multiple AZs and [DNS](./route53.md) will route traffic to the good server.
 * Elastic IP addresses are static and defined at the AWS account level. New EC2 instance can be reallocated to Elastic IP @, but they are mapped by internet gateway to the private address of the EC2. The service may be down until new EC2 instace is restarted.
 * ELB ensures higher fault tolerance for EC2s, containers, lambdas, IP addresses  and physical servers.
-* Application LB load balance at the HTTP, HTTPS level, and within a VPC based on the content of the request.
+* Application LB load balances at the HTTP, HTTPS level, and within a VPC based on the content of the request.
 * NLB is for TCP, UDP, TLS routing and load balancing.  
 
 ### Placement groups
@@ -125,9 +126,9 @@ Define strategy to place EC2 instances:
 * **Cluster**: groups instances into a low-latency group in a single Availability Zone.
     * Highest performance while talking to each other as when performing big data analysis.
 * **Spread**: groups across underlying hardware (max 7 instances per group per AZ).
-    * Reduced risk is simultaneous failure.
+    * Reduced risk in case of simultaneous failure.
     * EC2 Instances are on different physical hardware.
-    * Application that needs to maximize high availability.
+    * For application that needs to maximize high availability.
     * Critical Applications where each instance must be isolated from failure from each other.
 * **Partition**: spreads instances across many different partitions (which rely on different sets of racks) within an AZ.
     * Partition is a set of racks.
@@ -137,26 +138,31 @@ Define strategy to place EC2 instances:
     * EC2 instances get access to the partition information as metadata.
     * HDFS, HBase, Cassandra, Kafka
 
-Access from network and policies menu, define the group with expected strategy, and then it is used when creating the EC2 instance by adding the instance to a placement group.
+Access from network and policies menu, define the group with expected strategy, and then use it when creating the EC2 instance by adding the instance to a placement group.
 
 ### EC2 Instance Store
 
 * When disk performance is a strong requirement, use EC2 Instance Store. Millions IOPS read or even write.
-* It loses data when stopped
+* It loses data when stopped.
 * Good use for buffer, cache, scratch data, or distributed systems with their own replication like Kafka.
 * Backup and replication are the user's responsability
+
+## Quota
+
+Service Quotas is an AWS service that helps manage our quotas for over 100 AWS services from one location.
+The AWS account has default quotas, formerly referred as limits, defined for each AWS service. Unless otherwise noted, each quota is Region specific. We can request increases for some quotas, and other quotas cannot be increased. Each EC2 instance can have a variance of the number of vCPUs, depending on its type and configuration, so it's always wise to calculate the vCPU needs to make sure we are not going to hit quotas too early. Along with looking up the quota values, we can also request a quota increase from the Service Quotas console.
 
 ## Security group
 
 Define inbound and outbound security rules.  It is like a virtual firewall inside an EC2 instance. SGs regulate access to ports, authorized IP ranges IPv4 and IPv6, control inbound and outbound network. By default all inbound traffic is denied and outbound authorized.
 
 * They contain `allow rules` only.
-* Can be attached to multiple EC2 instances and to load balancers
-* Locked down to a region / VPC combination
-* Live outside of the EC2
-* Define one separate security group for SSH access where we can authorize only one IP@
-* Connect refused is an application error or the app is not launched - Spinning is an access rules error.
-* Instances with the same security group can access each other
+* Can be attached to multiple EC2 instances and to load balancers.
+* Locked down to a region / VPC combination.
+* Live outside of the EC2.
+* Define one separate security group for SSH access where we can authorize only one IP@.
+* Connect refused is an application error or the app is not launched - Spinning wheel in the web browser is an access rules error.
+* Instances with the same security group can access each other.
 * Security group can reference other security groups, on IP address using CIDR in the form 192.45.23.12/32 but not any DNS server.
 
  ![2](./images/security-group.png)
@@ -165,11 +171,11 @@ Define inbound and outbound security rules.  It is like a virtual firewall insid
 
 Important Ports:
 
-* 22 for SSH (Secure Shell) and SFTP
-* 21 for FTP
-* 80 for HTTP
-* 443 for https
-* 3389: Remote desktop protocol
+* 22 for SSH (Secure Shell) and SFTP.
+* 21 for FTP.
+* 80 for HTTP.
+* 443 for https.
+* 3389: Remote desktop protocol.
 
 
 ## Auto Scaling Group (ASG)
@@ -181,13 +187,13 @@ Automatically Register new instances to a load balancer.
 
 [ASG](https://us-west-1.console.aws.amazon.com/ec2autoscaling/home?region=us-west-1#/) has the following attributes:
 
-* AMI + Instance Type with EC2 User Data (Can use template to define instances)
-* EBS Volumes
-* Security Groups
-* SSH Key Pair
-* Min Size / Max Size / Initial Capacity to control number of instances 
+* AMI + Instance Type with EC2 User Data (Can use template to define instances).
+* EBS Volumes.
+* Security Groups.
+* SSH Key Pair.
+* Min Size / Max Size / Initial Capacity to control number of instances .
 * Network + Subnets Information to specify where to run the EC2 instances.
-* Load Balancer Information, with target groups to be used as a grouping of the newly created instances
+* Load Balancer Information, with target groups to be used as a grouping mechanism of the newly created instances.
 * Scaling Policies help to define rules to manage instance life cycle, based for example on CPU usage or network bandwidth used. 
 
  ![4](./images/ASG-1.png)
@@ -203,9 +209,9 @@ Automatically Register new instances to a load balancer.
 * Target tracking scaling: we want average CPU to be under 40%.
 * Scheduled action: increase capacity after 5 PM.
 * Predictive scaling by looking at historical behavior to build forecast rules.
-* ASG tries to balance the number of instances across AZs by default, and then delete based on the age of the launch configuration.
+* ASG tries to balance the number of instances across AZs by default, and then deletes based on the age of the launch configuration.
 * The capacity of our ASG cannot go over the maximum capacity we have allocated during scale out events.
-* Cool down period is set to 5 mn and will not change the number of instance until this period.
+* Cool down period is set to 5 mn and will not change the number of instance until this period is reached.
 * When an ALB validates an health check issue, ASG terminates the EC2 instance.
 
 ## [CloudFront](https://aws.amazon.com/cloudfront/)
@@ -222,20 +228,21 @@ It is possible to control with geographic restriction using whitelist or blackli
 
 It also supports the concept of signed URL. When we want to distribute content to different user groups over the world, attach a policy with:
 
-* URL expiration
-* IP range to access the data from
-* Trusted signers (which AWS accounts can create signed URLs)
+* URL expiration.
+* IP range to access the data from.
+* Trusted signers (which AWS accounts can create signed URLs).
 * How long should the URL be valid for?
-* Shared content (movie, music): make it short (a few minutes)
-* Private content (private to the user): we can make it last for years
-* Signed URL = access to individual files (one signed URL per file)
-* Signed Cookies = access to multiple files (one signed cookie for many files)
+* Shared content (movie, music): make it short (a few minutes).
+* Private content (private to the user): we can make it last for years.
+* Signed URL = access to individual files (one signed URL per file).
+* Signed Cookies = access to multiple files (one signed cookie for many files).
 
 When the backend content is modified, CloudFront will not get it until its TTL has expired. But we can force an entire cache refresh with CloudFront Invalidation.
 
 CloudFront supports HTTP/RTMP protocol based requests only.
 
 * [FAQs](https://aws.amazon.com/cloudfront/faqs/)
+* [Pricing](https://aws.amazon.com/cloudfront/pricing)
 
 ## [AWS Outposts](https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html)
 
@@ -248,17 +255,17 @@ An Outpost is a pool of AWS compute and storage capacity deployed at a customer 
 ![](https://docs.aws.amazon.com/images/outposts/latest/userguide/images/outpost-networking-components.png)
 
 
-See [pricing for rack](https://aws.amazon.com/outposts/rack/pricing/)
+See [pricing for Outpost rack](https://aws.amazon.com/outposts/rack/pricing/)
 
 ## High Performance Computing (HCP)
 
-The services that helps to desing HPC solutions are:
+The services that helps to design HPC solutions are:
 
 * For data management and transfer:
 
-    * [Direct Connect](./networking.md/#direct-connect): move GB of data over private secure network
-    * [Snowball and & snowmobile]() at PB data level
-    * [DataSync]() move large dataset between on-premises and S3, FSx for Windows, EFS
+    * [Direct Connect](./networking/#direct-connect): moves GB of data over private secure network.
+    * [Snowball and & snowmobile](.//storage/#snowball) at PB data level.
+    * [DataSync](./storage/#datasync) moves large dataset between on-premises and S3, FSx for Windows, EFS.
 
 * Computation and network:
 
@@ -273,12 +280,12 @@ The services that helps to desing HPC solutions are:
 * Storage:
 
     * Instance storage with EBS scale to 256k IOPS with io2 Block Express or instance store to scale to millions of IOPS.
-    * Metwork storage: S3, EFS and FSx for Lustre
+    * Metwork storage: S3, EFS and FSx for Lustre.
 
-* Automate and orchestrate
+* Automate and orchestrate:
 
     * AWS Batch to support multi-node parallel jobs. Easily schedule jobs and launch EC2 instance accordingly.
-    * ParallelCluster: open source project for cluster management, using infrastructure as code, and EFA
+    * ParallelCluster: open source project for cluster management, using infrastructure as code, and EFA.
 
 ## Simple Email Service - SES
 
@@ -292,7 +299,7 @@ Marketing communication services, SMS, email, push, voice, and in-app messaging.
 
 Ability to control AWS infrastructure like EC2, with an unified user's experience. It includes a set of services like Session Manager, Patch Manager, Run Commands, or define maintenance windows.  
 
-Automation is a why to simplfy maintenance and deployment tasks of EC2 instances, like automating runbooks.
+Automation is the motivation to simplify maintenance and deployment tasks of EC2 instances, like automating runbooks.
 
 ## [Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html)
 
@@ -300,7 +307,7 @@ Tool to view and analyze our costs and usage.
 
 ## [Trusted Advisor](https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html)
 
-Trusted Advisor inspects your AWS environment, and then makes recommendations when opportunities exist to save money, improve system availability and performance, or help close security gaps.
+Trusted Advisor inspects your AWS environment, and then makes recommendations when opportunities exist to save money, to improve system availability and performance, or to help close security gaps.
 
 ## [AWS Health](https://docs.aws.amazon.com/health/latest/ug/what-is-aws-health.html)
 

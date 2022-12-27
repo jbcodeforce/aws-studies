@@ -1,3 +1,4 @@
 site/
 **/.venv/
 **/node_modules/
+labs/analytics/kinesis-getting-started/kinesis-s3-policy.json
