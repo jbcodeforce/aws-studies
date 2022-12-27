@@ -59,6 +59,7 @@ When creating EC2 instances, you can only use the following EBS volume types as 
 
 * **gp2 or gp3**: SSD, used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000).
 * **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T. 99.9% durability and 99.999% for io2.
+EBS Provisioned IOPS SSD (io2 Block Express) is the highest-performance SSD volume designed for business-critical latency-sensitive transactional workloads. 
 * **st 1**: HDD. Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing. Up to 16 TiB. 99.9% durability.
 * **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data. 99.9% durability.
 

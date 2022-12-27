@@ -1,5 +1,8 @@
 # Security
 
+!!! Info
+    Updated 12/27/2022
+
 ## Introduction
 
 With the AWS Cloud, managing security and compliance is a [shared responsibility](https://aws.amazon.com/compliance/shared-responsibility-model/) between AWS and the customer:
@@ -17,9 +20,11 @@ Fine-grain identity and access controls combined with continuous monitoring for 
 
 ## Encryption
 
-Encryption is widely available through a lot of services and features on top of the platform. We will be able to develop application that can encrypt data at rest, or in transit as it flows over the network between services. S3 storage or EBS block attached storage. Those services have a single click option to do encryption at rest with keys (using KMS).
+Encryption is widely available through a lot of services and features on top of the platform. We will be able to develop application that can encrypt data at rest, or in transit as it flows over the network between services. S3 storage or EBS block attached storage, have a single click option to do encryption at rest with keys (using KMS).
 
 ![](./images/security/EBS-encryption-rest.png)
+
+**Figure 1: Encryption settings for EBS volume, using KMS**
 
 The managed service, [AWS Key Management Service](https://aws.amazon.com/kms/), helps centrally managing our own keys. It is integrated into a lot of services and the keys never leave AWS [FIPS 140-validated](https://en.wikipedia.org/wiki/FIPS_140-2) Hardware Security Modules unencrypted. User controls access and usage of the keys.
 
@@ -27,13 +32,15 @@ With client side encryption, the data are encrypted by the client, and never dec
 
 ### [KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
 
-Managed service to help us create and control the cryptographic keys that are used to protect our data. 
+Managed service to help us create and control the cryptographic keys that are used to protect our data. It supports AWS, customer or custom keys:
 
 ![](./images/security/kms-1.png)
 
-* Integrated with IAM and most AWS services (EBS,S3, RDS, SSM...)
-* Audit KMS Key usage using CloudTrail
-* Two types of KMS Keys
+**Figure 2: KMS & AWS keys**
+
+* Integrated with IAM and most AWS services (EBS,S3, RDS, SSM...).
+* Audit KMS Key usage using CloudTrail.
+* Two types of KMS Keys:
     
     * Symmetric (AES 265 bits) is a single key used to encrypt and decrypt data. Must call KMS API to use it.
     * Asymmetrics (RSA, ECC key pairs) - Public key to encrypt and private key to decrypt. Used to encrypt outside of AWS, with no KMS API access.
@@ -43,6 +50,8 @@ Managed service to help us create and control the cryptographic keys that are us
 * KMS Key policies help to control who (users, roles ) can access the KMS keys. Used to do cross account access: the copy of a encrypted snapshot done from origin account to the target account will use this policy to access the key to decrypt the snapshot, and then encrypt the copy with a new private key within the target account.
 
 ![](./images/security/kms-2.png)
+
+**Figure 3: AWS key for S3 encryption, with Key policy**
 
 * To encrypt a local file using a symmetric Key in KMS, we can use the CLI like:
 
@@ -64,9 +73,11 @@ Managed service to help us create and control the cryptographic keys that are us
     cat ExampleFileDecrypted.base64 | base64 --decode > ExampleFileDecrypted.txt
     ```
 
-KMS supports also Multi-Region Keys, where primary key from one region is replicated to other regions. The Key ID stays the same. The idea is to be able to encrypt in one regio and decrypt in another region. A use case will be to encrypt attribute of a DynamoDB Global Table with the Primary key, and let client who has access to the replicated key can decrypt the attribute with lower latency as it is done locally.
+KMS supports also Multi-Region Keys, where primary key from one region is replicated to other regions. The Key ID stays the same. The idea is to be able to encrypt in one region and decrypt in another region. A use case will be to encrypt attribute of a DynamoDB Global Table with the Primary key, and let client who has access to the replicated key can decrypt the attribute with lower latency as it is done locally.
 
 ![](./diagrams/kms-dyn-gt.drawio.png)
+
+**Figure 4: DB table encrypted and replicated with Keys**
 
 The attribute is decrypted only if the client has access to the KMS Key.
 
@@ -80,9 +91,9 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 
 ### Encrypted AMI sharing process
 
-* AMI in source account is encrypted with KMS Key form source account
-* AMI image should authorize the Launch permission for the target account
-* Define IAM role for the target account to use, and share KMS key accesses (DescribeKey, ReEncrypted, CreateGrant, Decrypt) via the role
+* AMI in source account is encrypted with KMS Key from source account.
+* AMI image should authorize the Launch permission for the target account.
+* Define IAM role for the target account to use, and share KMS key accesses (DescribeKey, ReEncrypted, CreateGrant, Decrypt) via the role.
 * When launching EC2 instance from this AMI in the target account, it is possible to use a new, local KMS key to re-encrypt the volumes.
 
 ## Organizations
@@ -91,7 +102,9 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 
 ### Concepts
 
-![](./diagrams/organization.drawio.png)
+![](./diagrams/organization.drawio.png){ width=600 }
+
+**Figure 5: Organization concepts**
 
 * The main account is the management account where other added accounts are members.
 * An organization is a hierarchical structure (a tree) with a root and Organization Units (OU), and AWS accounts.
@@ -99,6 +112,8 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * Organization unit (OU) contains AWS Accounts or other OUs. It can have only one parent.
 
 ![](./images/security/organization.png)
+
+**Figure 6: Organization Services - manage accounts**
 
 * OU can be per team, per line of business.
 * AWS Organizations uses [IAM service-linked roles](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html#orgs_integrate_services-using_slrs) to enable trusted services to perform tasks on your behalf in your organization's member accounts.
@@ -116,6 +131,8 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * Can define service control policies (SCP) as IAM policies applied to OU or Accounts to restric Users and Roles. Explicit allow. The root OU will have `FullAWSAccess` SCP. 
 
 ![](./images/security/org-policies.png)
+
+**Figure 7: Organization policies**
 
 ### Deeper Dive
 
@@ -143,6 +160,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * AWS Account has a unique ID but can be set with an alias. The console URL includes the user alias.
 
 * Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
+* Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**.
 * It must define an ID, a version and statement(s):
 
     ```json
@@ -164,9 +182,9 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 
     ![](./images/security/aws-policy.png)
 
-* Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**.
+
 * Use the `Least privilege permission` approach: Give users the minimal amount of permissions they need to do their job.
-* As soon as there is a deny in the chain of policy evaluation, then allows will not work. See the diagram below from [the product documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html).
+* As soon as there is a deny in the chain of policy evaluation, then allows will not work. See the diagram below from [the product documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html) to review the decision flow to allow access to resource:
 
 ![](https://docs.aws.amazon.com/images/IAM/latest/UserGuide/images/PolicyEvaluationHorizontal111621.png)
 
@@ -183,7 +201,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 
 * Multi Factor Authentication is used to verify a human is the real user of a service
  
-    * Always protect root account. 
+    * Always protect root account with MFA. 
     * MFA = password + device we own. 
     * The device could be a universal 2nd factor security key. (ubikey) 
 
@@ -212,21 +230,23 @@ This is also used for EventBridge to access lambda, SNS, SQS, cloudWatch logs, A
 
 Set a permissions boundary to control the maximum permissions a user can have. This is defined at user's or role level, and we define policy for example to authorize the user to do anything on EC2, CloudWatch or S3. 
 
-The effective permission of a user is the join between Organization SCP, Permissions Boundary, and identity based policies.
+The effective permission of a user is the join between Organization SCP, Permissions Boundary, and identity-based policies.
 
 ![](./diagrams/effective-perm.drawio.png)
 
+Identity-based policies are attached to an IAM user, group, or role. These policies let you specify what that identity can do.
+
 This is used to:
 
-* Delegate responsibilities to non-admin within their permission boundaries to create specific resources, like IAM user.
-* Allow developers to self-assign policies and manage their own permissions, while makine sre they can increase their privileges.
+* Delegate responsibilities to non-admin users within their permission boundaries to create specific resources, like IAM user.
+* Allow developers to self-assign policies and manage their own permissions, while making sure they can increase their privileges.
 * Restrict one user.
 
 ### Security tools
 
 * In IAM, use `> Credentials report` to download account based report.
 * In IAM, use `> Users > select one user (aws-jb) and then Access Advisor tab`: 
-Access Advisor shows the services that the selected user can access and when those services were last accessed
+Access Advisor shows the services that the selected user can access and when those services were last accessed.
 * [Amazon GuardDuty](https://aws.amazon.com/guardduty/) is a security tool to continuously monitor your AWS accounts, instances, containers, users, and storage for potential threats.
 
 ### IAM Deeper dive
@@ -236,7 +256,7 @@ Access Advisor shows the services that the selected user can access and when tho
 
 ## [Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html)
 
-Amazon Cognito offers Authentication and Authorization features, it has **User pools** and **Identity pools**. Scalable and highly available, managed service. Allows user to add user registration, sign in, and define access control.
+Amazon Cognito is a managed service which offers Authentication and Authorization features, it has **User pools** and **Identity pools**. It is scalable and highly available. Allows user to add user registration, sign in, and define access control.
 
 * Supports standards based identity providers like OAuth 2.0, SAML, OIDC.
 * **User pools** are user directories that provide sign-up and sign-in options for your app or mobile users. 
@@ -262,11 +282,11 @@ Amazon Cognito offers Authentication and Authorization features, it has **User p
 
 ## [System management parameter store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
 
-Managed services, serverless, it is a secure storage for configuration and secrets. 
+Managed service, serverless, it is a secure storage for configuration and secrets. 
 
 ![](./images/security/ssm-parameter.png)
 
-SSM Parameters Store has built-in version tracking capability. Each time we edit the value of a parameter, SSM Parameter Store creates a new version of the parameter and retains the previous versions.
+SSM Parameter Store has built-in version tracking capability. Each time we edit the value of a parameter, SSM Parameter Store creates a new version of the parameter and retains the previous versions.
 
 It stores data in a hierarchical tree. For example  
 
@@ -276,7 +296,7 @@ aws ssm get-parameters-by-path --path /an-app/dev/
 
 ## [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html)
 
-Keep secret information, with automatic rotation enforced, with integration with RDS, Redshift, DocumentDB. Secrets can be replicated between regions. 
+Keep Secret information, with automatic rotation enforced, with integration with RDS, Redshift, DocumentDB. Secrets can be replicated between regions. 
 
 ## [ACM - Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
 
@@ -291,17 +311,28 @@ Integrated with ELBs, Cloudfront, APIs on API gateway. Cannot use ACM with EC2.
 User to monitor the HTTP(S) requests that are forwarded to your protected (Layer 7) web application resources. 
 It is deployed on ALB, API Gateway, CloudFront, AppSync GraphQL API, Cognito User Pool.
 
-Rules are defined in Wev Access Control List: they can apply to IP@, HTTP headers, body, URI strings, Cross-site Scripting... We can define size constraints, geographic matches, or rate-based rules for DDoS protection.
+Rules are defined in Web Access Control List: they can apply to IP@, HTTP headers, body, URI strings, Cross-site Scripting... We can define size constraints, geographic matches, or rate-based rules for DDoS protection.
+For example we can implement a rule capable of blocking all IPs that have more than 2,000 requests in the last 5 minute interval.
 
-WebACL is regional except for CloudFront.
+WebACL is regional, except for CloudFront.
 
-### [Firewall manager](https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html)
+### Deeper dive
 
-Firewall manager simplifies your administration and maintenance tasks across multiple accounts (across WAS Organizations) and resources for a variety of protections, including AWS WAF, AWS Shield Advanced, Amazon VPC security groups, AWS Network Firewall, and Amazon Route 53 Resolver DNS Firewall. 
+* [Rate-based rule statement](https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-rate-based.html)
+
+## [Firewall manager](https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html)
+
+Firewall manager simplifies your administration and maintenance tasks across multiple accounts (across AWS Organizations) and resources for a variety of protections, including AWS WAF, AWS Shield Advanced, Amazon VPC security groups, AWS Network Firewall, and Amazon Route 53 Resolver DNS Firewall. 
 
 ## [Shield](https://aws.amazon.com/shield/)
 
 To protect against DDoS attack.
+
+All AWS customers benefit from the automatic protections of AWS Shield Standard at no additional charge.
+
+When you use AWS Shield Standard with Amazon CloudFront and Amazon Route 53, you receive comprehensive availability protection against all known infrastructure (Layer 3 and 4) attacks.
+
+For more protection for EC2, ELB, CloudFront, Global Accelerator, Route 53... the advanced otion supports  network and transport layer protections with near real-time visibility into attacks and 24/7 access to Shield Response Team.
 
 ## [GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
 
@@ -325,7 +356,7 @@ By integrating with Amazon EventBridge Events, GuardDuty alerts are actionable, 
 
 ## [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html)
 
-vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure.
+Vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure. Includes EC2 instance scan.
 
 ## [Amazon Macie](https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html)
 
@@ -364,7 +395,15 @@ produces reports specific to auditors for PCI compliance, GDPR, and more.
 
 ## [AWS Security Hub](https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html)
 
+AWS Security Hub is a Cloud Security Posture Management service that performs security best practice checks, aggregates alerts, and enables automated remediation.
+
 AWS Security Hub is a single place to view all your security alerts from services like Amazon GuardDuty, Amazon Inspector, Amazon Macie, and AWS Firewall Manager. It is not used for producing audit reports.
+
+## [AWS Control Tower](https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html)
+
+AWS Control Tower orchestration extends the capabilities of AWS Organizations to set up and govern multi-account environment. It leverages SCPs for preventative guardrails and AWS Config for detective guardrails.
+
+No additional charge exists for using AWS Control Tower. You only pay for the AWS services enabled by AWS Control Tower, and the services you use in your landing zone.
 
 ## Security FAQ
 
@@ -375,7 +414,7 @@ AWS Security Hub is a single place to view all your security alerts from service
     IAM can integrate with your existing directory where you can map IAM groups to directory group membership.
 
 ???- "Running intrusion/penetration testing and vulnerability scan"
-    You can run any of those tests on your own workloads and the following services:
+    You can run any of those tests on your own workloads and for the following services:
     
     * Amazon EC2 instances
     * NAT Gateways
@@ -391,6 +430,8 @@ AWS Security Hub is a single place to view all your security alerts from service
 
     You need to sign a "Seek approval" document so AWS can understand what you are doing and is not searching for malicious activities on your account or triggers security alarms. To integrate Penetration tests in your CI/CD [Amazon Inspector](https://aws.amazon.com/inspector) is an automated vulnerability management service that continually scans AWS workloads for software vulnerabilities and unintended network exposure.
 
+???- "How to ensure RDS database can only be accessed using profile credentials specific to EC2 instance?"
+    IAM has [database authentication capabilities](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html) that would allow an RDS database to only be accessed using the profile credentials specific to your EC2 instances.
 ???- "Specifics business oriented accreditations"
     The workload is certified by your 3nd party auditor. AWS provides the accreditation doc for infrastructure and hosting operations. You have full visibility into the logical infrastructure via API calls, so your auditors can get information on items like security group (firewall) rules or RDS configuration via API calls, or account access information through our API auditing service, `CloudTrail`.
 
@@ -413,13 +454,13 @@ AWS Security Hub is a single place to view all your security alerts from service
 
 ### Blocking IP address
 
-* At the VPC level, the best approach is to use Network ACL, when EC2 is expose via public IP address, as illustrasted in the diagram below:
+* At the VPC level, the best approach is to use Network ACL, when EC2 is exposed via public IP address, as illustrasted in the diagram below:
 
     ![](./diagrams/security/sa-sol-1.drawio.png)
 
     Use a denial rule in NACL on specific IP address. Security group inbound rule specifies allowed only IP range, which should work, but then it blocks larger set of clients, so it will not be a solution for global application. Running a firewall on the EC2 will help, but it is more complex to administer.  
 
-* If an ALB is in the middle, then security group will specify the SG of the ALB, and still using NACL. 
+* If an ALB is in the middle, then the EC2 security group will specify the SG of the ALB, and we are still using NACL. 
 
     ![](./diagrams/security/sa-sol-2.drawio.png)
 
