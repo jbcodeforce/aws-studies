@@ -95,6 +95,9 @@ Record and evaluate configurations against compliance rules of your AWS resource
 
 AWS Config allows you to remediate noncompliant resources that are evaluated by AWS Config Rules. AWS Config applies remediation using AWS Systems Manager Automation documents. This is done at the Action level of a config rule.
 
+AWS Config provides AWS-managed rules, which are predefined, customizable rules that AWS Config uses to evaluate whether the AWS resources comply with common best practices. We can leverage an AWS Config managed rule to check if any ACM certificates in our account are marked for expiration within the specified number of days.
+
+
 ## Putting them together
 
 If we define an Elastic Load Balancer then, 

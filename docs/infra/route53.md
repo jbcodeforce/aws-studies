@@ -1,7 +1,7 @@
 # [Route 53](https://aws.amazon.com/route53/features/)
 
-A highly available, scalable, fully manager, and authoritative (we can update DNS records) DNS. It is also a Domain Registra. 
-A lot of routing types to respond to DNS query by taking into account % of traffic, latency, healthchecks...
+A highly available, scalable, fully managed, and authoritative (we can update DNS records) DNS. It is also a Domain Registra. 
+Supports a lot of routing types to respond to DNS query by taking into account % of traffic, latency, healthchecks...
 
 It uses the concept of `hosted zone` which is a "container" that holds information about how you want to route traffic for a domain or subdomain. The zone can be public (internet facing) or private (inside VPC). Need a DNS domain.
 
@@ -9,7 +9,7 @@ A domain is at least 12$ a year and Route 53 fees is $0.5 per month per hosted z
 
 ## DNS
 
-DNS is a collection of rules and records which helps clients understand how to reach a server through URLs. Here is a quick figure to summarize the process, which in fact should also have the root server (for the `.com`... resolution) and TLD server (for `amazon` or `google`). The SLD server is the one presented in the figure.
+DNS is a collection of rules and records which helps client apps understand how to reach a server through URLs. Here is a quick figure to summarize the process, which in fact should also have the root server (for the `.com`... resolution) and TLD server (for `amazon` or `google`). The SLD server is the one presented in the figure.
 
  ![7](./images/dns.png)
 
@@ -17,10 +17,10 @@ DNS is a collection of rules and records which helps clients understand how to r
 
 Record defines how to route traffic for a domain. Each record contains:
 
-* domain name
-* record type A (IPv4) or AAAA(IPv6), CNAME, NS
-* value
-* routing policy
+* a Domain name.
+* record type A (IPv4) or AAAA(IPv6), CNAME, NS.
+* value.
+* routing policy/
 * Time to Live (TTL): is set to get the web browser to keep the DNS resolution in cache. High TTL is around 24 hours, low TTL, at 60s, will make more DNS calls. TTL should be set to strike a balance between how long the value should be cached vs how much pressure should go on the DNS. Need to define the TTL for the app depending on the expected deployment model.
 
 A hosted zone is a container that holds information about how we want to route traffic for a domain. Two types are supported: public or private within a VPC.
@@ -58,16 +58,16 @@ echo "<h1>Hello World from $(hostname -f) in AZ $EC2_AVAIL_ZONE </h1>" > /var/ww
 
 * Add at least one ALB to route to instances in an AZ
 * Define a domain name (5$ to 12$ a year)
-* Create a hosted zone in Route 53
-* Define DNS records in Route 53 for each ALB and EC2 IP @ based on a subdomain name, using one of the type as specified in next sections.
+* Create a hosted zone in Route 53.
+* Define DNS records in Route 53 for each ALB and EC2 IP @ based on a subdomain name, using one of the type as specified in next section.
 
 ## Routing policies
 
-It defines how Route 53 responds to DNS queries. It can be used to apply A/B testing, or looking 
+It defines how Route 53 responds to DNS queries. It can be used to apply A/B testing, or looking query.
 
-Eight types:
+Eight routing types:
 
-1. A **simple** routing policy to get an IP @ from a single resource (still can specify multiple IP@ to be returned in the response, and the client will pick one of the address randomly.). There is no health check associated to this record. 
+1. A **simple** routing policy to get an IP @ from a single resource (still can specify multiple IP@ to be returned in the response, and the client will pick one of the address randomly). There is no health check associated to this record. 
 1. The **weighted** routing policy controls the % of the requests that go to specific endpoint. Can do blue-green traffic management. It can also help to split traffic between two regions. It can be associated with Health Checks
 1. The **latency** routing Policy redirects to the server that has the least latency close to the client. Latency is based on traffic between users to AWS Regions.
 1. **Health check** monitors the health and performance of the public resources and assesses DNS failure with automatic failover. We can have HTTP, TCP or HTTPS health checks. We can define from which region to run the health check. They are charged per HC / month. 15 Health checkers exist WW. Send every 30s. Need at least 18% health checkers reporting the endpoint is healthy. HTTP RC code 2xx or 3xx. It is recommended to have one HC per app deployment. It can also monitor latency. To assess private endpoint within a VPC, we need to add a CloudWatch metric and alarm, then create a Health Check to the alarm itself.
