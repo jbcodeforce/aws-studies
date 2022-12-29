@@ -356,7 +356,7 @@ By integrating with Amazon EventBridge Events, GuardDuty alerts are actionable, 
 
 ## [Amazon Inspector](https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html)
 
-Vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure. Includes EC2 instance scan.
+Vulnerability management service that continuously scans your AWS workloads for software vulnerabilities and unintended network exposure. Includes EC2 instance scan and container images in Amazon ECR.
 
 ## [Amazon Macie](https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html)
 

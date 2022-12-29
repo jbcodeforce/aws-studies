@@ -23,6 +23,7 @@ Message has metadata out of the box. After a message is polled by a consumer, it
 ### Fan-out pattern
 
 When we need to send the same message to more than one SQS consumer, we need to combine SNS and SQS: message is sent to the SNS topic and then "fan-out" to multiple SQS queues. It's fully decoupled, no data loss, and you have the ability to add more SQS queues (more applications) over time.
+This is the pattern to use if consumer may be down for a long period: solution based on SNS only will make some messages not processed and lost.
 
 ### Visibility timeout
 

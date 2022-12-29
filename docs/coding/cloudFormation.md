@@ -2,7 +2,7 @@
 
 Create and manage a collection of related AWS resources as code. The template defines AWS resources, called a stack, as Yaml or JSON. Can be uploaded from a S3 bucket or from your local computer. 
 
-The goal is to use Infrastructure as code and repeat infrastructure between regions or accounts. One of the greatest benefits of templates and CloudFormation is the ability to create a set of resources that work together to create an application or solution.
+The goal is to use Infrastructure as code and repeat infrastructure setup between regions or accounts. One of the greatest benefits of templates and CloudFormation is the ability to create a set of resources that work together to create an application or solution.
 
 Stacks are defined in region, but StackSets helps to share stacks between accounts and regions.
 Stack can be created by other stack (nested).

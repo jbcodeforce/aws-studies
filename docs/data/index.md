@@ -57,7 +57,7 @@ AWS Outposts uses the same hardware as in public AWS Regions to bring AWS servic
 * We can create a snapshot from unencrypted DB and then copy it by enabling the encryption for this snapshot. From there, we can create an Encrypted DB
 * For in-flight encryption use AWS TLS root certificates on the client side.
 * To authenticate, traditional user/pwd can be used but also IAM roles to connect to your DB. Enable IAM Database Authentication.
-* Audit Logs are sent to CloudWatch  
+* Audit Logs are sent to CloudWatch.
 
 Customer's responsibilities:
 
@@ -97,13 +97,14 @@ Not expose to public internet. Only visible in the VPC.
 See [Playground RDS](../playground/rds.md)
 
 * [Autonomous Car Ride](https://github.com/jbcodeforce/autonomous-car-ride) uses PostgreSQL in RDS and quarkus app.
+* [SaaS demo - Tenant manager](https://github.com/jbcodeforce/big-data-tenant-analytics)
 
 ### Deeper dive
 
 * [Burst vs Baseline with RDS and GP2](https://aws.amazon.com/blogs/database/understanding-burst-vs-baseline-performance-with-amazon-rds-and-gp2/):
 
-    * dimensions that matter are the size, latency, throughput, and IOPS of the volume.
-    * with gp2, IOPS is a function of the size of the volume: 3x GiB with a min of 100 IOPS and a max of 10k IOPS
+    * Dimensions that matter are the size, latency, throughput, and IOPS of the volume.
+    * With gp2, IOPS is a function of the size of the volume: 3x GiB with a min of 100 IOPS and a max of 10k IOPS
     * Starting with I/O credit at 3000 IOPS, it can be consumed at burst and replinished at the rate of 3 IOPS per GiB per s.
     * With disk above 1TB, the baseline performance > burst perf.
 

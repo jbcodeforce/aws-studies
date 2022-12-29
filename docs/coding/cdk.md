@@ -154,6 +154,26 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 * [Blog introduction EKS blueprint](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/)
 * [AWS CDK EKS blueprint git repo](https://aws-quickstart.github.io/cdk-eks-blueprints/)
 
+## Secrets
+
+## Some how to
+
+???- "Declare RDS postgres with secrets"
+    The following python CDK code declare a Postgresql DB in a private subnet within a VPC created before. The access is public. CDK will create a secret in AWS Secret manager.
+    ```python
+     self.postgres = aws_rds.DatabaseInstance(self, "PostgresqlInstance",
+                                database_name="tenantdb",
+                                engine=aws_rds.DatabaseInstanceEngine.postgres(version=aws_rds.PostgresEngineVersion.VER_14_5),
+                                vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS),
+                                vpc=self.vpc,
+                                port=5432,
+                                removal_policy=RemovalPolicy.DESTROY,
+                                deletion_protection=False,
+                                max_allocated_storage=200,
+                                publicly_accessible=True
+                        )
+    ```
+
 ## Other tools - samples
 
 * [CDK API v2 for Python](https://docs.aws.amazon.com/cdk/api/v2/python/)
@@ -161,3 +181,4 @@ See the [labs/cdk](https://github.com/jbcodeforce/aws-studies/tree/main/labs/cdk
 * [AWS CDK samples in Python](https://github.com/aws-samples/aws-cdk-examples/tree/master/python)
 * [Constructs HUB](https://constructs.dev/)
 * [A Flask app for orders management with DynamoDB as persistence - ECR - CDK](https://github.com/jbcodeforce/python-code/tree/master/aws/dynamoDB)
+* [Big Data SaaS demo](https://github.com/jbcodeforce/big-data-tenant-analytics/tree/main/setup)

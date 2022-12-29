@@ -16,6 +16,7 @@ Metrics are within a VPC so belong to namespaces. They have timestamps and heve 
 ![](./images/cloudwatch-1.png)
 
 * To monitor our EC2 instance memory usage, we need to use a Unified CloudWatch Agent to push memory usage as a custom metric to CW.
+* Alarm is associated with one metric. So, we need one alarm per metric. You can also combine outcome of two alarms using the CloudWatch Composite Alarm.
 
 ### CloudWatch Logs
 

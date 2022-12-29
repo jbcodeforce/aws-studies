@@ -6,7 +6,7 @@ AWS storage services are grouped into three categories – block storage, file s
 
 File storage is ideal when you require centralized access to files that need to be easily shared and managed by multiple host computers. Typically, this storage is mounted onto multiple hosts, and requires file locking and integration with existing file system communication protocols.
 
-File storage systems are often supported with a network attached storage (NAS) server
+File storage systems are often supported with a network attached storage (NAS) servers.
 
 ## Block Storage
 
@@ -14,9 +14,9 @@ Block storage splits files into fixed-size chunks of data called blocks that hav
 
 Outside of the address, no additional metadata is associated with each block.
 
-Block storage in the cloud is analogous to direct-attached storage (DAS) or a storage area network (SAN)
+Block storage in the cloud is analogous to direct-attached storage (DAS) or a storage area network (SAN).
 
-Amazon EC2 instance store provides temporary block-level storage for an instance. The storage is located on disks that are physically attached to the host computer. It is deleted when the EC2 instance is deleted. 
+Amazon EC2 `instance store` provides temporary block-level storage for an instance. The storage is located on disks that are physically attached to the host computer. It is deleted when the EC2 instance is deleted. It has a high throughput and low latency I/O.
 
 Instance store is ideal if you host applications that replicate data to other EC2 instances such as Kafka or Hadoop.
 
@@ -30,7 +30,7 @@ Elastic Block Store Volume is a network drive attached to the EC2 instance. It i
 
 ![](./images/ebs-volume.png)
 
-* Create a EBS while creating the EC2 instance and keep it not deleted on shutdown
+* Create a EBS while creating the EC2 instance and keep it. It is not deleted on EC2 shutdown.
 * EBS volume can be attached to a new EC2 instance, normally there is a 1 to 1 relation between volume and EC2 instance. Except for multi-attach EBS.
 * The maximum amount of storage you can have is 16 TB.
 * Once logged, add a filesystem, mount to a folder and modify boot so the volume is mounted at start time. Which looks like:
@@ -50,7 +50,7 @@ sudo mount  /dev/xvdb /data
 ```
 
 * EBS is already a redundant storage, replicated within an AZ.
-* EC2 instance has a logical volume that can be attached to two or more EBS RAID 0 volumes, where write operations are distributed among them. It is used to increate IOPS without any fault tolerance. If one fails, we lost data. It could be used for database with built-in replication or Kafka.
+* EC2 instance has a logical volume that can be attached to two or more EBS RAID 0 volumes, where write operations are distributed among them. It is used to increate IOPS without any fault tolerance. If one fails, we lost data. It could be used for database with built-in replication mechanism or Kafka node.
 * RAID 1 is for better fault tolerance: a write operation is going to all attached volumes.
 
 ### Volume types
@@ -58,7 +58,7 @@ sudo mount  /dev/xvdb /data
 When creating EC2 instances, you can only use the following EBS volume types as boot volumes: gp2, gp3, io1, io2, and Magnetic (Standard)
 
 * **gp2 or gp3**: SSD, used for most workload up to 16 TB at 16000 IOPS max  (3 IOPS per GB brustable to 3000).
-* **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T. 99.9% durability and 99.999% for io2.
+* **io 1** or **io 2**: critical app with large database workloads. max ratio 50:1 IOPS/GB. Min 100 iops and 4G to 16T. 99.9% durability and even 99.999% for io2.
 EBS Provisioned IOPS SSD (io2 Block Express) is the highest-performance SSD volume designed for business-critical latency-sensitive transactional workloads. 
 * **st 1**: HDD. Streaming workloads requiring consistent, fast throughput at a low price. For Big data, Data warehouses, Log processing. Up to 16 TiB. 99.9% durability.
 * **sc 1**: throughput oriented storage.  500G- 16T, 500MiB/s. Max IOPs at 250. Used for cold HDD, and infrequently accessed data. 99.9% durability.
@@ -70,15 +70,13 @@ Instance store is a volume attached to the instance, used for root folder. It is
 
 ![5](./images/ephemeral.png)
 
-If we need to run a high-performance database that requires an IOPS of 210,000 for its underlying filesystem, we need instance store and DB replication in place.
+If we need to run a high-performance database that requires an IOPS of 210,000 for its underlying filesystem, we need `instance store` and DB replication in place.
 
 ??? - "Example of use cases"
     * App requires up to 400 GB of storage for temporary data that is discarded after usage. The application requires approximately 40,000 random IOPS to perform the work on file. => Prefer a SSD-Backed Storage Optimized (i2) EC2 instances to get more than 365,000 random IOPS. The instance store has no additional cost, compared with the regular hourly cost of the instance. Provisioned IOPS SSD (io1 or io2) EBS volumes can deliver more than the 40,000 IOPS that are required in the scenario. However, this solution is not as cost-effective as an instance store because Amazon EBS adds cost to the hourly instance rate. This solution provides persistence of data beyond the lifecycle of the instance, but persistence is not required in this use case.
-    eifjcbfdjifhvgflfllvrrvijkjvujfjfkrjcjrcuurr
     * A database must provide at least 40 GiB of storage capacity and 1,000 IOPS. The most effective storage is gp2 with 334 GB storage: Baseline I/O performance for General Purpose SSD storage is 3 IOPS for each GiB. For 334 GiB of storage, the baseline performance would be 1,002 IOPS. Additionally, General Purpose SSD storage is more cost-effective than Provisioned IOPS storage.
 
 ### Snapshots
-
 
 EBS snapshots are incremental backups that only save the blocks on the volume that have changed after your most recent snapshot.
 Used to backup disk at any point of time of a volume and stores it on S3.
@@ -86,6 +84,8 @@ Used to backup disk at any point of time of a volume and stores it on S3.
 To move a volume to another AZ or data center we can create a volume from a snapshot.
 
 EBS snapshots can be used to create multiple new volumes, whether they’re in the same Availability Zone or a different one
+
+For a consistent snapshot of an EBS Volume, you need to ensure the application flushes any cached data to disk and no other write I/O is performed by the file system on that volume. Once that is taken care of, you can issue a snapshot command. The snapshot command needs only a couple of seconds to capture a point-in-time. You can start using the volume after this. The actual data backup happens in the background, and you don’t have to wait for the data copy to complete. 
 
 ### EBS Multi-attach
 

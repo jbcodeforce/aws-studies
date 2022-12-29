@@ -36,6 +36,7 @@ nav:
       - Data processing: playground/rt-data-processing.md
       - Analytics on EMR: playground/spark-emr.md
       - ECS: playground/ecs.md
+      - SaaS demo: https://jbcodeforce.github.io/big-data-tenant-analytics/
   - Coding:
       - Practices: coding/index.md
       - CloudFormation: coding/cloudFormation.md
