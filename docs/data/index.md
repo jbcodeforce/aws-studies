@@ -129,15 +129,19 @@ Failover in Aurora is instantaneous. It’s HA (High Availability) native. Use 1
 
  ![6](./images/aws-aurora.png)
 
-It is CQRS at DB level, and read can be global. Use **writer endpoint** for write operation and **reader endpoint** to access read-replicas. It is also possible to design replicas to run on different EC2 server type, and then **custom** endpoints can be defined to access to those servers. This could be interesting for analytic queries.
+It is CQRS at DB level, and read can be global. 
+
+Each connection is handled by a specific DB instance. When you connect to an Aurora cluster, the host name and port that you specify point to an intermediate handler called an **endpoint**. Aurora uses the endpoint mechanism to abstract these connections. 
+
+Use **writer endpoint** for write operation and **reader endpoint** to access read-replicas. Aurora automatically performing load-balancing among all the Aurora Replicas. It is also possible to design replicas to run on different EC2 server type, and then **custom** endpoints can be defined to access to those servers. This could be interesting for analytic queries.
 
 It also supports one write with multiple readers and parallel query, multiple writes and serverless to automate scaling down to zero (No capacity planning needed and pay per second).
 
 ### Other capabilities
 
-With Aurora Global Database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute
+With Aurora Global Database, one primary region is used for write and then up to 5 read only regions with replica lag up to 1 s. Promoting another region (for disaster recovery) has an RTO of < 1 minute.
 
-* **Serverless**: automated database instantiation with auto scaling based on actual usage. This is a good approach for infrequent or impredictable usage. 
+* **Serverless**: Amazon Aurora Serverless is an on-demand, auto-scaling configuration for Amazon Aurora. An Aurora Serverless DB cluster is a DB cluster that automatically starts up, shuts down, and scales up or down its compute capacity based on your application’s needs. Aurora Serverless provides a relatively simple, cost-effective option for infrequent, intermittent, sporadic or unpredictable workloads.
 * Multi-master, to protect on write node failure. Every node supports read and write operations. The client has multiple DB connection definitions for failover.
 * **Global Aurora**: across region replicas, or use Global Database with one primary region for R/W and up to 5 secondary regions (Read-only), with a replica lag < 1s and up to 16 read replicas per secondary region. Promoting a region for DR should lead to a RTO < 1 mn. It takes less than a second to do replicas cross region. 
 * Aurora has integration with ML services like SageMaker and Comprehend. 

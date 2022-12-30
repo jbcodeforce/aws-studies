@@ -1,4 +1,6 @@
-# Lambda
+# [Lambda]()
+
+## Introduction
 
 With AWS Lambda, we can run code without provisioning or managing servers or containers.
 
@@ -26,6 +28,12 @@ A  Lambda function has three primary components – trigger, code, and configura
 * 100 concurrent calls.
 * Code in compressed zip should be under 50MB and 250MB uncompressed.
 * Disk capacity for /tmp is limited to 10GB.
+
+## Security control
+
+AWS Lambda supports resource-based permissions policies for Lambda functions and layers, for example to allow granting usage permission to other AWS accounts on per-resource basis.
+
+Resource-based policies let you grant usage permission to other AWS accounts on a per-resource basis.
 
 ## Hands-on
 

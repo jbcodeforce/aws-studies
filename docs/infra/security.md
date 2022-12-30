@@ -194,6 +194,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * For identity federation, use SAML standard.
 * We can test Policies with the [policy simulator](https://policysim.aws.amazon.com/home/index.jsp?#).
 * We can update a policy attached to a role and it takes immediate effect.
+* Policies are not attached to AWS service, but to Roles.
 * We can attach & detach roles to running EC2, without having to stop and restart it.
 
 
@@ -209,18 +210,33 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 
 ### IAM Roles
 
-* To get AWS services doing work on other service, we need to use IAM Role. Roles are assigned per application, or per EC2 or lambda function...
+* To get AWS services doing work on other service, we need to use IAM Role and policies. Roles are assigned per application, or per EC2 or lambda function... A lot of roles are predefined and can be reused, and we can define new role for any service intance we create.
 
 ![](./images/security/iam-roles.png)
 
-* Maintaining roles is more efficient than maintaining users.  When you assume a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes to 36 hours.
+* Maintaining roles, and policies within a role, is more efficient than maintaining policies for users.  
+*  When a service assumes a role, IAM dynamically provides temporary credentials that expire after a defined period of time, between 15 minutes to 36 hours.
 * IAM role does not create static access key, so no risk to have the key stolen.
+
+#### EC2 example
 
 * When connected to an EC2 machine via ssh or using EC2 Instance Connect tool, we need to set the IAM roles for who can use the EC2. A command like `aws iam list-users` will not work until a role is attached. For example, the `DemoEC2Role` role is defined to let IAM access in read only:
 
 ![](./images/security/aws-iam-role.png)
 
 This role is then defined in the EC2 / Security  > attach IAM role, and now read-only commands with `aws iam` will work.
+
+#### Lamba example
+
+We want to implement a lambda function, that will access S3 bucket to get file and another s3 bucket to put objects. We need a new role as illustrated in following figure, with permission to execute on lambda service, and trace qith XRay + a custom policy.
+
+![](./images/security/s3-role.png)
+
+See the Policies defined in [labs/s3-lambda](https://github.com/jbcodeforce/aws-studies/tree/main/labs/s3-lambda). AWSLambdaBasicExecutionRole is for logs, AWSXRayDaemonWriteAccess for the function to put traces into CloudWatch XRay.
+
+When defining the Lambda function we select the role we defined with the permissions we selected so the function can access other services. The role defines the permissions of our function. 
+
+#### resource-based policy
 
 When user, application or service assumes a role, it takes the permissions assigned to the role, and loose its original permissions. While when we use resource-based policy, the principal doesn't have to give up his permissions. For example if a user in Account A need to scan DynamoDB table in account A and dumpt it in S3 bucket in account B, then it is important to use resource-based policy for S3 bucket, so user does not loose its access to dynamoDB.
 
@@ -319,6 +335,7 @@ WebACL is regional, except for CloudFront.
 ### Deeper dive
 
 * [Rate-based rule statement](https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-rate-based.html)
+* [WAS FAQ](https://aws.amazon.com/waf/faqs/)
 
 ## [Firewall manager](https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html)
 

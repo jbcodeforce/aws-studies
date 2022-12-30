@@ -32,3 +32,14 @@ Serverless data integration and data pipeline to do ETL jobs. You can discover a
 * [AWS Glue samples repository](https://github.com/aws-samples/aws-glue-samples)
 
 ## Lake Formation
+
+AWS Lake Formation is a service that makes it easy to set up a secure data lake in days. A data lake is a centralized, curated, and secured repository that stores all your data, both in its original form and prepared for analysis. 
+
+Amazon S3 forms the storage layer for Lake Formation. 
+
+AWS Lake Formation is integrated with AWS Glue which you can use to create a data catalog that describes available datasets and their appropriate business applications. Lake Formation lets you define policies and control data access with simple “grant and revoke permissions to data” sets at granular levels
+
+### Deeper Dive
+
+* [How it works](https://docs.aws.amazon.com/lake-formation/latest/dg/how-it-works.html)
+* [Building secured data lakes on AWS](https://aws.amazon.com/blogs/big-data/building-securing-and-managing-data-lakes-with-aws-lake-formation/)

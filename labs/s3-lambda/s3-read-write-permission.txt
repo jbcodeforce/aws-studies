@@ -8,14 +8,14 @@ Policy: s3-read-write-permission
             "Action": [
                 "s3:GetObject"
             ],
-            "Resource": "arn:aws:s3:::source_bucket_name/*"
+            "Resource": "arn:aws:s3:::jb-405-robot-in/*"
         },
         {
             "Effect": "Allow",
             "Action": [
                 "s3:PutObject"
             ],
-            "Resource": "arn:aws:s3:::destination_bucket_name/*"
+            "Resource": "arn:aws:s3:::jb-405-robot-out/*"
         }
     ]
 }
