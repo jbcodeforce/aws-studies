@@ -59,6 +59,33 @@ Resource-based policies let you grant usage permission to other AWS accounts on 
 
 * Verify configuration and monitoring.
 
+### Python function with dependencies
+
+It is common to have a function that needs libraries not in the standard python 3.x environment. So the approach is to use a zip file as source of the function with all the dependencies inside it. The process to build such zip can be summarized as:
+
+* `lambda` is the folder with code and future dependencies. It has a `requirements.txt` file to define dependencies.
+* do a `pip install --target ./package -r requirements.txt`
+* zip the content of the package directory in a zip in the lambda folder
+
+    ```sh
+    cd package
+    zip -r ../lambda-layer.zip .
+    ```
+
+* The zip can be used as a layer, so reusable between different lambda function. For that upload the zip to a s3 bucket and create a layer in the Lambda console, referencing the zip in s3 bucket.
+* A layer can be added to any lambda function, then the libraries included in the layer can be imported in the code. Example is the XRay tracing capability in Python.
+* We can also add the lambda-function code in the zip and modify the existing function, something like:
+
+    ```sh
+    zip lambda-layer.zip lambda-handler.py
+    aws lambda update-function-code --function-name  ApigwLambdaCdkStack-SageMakerMapperLambda2EFF1AC9-bERmXFWzvWSC --zip-file fileb://lambda-layer.zip
+    ```
+
+### Other personal implementations
+
+* [S3 to Lambda to S3 for data transformation](https://github.com/jbcodeforce/aws-studies/tree/main/labs/s3-lambda)
+* [Big data SaaS: lambda to call SageMaker](https://github.com/jbcodeforce/big-data-tenant-analytics/tree/main/setup/saas-solution-cdk/lambda)
+
 ## Edge Function
 
 When we need to customize the CDN content, we can use Edge Function to run close to the end users. 
@@ -74,6 +101,10 @@ Can be used for:
 * Bot mitigation at the Edge.
 * Real-time image transformation.
 * User authentication and authorization.
+
+## Layers
+
+Layer helps to define reusable elements to run a function.
 
 ## More reading
 

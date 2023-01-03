@@ -28,6 +28,7 @@ nav:
   - Serverless:
       - Introduction: serverless/index.md
       - Lambda: serverless/lambda.md
+      - API Gateway: serverless/apigtw.md
       - EKS: serverless/eks.md
       - EventBridge: serverless/eventbridge.md
   - Playground: 
