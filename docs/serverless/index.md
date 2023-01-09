@@ -89,7 +89,7 @@ It uses the following constructs:
 * **Cluster**: infrastructure isolation boundary. Tasks run in the cluster. 
 * **Service**: Endpoint to support ELB integration and do mapping to tasks
 
-**Pricing** is based on what you provision, then the task level CPU and memory and the per-second billing with one minute minimum.
+**Pricing** is based on what we provision, then the task level CPU and memory and the per-second billing with one minute minimum.
 
 To share data between containers, Fargate provides 4 GB volumes space per task, and the volume is mounted in the container.
 

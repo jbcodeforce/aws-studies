@@ -59,7 +59,31 @@ aws kinesis create-stream --stream-name ExampleInputStream --shard-count 1 --reg
 
 ### Producer
 
-Producer applications are done using Kinesis Producer Library (KPL) and they can batch events, and perform retries. Internally KPL uses queue to bufferize messages. 
+Producer applications are done using Kinesis Producer Library (KPL) and they can batch events, and perform retries. Internally KPL uses queue to bufferize messages.  Example of python code using boto3 and KPL:
+
+```python
+STREAM_NAME = "companies"
+my_session = boto3.session.Session()
+my_region = my_session.region_name
+kinesis_client = boto3.client('kinesis',region_name=my_region)
+
+def sendCompanyJson():
+    company={"companyID" : "comp_4",
+            "industry": "retail",
+            "revenu": 29080,
+            "employees": 14540,
+            "job30": 4,
+            "job90":13,
+            "monthlyFee": 460.00,
+            "totalFee": 1172.00
+    }
+    companyAsString =json.dumps(company)
+    print(companyAsString)
+    kinesis_client.put_record(
+                StreamName=STREAM_NAME,
+                Data=companyAsString,
+                PartitionKey="partitionkey")
+```
 
 #### AWS CLI
 
@@ -83,6 +107,7 @@ aws kinesis get-shard-iterator --stream-name test --shard-id shardId--00000000 -
 # The returned message gave the next message iterator that should be used in the next call.
 aws kinesis get-records --shard-iterator <the-iterator-id>
 ```
+
 ## Kinesis Data Firehose
 
 Firehose is a fully managed service for delivering real-time streaming data to various supported destinations.
@@ -117,7 +142,7 @@ The number of slots limits the number of tasks a TaskManager can execute. After 
 
 As Apache Flink is an open-source project, it is possible to deploy it in a Kubernetes cluster, using Flink operator. This will bring you with the most flexible solution as you can select the underlying EC2 instances needed, to optimize your cost. Also you will have fine-grained control over cluster settings, debugging tools and monitoring.
 
-While Kinesis Data Analytics helps you to focus on the application logic, which is not simple programming experience, as stateful processing is challenginf, there is no management of infrastructure, monitoring, auto scaling and high availability integrated in the service.
+While Kinesis Data Analytics helps you to focus on the application logic, which is not simple programming experience, as stateful processing is challenging, there is no management of infrastructure, monitoring, auto scaling and high availability integrated in the service.
 
 In addition to the AWS integrations, the Kinesis Data Analytics libraries include more than 10 Apache Flink connectors and the ability to build custom integrations. 
 
@@ -128,3 +153,10 @@ When connecting to Kinesis Data Streams, we need to consider the number of shard
 
 ### Deployment Flink App to Kinesis Data Analytics
 
+ 
+### Deeper dive
+
+* [Amazon Kinesis Data Analytics for SQL Applications Developer Guide](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/examples.html)
+* [Getting started](https://docs.aws.amazon.com/kinesisanalytics/latest/java/get-started-exercise.html#get-started-exercise-7-cli) with example on how to create application with CLI.s
+* [AWS Kafka and DynamoDB for real time fraud detection](https://catalog.us-east-1.prod.workshops.aws/workshops/ad026e95-37fd-4605-a327-b585a53b1300/en-US)
+* [Real Time Streaming with Amazon Kinesis](https://catalog.us-east-1.prod.workshops.aws/workshops/2300137e-f2ac-4eb9-a4ac-3d25026b235f/en-US)

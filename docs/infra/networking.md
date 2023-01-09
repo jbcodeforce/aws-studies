@@ -272,7 +272,7 @@ VPN connection to the Transit gateway with ECMP double the troughtput as it used
 
 ## Elastic Load balancers
 
-Route traffic into the different EC2 instances. Elastic Load Balancing scales our load balancer capacity automatically in response to changes in incoming traffic. It is a managed service!
+Route traffic into the different EC2 instances. Elastic Load Balancing scales our load balancer capacity automatically in response to changes in incoming traffic. It is a managed service! And deployed per region.
 
 It also exposes a single point of access (DNS) to the deployed applications. In case of EC2 failure, it can route to a new instance, transparently and across multiple AZs. It uses health check (/health on the app called the `ping path`) to assess instance availability. It also provides SSL termination. It is used to separate private (internal) to public (external) traffic.
 
@@ -284,14 +284,14 @@ Need to enable availability zone to be able to route traffic between target grou
 
 When We create a load balancer, we must choose whether to make it an internal load balancer or an internet-facing load balancer. 
 
-Internet-facing load balancer have public IP addresses. The DNS name of an internet-facing load balancer is publicly resolvable to the public IP addresses of the nodes. Internal load balancer have only private IP addresses.  Internal load balancers can only route requests from clients with access to the VPC of the load balancer.
+Internet-facing load balancers have public IP addresses. The DNS name of an internet-facing load balancer is publicly resolvable to the public IP addresses of the nodes. Internal load balancers have only private IP addresses.  Internal load balancers can only route requests from clients with access to the VPC of the load balancer.
 
 ![2](./images/elb-scheme.png)
 
 **Figure 23: Public and private ELBs**
 
 For certain needs, it also support stickness cookie to route to the same EC2 instance.
-ELB has security group defined for HTTP and HTTPS traffic coming from the internet, but the EC2 security group defines HTTP traffic to the ELB only.
+ELB has security group defined for HTTP and HTTPS traffic coming from the internet, and the EC2 security group defines HTTP traffic to the ELB only.
 
 Four types of ELB supported:
 

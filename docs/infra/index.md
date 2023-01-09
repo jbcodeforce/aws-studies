@@ -22,7 +22,7 @@ Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon L
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
 The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 and HTTP on port 80.
-Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. On te client side, the downloaded `.pem` file needs to be restricted with `chmod 0400`.
+Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. On the client side, the downloaded `.pem` file needs to be restricted with `chmod 0400`.
 
 We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
 
@@ -58,10 +58,13 @@ Next generation of EC2. It uses new virtualization infrastructure and hypervisor
 
 vCPU represents thread running on core CPU. We can optimize vCPU allocation on the EC2 instance, once created, by updating the launch configuration.
 
+
+There is a vCPU-based On-Demand Instance limit per region which may impact the creation of new instance. Just submit the limit increase form to AWS and retry the failed requests once approved.
+
 ### Launch types
 
 * **On demand**: short workload, predictable pricing, pay per second after first minute. No long term commitment.
-* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. Upfront cost and pay monthly. We can buy and sell it in the marketplace.
+* **Reserved** for one or 3 years term, used for long workloads like database. Get discounted rate from on-demand. Up to 72% discount. Upfront cost and pay monthly. We can buy and sell it in the marketplace. When no more needed, `Terminate` the Reserved instances as soon as possible to avoid getting billed at the on-demand price when it expires.
 * **Convertible reserved** instance for changing resource capacity over time.
 * **Scheduled reserved** instance for job based workload.
 * **Dedicated hosts** to book entire physical server and control instance placement. # years. **BYOL**. (Used to port Microsoft license) Can be on-demand or reserved. Most expensive solution. Use it when we deploy a database technology on an EC2 instance and the vendor license bills based on the physical cores. Baremetal is part of this option.

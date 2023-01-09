@@ -1,5 +1,8 @@
 # Data services
 
+!!! Info
+    Updated 1/8/2023
+
 ## [Relational Database Service - RDS](https://docs.aws.amazon.com/rds/index.html)
 
 Managed service for SQL based database (MariaDB, MySQL, PostgreSQL, SQL server, Oracle, Amazon Aurora), the only things customers do is to define their schema and optimize their queries, AWS manages scaling, HA, backups, software patching, server maintenance...  RDS is used for On Line Transaction Processing (OLTP). As an exception, RDS Custom for Oracle (or MSSQL) allows SRE to access and customize the database server host and operating system.
@@ -215,6 +218,8 @@ Neptune powers graph use cases such as recommendation engines, fraud detection, 
 ## [AppSync](https://docs.aws.amazon.com/appsync/latest/devguide/what-is-appsync.html)
 
 AWS AppSync provides a robust, scalable GraphQL interface for application developers to combine data from multiple sources, including Amazon DynamoDB, AWS Lambda, and HTTP APIs.
+
+AppSync may be combined with DynamoDB to make it easy to build collaborative apps that keep shared data updated in real-time.
 
 ## Amazon QLDB
 
