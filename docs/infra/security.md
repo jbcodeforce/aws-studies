@@ -1,7 +1,7 @@
 # Security
 
 !!! Info
-    Updated 12/27/2022
+    Updated 1/09/2023
 
 ## Introduction
 
@@ -150,7 +150,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * IAM helps us to define users (physical person), groups and roles, and permissions (policies).
 
 ![](./images/security/iam-groups.png)
-
+* Each account has a root user. Root user access should be set up to use MFA and complex password. Do not delete root user.
 * Do not use root user, but create user and always use them when login. `jerome`, `aws-jb`  and `mathieu` are users.
 * Administrator users are part of an admin group with admin priviledges, like `AdministratorAccess`.
 * Assign users to groups (`admin` and `developers`) and assign policies to groups and not to individual user.
@@ -158,6 +158,8 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * Users can belong to multiple groups.
 * A classical use case: Create the user accounts, create a group for each department, create and attach an appropriate policy to each group, and place each user account into their department’s group. When new team members are onboarded, create their account and put them in the appropriate group. If an existing team member changes departments, move their account to their new IAM group.
 * AWS Account has a unique ID but can be set with an alias. The console URL includes the user alias.
+
+### Security Policies
 
 * Policies are written in JSON, to define permissions `Allow`, `Deny` for users to access AWS services, groups and roles...
 * Policy applies to **Principal**: account/user/role, list the **actions** (what is allowed or denied) on the given **resources**.
@@ -468,6 +470,19 @@ No additional charge exists for using AWS Control Tower. You only pay for the AW
     Roles are defined to define who can push code, access it, and fine grained control of the serverless execution. All serverless managed services inherit from the underlying platform security control. As an example, Lambda execution are authenticated, authorized and are made visible to the SREs via the commong logging mechanism.
 
 ## Solution Design
+
+The most important questions to ask and address when designing AWS solution with security consideration are:
+
+* who can access the resources in the account.
+* what can access the resources, and how access is allowed.
+
+Address how to secure, web tier, app tier and database access. What firewalls to use, and where.
+
+For each compute resources address access to monitoring and logging and network environment that contain those resources. 
+
+Is there any Gateway needed?
+
+Finally consider data life cycle and access control over time. What are the compliance requirements? 
 
 ### Blocking IP address
 

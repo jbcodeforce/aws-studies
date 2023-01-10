@@ -91,9 +91,9 @@ It uses the following constructs:
 
 **Pricing** is based on what we provision, then the task level CPU and memory and the per-second billing with one minute minimum.
 
-To share data between containers, Fargate provides 4 GB volumes space per task, and the volume is mounted in the container.
+To share data between containers, Fargate provides 4 GB volumes space per task, and the volume is mounted in the container. By default, Fargate tasks are given a minimum of 20 GiB of free ephemeral storage.
 
-For IAM security, the same policies can be set as we do on EC2. We still need to add an `execution role` to define access to ECR to download images and CloudWatch for monitoring.
+For IAM security, the same policies can be set as we do for EC2. We still need to add an `execution role` to define access to ECR to download images and CloudWatch for monitoring.
 
 ## Step function
 

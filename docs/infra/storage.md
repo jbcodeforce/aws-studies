@@ -234,9 +234,9 @@ To improve performance, a big file can be split and then uploaded with local con
 * **Amazon Macie**: is a machine learning security service to discover, classify and protect sensitive data stored in S3. 
 * **S3 Object lock**: to meet regulatory requirements of write once read many storage. Use _Legal Hold_ to prevent an object or its versions from being overwritten or deleted indefinitely and gives you the ability to remove it manually.
 * **S3 Byte-Range Fetches**: parallelize GET by requesting specific byte ranges. Used to speed up download or to download partial data. 
-* **S3 Batch operations**: perform bulk operations on existing S3 objects with a single request. To get the list of object, use [S3 Inventory]().
+* **S3 Batch operations**: perform bulk operations on existing S3 objects with a single request. To get the list of object, use [S3 Inventory](). Could not integrate custom code. 
 * **Server Access Logs**: used for audit purpose to track any request made to S3 in the same region, from any account. Logs are saved in another bucket. 
-* **S3 Glacier Vault Lock**: Adopt a Write Once Read Many) model, by creating a Vault Lock Policy. Data will never be deleted.
+* **S3 Glacier Vault Lock**: Adopt a Write Once Read Many model, by creating a Vault Lock Policy. Data will never be deleted.
 * **S3 Access points:** Access points are named network endpoints that are attached to buckets that you can use to perform S3 object operations. An Access Point alias provides the same functionality as an Access Point ARN and can be substituted for use anywhere an S3 bucket name is normally used for data access. 
 
 ### FAQ
@@ -249,7 +249,7 @@ To improve performance, a big file can be split and then uploaded with local con
     The S3 Intelligent Tiering automatically changes storage class depending on usage to optimize cost. S3 lifecycle is based on age and can be defined with rules.
 
 ???- "Expected performance?"
-    S3 automatically scales to high request rates and latency around 100 to 200ms. 5500 HET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
+    S3 automatically scales to high request rates and latency around 100 to 200ms. 5500 GET/HEAD requests per s per prefix in a bucket. 3500 PUT/COPY/POST/DELETE. When uploading files from internet host, it is recommended to upload to AWS edge location and then use AWS private backbone to move file to S3 bucket in target region. This will limit internet traffic and cost. 
 
 ???- "How to be informed if an object is restored to S3 from Glacier?"
     The Amazon S3 notification feature enables you to receive notifications when certain events happen in your bucket. To enable notifications, you must first add a notification configuration that identifies the events you want Amazon S3 to publish and the destinations where you want Amazon S3 to send the notifications.
@@ -262,6 +262,12 @@ To improve performance, a big file can be split and then uploaded with local con
     ```
 
     For boto3 example see code under [big-data-tenant-analytics](https://github.com/jbcodeforce/big-data-tenant-analytics) project
+
+???- "How to retrieve in minutes up to 250MB of archive from Glacier?"
+    Expedited retrievals allow you to quickly access () 1 to 5 minutes) your data when occasional urgent requests for a subset of archives are required. It provides up to 150 MB/s of retrieval throughput. If you require access to Expedited retrievals under all circumstances, you must purchase `provisioned retrieval capacity`.
+
+???- "What is provisioned capacity in Glacier?"
+    Provisioned capacity ensures that your retrieval capacity for expedited retrievals is available when you need it. Each unit of capacity provides that at least three expedited retrievals can be performed every five minutes and provides up to 150 MB/s of retrieval throughput.
 
 ## [Amazon AppFlow](https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html)
 
@@ -359,7 +365,7 @@ One agent task can get 10 GB/s
 
 ![](./diagrams/datasync.drawio.png)
 
-As an example to support the above architecture, we cancConfigure an AWS DataSync agent on the on-premises server that has access to the NFS file system. Transfer data over the Direct Connect connection to an AWS PrivateLink interface VPC endpoint for Amazon EFS by using a private Virtual InterFace (VIF). Set up a DataSync scheduled task to send the video files to the EFS file system every 24 hours.
+As an example to support the above architecture, we can configure an AWS DataSync agent on the on-premises server that has access to the NFS file system. Transfer data over the Direct Connect connection to an AWS PrivateLink interface VPC endpoint for Amazon EFS by using a private Virtual InterFace (VIF). Set up a DataSync scheduled task to send the video files to the EFS file system every 24 hours.
 
 The DataSync agent is deployed as a virtual machine that should be deployed on-premises in the same LAN as your source storage to minimize the distance traveled.
 

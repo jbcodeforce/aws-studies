@@ -146,7 +146,7 @@ The bandwidth is from 5 Gbps to  automatic scale up 45Gbps.
 
 ## Network ACLs
 
-Defines traffic rule at the subnet level. One NACL per subnet. A NACL specifies rules with number that defines evaluation priority. The last rule is an asterisk and denies a request in case of no rule conditions match.  
+Defines traffic rule at the subnet level. One NACL per subnet. A NACL specifies rules with number that defines evaluation priority. The last rule is an asterisk and denies a request in case of no rule conditions match.  As soon as a rule matches traffic, it’s applied immediately regardless of any higher-numbered rule that may contradict it
 
 ![](./images/nacl-default.png)
  
@@ -163,6 +163,14 @@ Below is a complete figure to explain the process: A web server is initiating a 
 **Figure 15: Connection flow between public to private Apps**
 
 Each subnet in your VPC must be associated with a network ACL. If you don't explicitly associate a subnet with a network ACL, the subnet is automatically associated with the default network ACL.
+
+| Security Group | Network ACL |
+| --- | --- |
+| Acts as firewall for EC2 | Acts as firewall for subnet |
+| Controls inbound & outbound traffic at instance level | Controls inbound & outbound traffic at subnet level |
+| Supports allow rules | Supports deny and allow rules | 
+| Evaluates all rules before deciding to allow traffic | Evaluate rules in order |
+| Instances associated with a SG can't talk to each other unless we add a rule to allow it | Each subnet must be associated with a NACL. 
 
 ## VPC peering
 

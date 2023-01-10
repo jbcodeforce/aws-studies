@@ -21,7 +21,7 @@ Amazon Machine Image (AMI) is the OS image with preinstalled softwares. Amazon L
 
 When creating an instance, we can select the OS, CPU, RAM, the VPC, the AZ subnet, the storage (EBS) 
 for root folder, the network card, and the firewall rules defined as [Security Group](#security-group). 
-The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 and HTTP on port 80.
+The security group helps to isolate the instance, for example, authorizing traffic for ssh on port 22 (TCP) and HTTP on port 80.
 Get the public ssh key, and when the instance is started, use a command like: `ssh -i EC2key.pem  ec2-user@ec2-52-8-75-8.us-west-1.compute.amazonaws.com ` to connect to the EC2 via ssh. On the client side, the downloaded `.pem` file needs to be restricted with `chmod 0400`.
 
 We can also use **EC2 Instance Connect** to open a terminal in the web browser. Still needs to get SSH port accessible in the security group.
@@ -32,7 +32,9 @@ See [this EC2 playground for demonstrating the deployment of a HTTP server.](../
 
 1. When we launch an instance, it enters in the `pending` state. Billing is started when in `running` state.
 1. During rebooting, instance remains on the same host computer, and maintains its public and private IP addresses, in addition to any data on its instance store.
-1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP and private IP addresses of the machine. Storage for any Amazon EBS volumes is still charged.
+1. With stopped instance, the instance is shut down and cannot be used. The instance can be restarted at any time.
+1. When we `terminate` an instance, the instance stores are erased, and we lose both the public IP and private IP addresses of the machine. Storage for any Amazon EBS volumes is still charged. Note that Reserved Instances that applied to terminated instances are still billed until the end of their term according to their payment option.
+1. We will be billed when our On-Demand instance is preparing to hibernate with a stopping state.
 
 When we launch a new EC2 instance, the EC2 service attempts to place the instance in such a way that all of our instances are spread out across underlying hardware to minimize correlated failures. We may use placement groups to influence the placement of a group of interdependent instances to meet the needs of our workload.
 
@@ -122,6 +124,8 @@ The following diagram illustrates some fault tolerance principles offered by the
 * Application LB load balances at the HTTP, HTTPS level, and within a VPC based on the content of the request.
 * NLB is for TCP, UDP, TLS routing and load balancing.  
 
+
+
 ### Placement groups
 
 Define strategy to place EC2 instances:
@@ -142,6 +146,20 @@ Define strategy to place EC2 instances:
     * HDFS, HBase, Cassandra, Kafka
 
 Access from network and policies menu, define the group with expected strategy, and then use it when creating the EC2 instance by adding the instance to a placement group.
+
+### [EC2 network bandwidth](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html)
+
+Each EC2 instance has a maximum bandwidth for aggregate inbound and outbound traffic, based on instance type and size. The network bandwidth available to an EC2 instance depends on several factors. 
+
+Bandwidth depends on the number of vCPUs configured, and for less than 32 vCPUs the limit (single flow of 5-tuple) (source IP address/port number, destination IP address/port number and the protocol) is around 5 Gbps when instances are not in the same cluster placement group. 
+
+Also bandwidth depends on the flow type: within on region or cross-regions.
+
+To meet additional demand, they can use a network I/O credit mechanism to burst beyond their baseline bandwidth.
+
+However, instances might not achieve their available network bandwidth, if they exceed network allowances at the instance level, such as packet per second or number of tracked connections. One EC2 connected to EC2 instance in same region. 
+
+Recalls that Enterprise-grade WAN and DIA links more commonly have symmetrical bandwidth, the data capacity is the same in both directions. 
 
 ### EC2 Instance Store
 
@@ -300,9 +318,13 @@ Marketing communication services, SMS, email, push, voice, and in-app messaging.
 
 ## [Systems Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html)
 
-Ability to control AWS infrastructure like EC2, with an unified user's experience. It includes a set of services like Session Manager, Patch Manager, Run Commands, or define maintenance windows.  
+[AWS Systems Manager](https://us-west-2.console.aws.amazon.com/systems-manager/home?region=us-west-2#) is a collection of capabilities to help manage our applications and infrastructure running. Systems Manager simplifies application and resource management, shortens the time to detect and resolve operational problems, and helps us manage our AWS resources securely at scale.
+
+Ability to control AWS infrastructure like EC2, Amazon Relational Database Service (RDS), Amazon Elastic Container Service (ECS), and Amazon Elastic Kubernetes Service (EKS) instances,  with an unified user's experience. It includes a set of services like Session Manager, Patch Manager, Run Commands, Inventory or define maintenance windows.  
 
 Automation is the motivation to simplify maintenance and deployment tasks of EC2 instances, like automating runbooks.
+
+It includes, `Parameter Store` which provides secure, hierarchical storage for configuration data and secrets management. You can store data such as passwords, database strings, Amazon Elastic Compute Cloud (Amazon EC2) instance IDs and Amazon Machine Image (AMI) IDs, and license codes as parameter values. Parameter Store is also integrated with Secrets Manager
 
 ## [Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html)
 
@@ -322,3 +344,10 @@ Can be used as a way to automate the start and stop of the Amazon EC2 instance: 
 
 AWS Compute Optimizer allows you to automate the collection of metrics for underutilized and underperforming compute instances. It can then generate recommendations for you to save money.
 
+## [AWS Application Migration Service](https://aws.amazon.com/application-migration-service/)
+
+[AWS MGN](https://aws.amazon.com/blogs/aws/how-to-use-the-new-aws-application-migration-service-for-lift-and-shift-migrations/) is the primary migration service recommended for lift-and-shift migrations to AWS without having to make any changes to the applications, the architecture, or the migrated servers.
+
+Implementation begins by installing the AWS Replication Agent on the source servers. When launch Test or Cutover instances are laucned, AWS Application Migration Service automatically converts the source servers to boot and run natively on AWS.
+
+Can be used to migrate Amazon Elastic Compute Cloud (EC2) workloads across AWS Regions, Availability Zones, or accounts.

@@ -20,7 +20,7 @@ Record defines how to route traffic for a domain. Each record contains:
 * a Domain name.
 * record type A (IPv4) or AAAA(IPv6), CNAME, NS.
 * value.
-* routing policy/
+* routing policy.
 * Time to Live (TTL): is set to get the web browser to keep the DNS resolution in cache. High TTL is around 24 hours, low TTL, at 60s, will make more DNS calls. TTL should be set to strike a balance between how long the value should be cached vs how much pressure should go on the DNS. Need to define the TTL for the app depending on the expected deployment model.
 
 A hosted zone is a container that holds information about how we want to route traffic for a domain. Two types are supported: public or private within a VPC.
@@ -75,6 +75,9 @@ Eight routing types:
 1. The **Geo Location** routing policy is based on user's location, and we may specify how the traffic from a given country should go to a specific IP@. Need to define a “default” policy in case there’s no match on location. It is interesting for website localization, restrict content distribution, load balancing,...
 1. **Geoproximity** takes into account the user and AWS resources locations. It also supports shifting more traffic to resources based on the defined bias. It is part of **Route 53 Traffic Flow**.
 1. The **Multi Value** routing policy is used to access multiple resources. The record set, associates a Route 53 health checks with the records. The client on DNS request gets up to 8 healthy records returned for each Multi Value query. If one fails then the client can try one other IIP @ from the list.
+
+We can use Route 53 health checking to configure active-active and active-passive failover configurations. We configure active-active failover using any routing policy (or combination of routing policies) other than failover, and we configure active-passive failover using the failover routing policy.
+In active-active failover, all the records that have the same name, the same type (such as A or AAAA), and the same routing policy (such as weighted or latency) are active unless Route 53 considers them unhealthy. With Active-Active Failover, it uses all available resources all the time without a primary nor a secondary resource.
 
 If you used another domain registra, it is possible to get the list of AWS DNS server associated to the hosted public zone, and then configure your registra for the NS records to go to those DNS servers. 
 
