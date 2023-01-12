@@ -139,6 +139,7 @@ With SSE-KMS then we need to specify the KMS Key to encrypt the object in target
 * [Presentation on organizations](https://broadcast.amazon.com/videos/192190)
 * [User guide](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html)
 * [Organization API](https://docs.aws.amazon.com/organizations/latest/APIReference/API_Organization.html)
+* [S3 storage lens with Organization lab](../playground/s3-org-billing.md)
 
 ## IAM Identity and Access Management
 
